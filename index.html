@@ -59,6 +59,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .soft-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:48px;padding:10px 20px;border-radius:999px;background:#fff;border:1.5px solid var(--line);box-shadow:0 3px 0 var(--line);font-size:17px;white-space:nowrap}
 .soft-btn svg,.primary svg{width:20px;height:20px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .soft-btn:not(:disabled):active{transform:translateY(3px);box-shadow:0 0 0 var(--line)}
+#back{background:var(--butter);border-color:var(--butter-d);box-shadow:0 3px 0 var(--butter-d)}
 #sound[aria-pressed=false]{background:#F3EEE7;color:var(--muted)}
 .primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:60px;padding:14px 36px;border-radius:999px;background:var(--sage-deep);color:#fff;font-family:var(--play);font-size:23px;box-shadow:0 4px 0 var(--sage-deeper)}
 .primary:not(:disabled):active{transform:translateY(4px);box-shadow:0 0 0 var(--sage-deeper)}
@@ -1344,7 +1345,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-13';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-14';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
