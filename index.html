@@ -786,72 +786,109 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 }
 #main[data-hue]~footer{display:none}
 
-/* 놀이 방법 안내: 처음 한 번 + 물음표 버튼. 시범 장면은 2.5초마다 되풀이 (가로:세로 = 2:1 무대, 위치는 %) */
+/* 놀이 방법 안내: 처음 한 번 + 물음표 버튼. 시범 장면은 --dur마다 되풀이 (가로:세로 = 2:1 무대, 위치는 %, 배치는 실제 가로 화면과 같게)
+   손가락은 실제로 누르는 것만 누르고, 보기만 하는 것은 반짝임(커졌다 작아지는 노란 빛)으로 표시해요. 손가락 움직임은 아래 gdf- 애니메이션 */
 .head-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
 .guide-btn{padding:10px 13px}
+.guide-modal{display:flex;flex-direction:column;max-height:calc(100dvh - 40px);overflow:hidden}
+.guide-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .guide-modal h2{font-family:var(--play);font-size:28px;line-height:1.3}
-.guide-text{margin:0 0 18px;font-family:var(--play);font-size:22px;line-height:1.45;white-space:pre-line}
-.guide-modal .primary{min-width:220px}
+.guide-text{margin:0 0 14px;font-family:var(--play);font-size:22px;line-height:1.45;white-space:pre-line}
+.guide-modal>.primary{flex-shrink:0;align-self:center;min-width:220px;margin-top:6px}
+.guide-tools{display:grid;gap:7px;margin:0 0 12px;padding:12px 14px;list-style:none;background:var(--paper);border-radius:18px;text-align:left;font-size:15px;line-height:1.3}
+.guide-tools li{display:flex;align-items:center;gap:8px}
+.guide-tools i{display:inline-flex;align-items:center;gap:5px;flex-shrink:0;padding:4px 11px;background:#fff;border:1.5px solid var(--line);border-radius:999px;font-style:normal;font-family:var(--play);white-space:nowrap}
+.guide-tools svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.guide-tools svg.dots{width:24px;fill:currentColor;stroke:none}
+.guide-tools span{color:#6E5D52}
 .guide-reset{display:flex;justify-content:center;margin:0 0 18px}
 .guide-reset .soft-btn{white-space:normal;font-size:15px}
-.guide-demo{position:relative;width:100%;aspect-ratio:2/1;margin:12px auto 16px;border-radius:22px;background:var(--hue);overflow:hidden;isolation:isolate;container-type:inline-size;font-family:var(--play);font-size:16px;line-height:1;color:var(--ink);pointer-events:none}
-@media(max-height:520px){.guide-demo{width:min(100%,calc((100dvh - 220px) * 2))}}
-.guide-demo *{animation-duration:2.5s;animation-iteration-count:infinite}
+.guide-demo{--dur:2.5s;position:relative;width:100%;aspect-ratio:2/1;margin:12px auto 14px;border-radius:22px;background:var(--hue);overflow:hidden;isolation:isolate;container-type:inline-size;font-family:var(--play);font-size:16px;line-height:1;color:var(--ink);pointer-events:none}
+@media(max-height:560px){.guide-modal{padding:14px 20px 16px}.guide-modal h2{font-size:22px}.guide-text{font-size:19px;margin-bottom:10px}.guide-demo{width:min(100%,calc((100dvh - 230px) * 2));margin:8px auto 10px}.guide-tools{font-size:14px;padding:8px 12px}}
+.guide-demo *{animation-duration:var(--dur);animation-iteration-count:infinite}
 .guide-demo>*{position:absolute}
-.gd-pic,.gd-box,.gd-card,.gd-shadow,.gd-scene,.gd-target,.gd-swatch{aspect-ratio:1}
+.gd-pic,.gd-box,.gd-card,.gd-shadow,.gd-scene,.gd-target,.gd-swatch,.gd-dot{aspect-ratio:1}
 .gd-box{padding:1.6cqw;background:#fff;border:.4cqw solid var(--line);border-radius:3.5cqw;box-shadow:0 .8cqw 0 var(--line)}
+.gd-strip{left:0;top:0;width:100%;background:#fff}
+.gd-pill{display:grid;place-items:center;border-radius:999px;background:var(--hue);font-family:var(--ui);font-size:2.8cqw;white-space:nowrap}
+.gd-pill>*,.gd-swap>*{grid-area:1/1}
+.gd-btn{display:flex;align-items:center;justify-content:center;gap:.5cqw;border-radius:999px;background:#fff;border:.3cqw solid var(--line);box-shadow:0 .5cqw 0 var(--line);font-size:2.3cqw;white-space:nowrap}
+.gd-btn svg{width:2.6cqw;height:2.6cqw;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gd-btn.go{background:var(--sage-deep);border-color:var(--sage-deep);color:#fff;box-shadow:0 .6cqw 0 var(--sage-deeper)}
 .gd-finger{z-index:5;width:14%;left:88%;top:96%;transform:translate(-43%,-12%);transform-origin:43% 12%;filter:drop-shadow(0 .6cqw 0 rgba(112,91,76,.22))}
 .gd-finger svg{display:block;width:100%;height:auto;fill:#fff;stroke:#705b4c;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .gd-ripple{z-index:4;width:12%;aspect-ratio:1;border-radius:50%;border:.9cqw solid #fff;box-shadow:0 0 0 .5cqw rgba(112,91,76,.3);opacity:0;transform:translate(-50%,-50%);animation-name:gd-ripple;animation-timing-function:ease-out}
-@keyframes gd-ripple{0%{opacity:1;transform:translate(-50%,-50%) scale(.3)}22%,100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
-/* 풍선 터뜨리기 */
-.guide-demo[data-demo=balloon]{background:url("images/scenes/sky.webp") center bottom/cover}
-.gd-target{display:grid;place-items:center;border-radius:2.6cqw;background:var(--butter);border:.5cqw solid var(--butter-d);font-size:7.5cqw;animation-name:gd-b-target}
-.gd-balloon{aspect-ratio:86/146;display:flex;justify-content:center;padding-top:5.8cqw;background:center top/100% auto no-repeat;font-size:6.5cqw}
-.gd-b-a{animation-name:gd-b-a}
+@keyframes gd-ripple{0%{opacity:1;transform:translate(-50%,-50%) scale(.3)}15%,100%{opacity:0;transform:translate(-50%,-50%) scale(1.5)}}
+.gd-swatch{border-radius:50%;background:var(--paint);border:.5cqw solid #fff;box-shadow:0 0 0 .3cqw var(--line)}
+
+/* 풍선 터뜨리기: 위쪽 흰 줄의 목표 글자는 반짝이기만, 하늘의 풍선은 떠오르고 같은 글자 풍선만 톡 */
+.guide-demo[data-demo=balloon]{background:#fff}
+.gd-prompt{left:36%;top:12%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:1.4cqw;font-family:var(--ui);font-size:3.2cqw;white-space:nowrap}
+.gd-target{display:grid;place-items:center;width:10cqw;border-radius:2.6cqw;background:var(--butter);border:.5cqw solid var(--butter-d);font-family:var(--play);font-size:6cqw;animation-name:gd-b-look}
+.gd-sky{left:0;top:24%;width:100%;height:76%;overflow:hidden;background:url("images/scenes/sky.webp") center bottom/cover}
+.gd-balloon{position:absolute;width:13%;aspect-ratio:86/146;display:flex;justify-content:center;padding-top:5.4cqw;background:center top/100% auto no-repeat;font-size:5.6cqw;animation-timing-function:linear}
+.gd-b-a{animation-name:gd-b-a}.gd-b-r1{animation-name:gd-b-r1}.gd-b-r2{animation-name:gd-b-r2}
 .gd-pop{transform:translate(-50%,-50%);opacity:0;animation-name:gd-b-pop}
 [data-demo=balloon] .gd-finger{animation-name:gdf-balloon}
-@keyframes gd-b-target{0%,16%,24%,100%{transform:none}19%{transform:scale(.9)}}
-@keyframes gd-b-a{0%,43%{opacity:1;transform:none}46%,95%{opacity:0;transform:scale(1.15)}100%{opacity:1;transform:none}}
-@keyframes gd-b-pop{0%,43%{opacity:0;transform:translate(-50%,-50%) scale(.4)}47%{opacity:1;transform:translate(-50%,-50%) scale(1)}62%,100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
-@keyframes gdf-balloon{0%{left:86%;top:94%;transform:translate(-43%,-12%)}12%{left:12.5%;top:24%;transform:translate(-43%,-12%)}18%{left:12.5%;top:24%;transform:translate(-43%,-12%) scale(.85)}23%{left:12.5%;top:24%;transform:translate(-43%,-12%)}38%{left:47.5%;top:33%;transform:translate(-43%,-12%)}44%{left:47.5%;top:33%;transform:translate(-43%,-12%) scale(.85)}49%,92%{left:47.5%;top:33%;transform:translate(-43%,-12%)}100%{left:86%;top:94%;transform:translate(-43%,-12%)}}
-/* 동물들의 주문 받기 */
-.gd-bubble{display:flex;align-items:center;gap:1cqw;padding:1cqw 3cqw 1cqw 1.6cqw;border-radius:5cqw;background:#fff;font-size:5.5cqw;white-space:nowrap}
-.gd-bubble .gd-ico{display:block;width:9cqw;height:9cqw}
-.gd-basket{height:36%;background:#FBF1DE;border:.5cqw dashed #E0C79C;border-radius:3cqw 3cqw 7cqw 7cqw;animation-name:gd-o-basket}
-.gd-o-i1{opacity:0;animation-name:gd-o-i1}
-.gd-o-i2{opacity:0;animation-name:gd-o-i2}
-.gd-go{display:grid;place-items:center;height:26%;border-radius:999px;background:var(--sage-deep);color:#fff;font-size:4.2cqw;white-space:nowrap;box-shadow:0 .9cqw 0 var(--sage-deeper);animation-name:gd-o-go}
+@keyframes gd-b-look{0%,4%{scale:1;box-shadow:0 0 0 0 #F6D77E00}8%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}12%{scale:1;box-shadow:0 0 0 2.6cqw #F6D77E00}16%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}20%{scale:1;box-shadow:0 0 0 0 #F6D77E00}100%{scale:1;box-shadow:0 0 0 0 #F6D77E00}}
+@keyframes gd-b-a{0%{top:70%;opacity:1;transform:none}54%{top:21%;opacity:1;transform:none}57%{top:20%;opacity:0;transform:scale(1.2)}96%{top:20%;opacity:0;transform:none}97%{top:70%;opacity:0;transform:none}100%{top:70%;opacity:1;transform:none}}
+@keyframes gd-b-r1{0%{top:100%}100%{top:-60%}}
+@keyframes gd-b-r2{0%{top:40%}50%{top:-60%}50.01%{top:100%}100%{top:40%}}
+@keyframes gd-b-pop{0%,54%{opacity:0;transform:translate(-50%,-50%) scale(.4)}58%{opacity:1;transform:translate(-50%,-50%) scale(1)}70%,100%{opacity:0;transform:translate(-50%,-50%) scale(1.25)}}
+@keyframes gdf-balloon{0%{left:88%;top:96%;transform:translate(-43%,-12%)}30%{left:88%;top:96%;transform:translate(-43%,-12%)}47%{left:48.5%;top:58%;transform:translate(-43%,-12%)}55%{left:48.5%;top:52.4%;transform:translate(-43%,-12%) scale(.85)}60%{left:48.5%;top:52.4%;transform:translate(-43%,-12%)}92%{left:48.5%;top:52.4%;transform:translate(-43%,-12%)}100%{left:88%;top:96%;transform:translate(-43%,-12%)}}
+
+/* 동물들의 주문 받기: 딸기 세 번 → 바구니 딸기 하나 빼기 → 다 담았어요 */
+.gd-bubble{display:flex;align-items:center;gap:.8cqw;padding:1cqw 2.4cqw 1cqw 1.4cqw;border-radius:5cqw;background:#fff;font-size:3.6cqw;white-space:nowrap;transform:translateX(-50%)}
+.gd-bubble .gd-ico{display:block;width:6.5cqw;height:6.5cqw}
+.gd-food{display:flex;flex-direction:column;align-items:center;gap:.3cqw;padding:.8cqw .4cqw .6cqw;background:#fff;border:.3cqw solid var(--line);border-radius:2.4cqw;box-shadow:0 .5cqw 0 var(--line);font-size:2.4cqw}
+.gd-food .drawn-art{width:6.5cqw;height:6.5cqw}
+.gd-basket{background:#FBF1DE;border:.4cqw dashed #E0C79C;border-radius:2.4cqw 2.4cqw 5cqw 5cqw;animation-name:gd-o-basket}
+.gd-o-i1{opacity:0;animation-name:gd-o-i1}.gd-o-i2{opacity:0;animation-name:gd-o-i2}.gd-o-i3{opacity:0;animation-name:gd-o-i3}
+.gd-o-go{animation-name:gd-o-go}
 [data-demo=order] .gd-finger{animation-name:gdf-order}
-@keyframes gd-o-basket{0%,60%{background-color:#FBF1DE;border-color:#E0C79C}64%,94%{background-color:var(--sage);border-color:var(--sage-d)}100%{background-color:#FBF1DE;border-color:#E0C79C}}
-@keyframes gd-o-i1{0%,16%{opacity:0;transform:scale(.3)}20%{opacity:1;transform:scale(1.1)}24%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
-@keyframes gd-o-i2{0%,30%{opacity:0;transform:scale(.3)}34%{opacity:1;transform:scale(1.1)}38%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
-@keyframes gd-o-go{0%,56%,62%,100%{transform:none;box-shadow:0 .9cqw 0 var(--sage-deeper)}58%{transform:translateY(.8cqw);box-shadow:0 0 0 var(--sage-deeper)}}
-@keyframes gdf-order{0%{left:32%;top:96%;transform:translate(-43%,-12%)}10%{left:14.5%;top:66%;transform:translate(-43%,-12%)}16%{left:14.5%;top:66%;transform:translate(-43%,-12%) scale(.85)}21%{left:14.5%;top:66%;transform:translate(-43%,-12%)}30%{left:14.5%;top:66%;transform:translate(-43%,-12%) scale(.85)}35%{left:14.5%;top:66%;transform:translate(-43%,-12%)}52%{left:83%;top:68%;transform:translate(-43%,-12%)}58%{left:83%;top:68%;transform:translate(-43%,-12%) scale(.85)}63%,92%{left:83%;top:68%;transform:translate(-43%,-12%)}100%{left:32%;top:96%;transform:translate(-43%,-12%)}}
-/* 징검다리 건너기 (손가락은 돌만 누르고, 토끼에는 닿지 않아요) */
-.guide-demo[data-demo=bridge]{background:url("images/bridge/journey.webp") center/cover}
-.gd-label{display:flex;align-items:center;gap:1.4cqw;padding:.8cqw 1.4cqw .8cqw 3cqw;border-radius:999px;background:#fffd;font-size:4.6cqw;white-space:nowrap;transform:translateX(-50%)}
-.gd-label b{display:grid;place-items:center;min-width:8cqw;height:8cqw;border-radius:2.4cqw;background:var(--butter);font-weight:400;font-size:5.6cqw}
-.gd-stone{aspect-ratio:2.1/1;display:flex;align-items:center;justify-content:center;padding-bottom:1.2cqw;background:center/100% 100% no-repeat;font-size:6.5cqw}
-.gd-r-done{opacity:0;animation-name:gd-r-done}
-.gd-dock{height:34%;background:url("images/bridge/river-dock.webp") center/100% 100% no-repeat}
-.gd-rabbit{z-index:2;width:12%;aspect-ratio:64/76;left:44%;top:62%;animation-name:gd-r-rabbit}
+@keyframes gd-o-basket{0%,70%{background-color:#FBF1DE;border-color:#E0C79C}73%,94%{background-color:var(--sage);border-color:var(--sage-d)}100%{background-color:#FBF1DE;border-color:#E0C79C}}
+@keyframes gd-o-i1{0%,12%{opacity:0;transform:scale(.3)}15%{opacity:1;transform:scale(1.1)}18%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
+@keyframes gd-o-i2{0%,22%{opacity:0;transform:scale(.3)}25%{opacity:1;transform:scale(1.1)}28%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
+@keyframes gd-o-i3{0%,32%{opacity:0;transform:scale(.3)}35%{opacity:1;transform:scale(1.1)}38%,49%{opacity:1;transform:none}50%{opacity:1;transform:scale(.85)}53%,100%{opacity:0;transform:scale(.2)}}
+@keyframes gd-o-go{0%,68%,72%,100%{transform:none}70%{transform:translateY(.5cqw)}}
+@keyframes gdf-order{0%{left:70%;top:98%;transform:translate(-43%,-12%)}8%{left:92.25%;top:17%;transform:translate(-43%,-12%)}12%{left:92.25%;top:17%;transform:translate(-43%,-12%) scale(.85)}15%{left:92.25%;top:17%;transform:translate(-43%,-12%)}22%{left:92.25%;top:17%;transform:translate(-43%,-12%) scale(.85)}25%{left:92.25%;top:17%;transform:translate(-43%,-12%)}32%{left:92.25%;top:17%;transform:translate(-43%,-12%) scale(.85)}35%{left:92.25%;top:17%;transform:translate(-43%,-12%)}45%{left:86.5%;top:50%;transform:translate(-43%,-12%)}50%{left:86.5%;top:50%;transform:translate(-43%,-12%) scale(.85)}53%{left:86.5%;top:50%;transform:translate(-43%,-12%)}64%{left:86%;top:81.5%;transform:translate(-43%,-12%)}70%{left:86%;top:81.5%;transform:translate(-43%,-12%) scale(.85)}73%{left:86%;top:81.5%;transform:translate(-43%,-12%)}92%{left:86%;top:81.5%;transform:translate(-43%,-12%)}100%{left:70%;top:98%;transform:translate(-43%,-12%)}}
+
+/* 징검다리 건너기: 1번 돌 톡 → 폴짝 → '다음은 2' → 2번 돌 톡 → 폴짝 (손가락은 토끼에 닿지 않아요) */
+.guide-demo[data-demo=bridge]{background:#fff}
+.gd-label{left:50%;top:8.5%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:1.2cqw;font-family:var(--ui);font-size:3cqw;white-space:nowrap}
+.gd-label b{display:grid;place-items:center;min-width:6.4cqw;height:6.4cqw;border-radius:1.8cqw;background:var(--butter);font-family:var(--play);font-weight:400;font-size:4.4cqw;animation-name:gd-r-look}
+.gd-label b>*{grid-area:1/1}
+.gd-r-n1{animation-name:gd-r-n1}.gd-r-n2{opacity:0;animation-name:gd-r-n2}
+.gd-river{left:0;top:17%;width:100%;height:83%;background:url("images/bridge/journey.webp") center top/100% auto repeat-y}
+.gd-dock{display:grid;place-items:center;padding-bottom:3cqw;height:20%;background:url("images/bridge/river-dock.webp") center/100% 100% no-repeat;font-size:3cqw;color:#6B5340}
+.gd-stone{width:20%;aspect-ratio:2.1/1;display:flex;align-items:center;justify-content:center;padding-bottom:1cqw;background:center/100% 100% no-repeat;font-size:5cqw}
+.gd-r-d0{opacity:0;animation-name:gd-r-d0}.gd-r-d1{opacity:0;animation-name:gd-r-d1}
+.gd-r-dim0{animation-name:gd-r-dim0}.gd-r-row1a{opacity:.35;color:transparent;animation-name:gd-r-row1a}.gd-r-row1b{opacity:.35;color:transparent;animation-name:gd-r-row1b}
+.gd-rabbit{z-index:2;width:9%;aspect-ratio:64/76;left:45.5%;top:74.6%;animation-name:gd-r-rabbit}
 .gd-hop{display:block;width:100%;height:100%;animation-name:gd-r-hop}
 [data-demo=bridge] .gd-finger{animation-name:gdf-bridge}
-@keyframes gd-r-done{0%,30%{opacity:0}34%,95%{opacity:1}100%{opacity:0}}
-@keyframes gd-r-rabbit{0%,34%{left:44%;top:62%;opacity:1}56%,94%{left:26%;top:23.5%;opacity:1}97%{left:26%;top:23.5%;opacity:0}98%{left:44%;top:62%;opacity:0}100%{left:44%;top:62%;opacity:1}}
-@keyframes gd-r-hop{0%,34%{transform:none}45%{transform:translateY(-35%)}56%,100%{transform:none}}
-@keyframes gdf-bridge{0%{left:10%;top:96%;transform:translate(-43%,-12%)}22%{left:32%;top:47%;transform:translate(-43%,-12%)}30%{left:32%;top:47%;transform:translate(-43%,-12%) scale(.85)}35%{left:32%;top:47%;transform:translate(-43%,-12%)}48%,92%{left:12%;top:80%;transform:translate(-43%,-12%)}100%{left:10%;top:96%;transform:translate(-43%,-12%)}}
-/* 같은 그림 찾기 */
-.gd-card{border-radius:3.5cqw;background:#F7E2A0;border:.5cqw solid var(--butter-d);box-shadow:0 .8cqw 0 var(--butter-d)}
-.gd-card>i{position:absolute;left:24%;top:24%;display:grid;place-items:center;width:52%;aspect-ratio:1;border-radius:50%;background:#fff;color:#C9A14D;font-size:6cqw;font-style:normal}
-.gd-face{position:absolute;inset:-.5cqw;padding:2cqw;border-radius:3.5cqw;background:#fff;border:.5cqw solid var(--line);opacity:0}
+@keyframes gd-r-look{0%,1%{scale:1;box-shadow:0 0 0 0 #F6D77E00}2%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}6%{scale:1;box-shadow:0 0 0 2.6cqw #F6D77E00}10%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}14%{scale:1;box-shadow:0 0 0 0 #F6D77E00}42%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}46%{scale:1;box-shadow:0 0 0 2.6cqw #F6D77E00}50%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa}54%{scale:1;box-shadow:0 0 0 0 #F6D77E00}100%{scale:1;box-shadow:0 0 0 0 #F6D77E00}}
+@keyframes gd-r-n1{0%,41%{opacity:1}43%,95%{opacity:0}100%{opacity:1}}
+@keyframes gd-r-n2{0%,41%{opacity:0}43%,95%{opacity:1}100%{opacity:0}}
+@keyframes gd-r-d0{0%,20%{opacity:0}23%,95%{opacity:1}100%{opacity:0}}
+@keyframes gd-r-d1{0%,64%{opacity:0}67%,95%{opacity:1}100%{opacity:0}}
+@keyframes gd-r-dim0{0%,21%{opacity:1}24%,95%{opacity:.55}100%{opacity:1}}
+@keyframes gd-r-row1a{0%,40%{opacity:.35;color:transparent}44%,95%{opacity:1;color:var(--ink)}100%{opacity:.35;color:transparent}}
+@keyframes gd-r-row1b{0%,40%{opacity:.35;color:transparent}44%,64%{opacity:1;color:var(--ink)}67%,95%{opacity:.55;color:var(--ink)}100%{opacity:.35;color:transparent}}
+@keyframes gd-r-rabbit{0%,21%{left:45.5%;top:74.6%;opacity:1}36%,65%{left:27.5%;top:48.6%;opacity:1}80%,93%{left:27.5%;top:22.6%;opacity:1}96%{left:27.5%;top:22.6%;opacity:0}97%{left:45.5%;top:74.6%;opacity:0}100%{left:45.5%;top:74.6%;opacity:1}}
+@keyframes gd-r-hop{0%,21%{transform:none}29%{transform:translateY(-30%)}36%,65%{transform:none}73%{transform:translateY(-30%)}80%,100%{transform:none}}
+@keyframes gdf-bridge{0%{left:8%;top:100%;transform:translate(-43%,-12%)}14%{left:32%;top:69%;transform:translate(-43%,-12%)}20%{left:32%;top:69%;transform:translate(-43%,-12%) scale(.85)}24%{left:32%;top:69%;transform:translate(-43%,-12%)}34%{left:10%;top:97%;transform:translate(-43%,-12%)}46%{left:88%;top:96%;transform:translate(-43%,-12%)}58%{left:40%;top:43%;transform:translate(-43%,-12%) rotate(-45deg)}64%{left:40%;top:43%;transform:translate(-43%,-12%) rotate(-45deg) scale(.85)}68%{left:40%;top:43%;transform:translate(-43%,-12%) rotate(-45deg)}78%{left:88%;top:96%;transform:translate(-43%,-12%)}92%{left:88%;top:96%;transform:translate(-43%,-12%)}100%{left:8%;top:100%;transform:translate(-43%,-12%)}}
+
+/* 같은 그림 찾기 (쉬움: 2×2) */
+.gd-card{border-radius:3cqw;background:#F7E2A0;border:.5cqw solid var(--butter-d);box-shadow:0 .8cqw 0 var(--butter-d)}
+.gd-card>i{position:absolute;left:24%;top:24%;display:grid;place-items:center;width:52%;aspect-ratio:1;border-radius:50%;background:#fff;color:#C9A14D;font-size:5cqw;font-style:normal}
+.gd-face{position:absolute;inset:-.5cqw;padding:1.6cqw;border-radius:3cqw;background:#fff;border:.5cqw solid var(--line);opacity:0}
 .gd-m-f1{animation-name:gd-m-f1}
 .gd-m-f2{animation-name:gd-m-f2}
 [data-demo=memory] .gd-finger{animation-name:gdf-memory}
 @keyframes gd-m-f1{0%,18%{opacity:0;transform:scaleX(.2);background-color:#fff;border-color:var(--line)}21%,52%{opacity:1;transform:none;background-color:#fff;border-color:var(--line)}56%,94%{opacity:1;transform:none;background-color:var(--sage);border-color:var(--sage-d)}100%{opacity:0;transform:none;background-color:var(--sage);border-color:var(--sage-d)}}
 @keyframes gd-m-f2{0%,43%{opacity:0;transform:scaleX(.2);background-color:#fff;border-color:var(--line)}46%,52%{opacity:1;transform:none;background-color:#fff;border-color:var(--line)}56%,94%{opacity:1;transform:none;background-color:var(--sage);border-color:var(--sage-d)}100%{opacity:0;transform:none;background-color:var(--sage);border-color:var(--sage-d)}}
-@keyframes gdf-memory{0%{left:50%;top:96%;transform:translate(-43%,-12%)}12%{left:17%;top:48%;transform:translate(-43%,-12%)}18%{left:17%;top:48%;transform:translate(-43%,-12%) scale(.85)}23%{left:17%;top:48%;transform:translate(-43%,-12%)}37%{left:61%;top:48%;transform:translate(-43%,-12%)}43%{left:61%;top:48%;transform:translate(-43%,-12%) scale(.85)}48%{left:61%;top:48%;transform:translate(-43%,-12%)}60%,92%{left:68%;top:84%;transform:translate(-43%,-12%)}100%{left:50%;top:96%;transform:translate(-43%,-12%)}}
+@keyframes gdf-memory{0%{left:50%;top:98%;transform:translate(-43%,-12%)}12%{left:42%;top:30%;transform:translate(-43%,-12%)}18%{left:42%;top:30%;transform:translate(-43%,-12%) scale(.85)}23%{left:42%;top:30%;transform:translate(-43%,-12%)}37%{left:58%;top:68%;transform:translate(-43%,-12%)}43%{left:58%;top:68%;transform:translate(-43%,-12%) scale(.85)}48%{left:58%;top:68%;transform:translate(-43%,-12%)}60%{left:80%;top:92%;transform:translate(-43%,-12%)}92%{left:80%;top:92%;transform:translate(-43%,-12%)}100%{left:50%;top:98%;transform:translate(-43%,-12%)}}
 /* 그림자 맞추기 */
 .gd-shadow{border-radius:4cqw;background:#ffffff80;border:.5cqw solid var(--hue-d)}
 .gd-sd,.gd-sr{position:absolute;inset:11%}
@@ -865,43 +902,56 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 @keyframes gd-s-cat{0%,30%{opacity:1}36%,94%{opacity:.35}100%{opacity:1}}
 @keyframes gd-s-right{0%,28%{background-color:#fff;border-color:var(--line)}31%,94%{background-color:var(--sage);border-color:var(--sage-d)}100%{background-color:#fff;border-color:var(--line)}}
 @keyframes gdf-shadow{0%{left:88%;top:96%;transform:translate(-43%,-12%)}18%{left:85.5%;top:47%;transform:translate(-43%,-12%)}26%{left:85.5%;top:47%;transform:translate(-43%,-12%) scale(.85)}31%{left:85.5%;top:47%;transform:translate(-43%,-12%)}44%,92%{left:90%;top:84%;transform:translate(-43%,-12%)}100%{left:88%;top:96%;transform:translate(-43%,-12%)}}
-/* 두더지 잡기 */
-.gd-hole{height:80%;overflow:hidden;isolation:isolate}
-.gd-hole:before{content:'';position:absolute;left:0;right:0;bottom:5%;height:26%;background:#B8977C;border:.9cqw solid #E8D6C0;border-radius:50%;z-index:-1}
-.gd-mole{position:absolute;left:2%;bottom:10%;width:96%;aspect-ratio:1;transform:translateY(120%);animation-name:gd-mole}
-.gd-plus{font-size:7cqw;color:var(--sage-deep);opacity:0;transform:translateX(-50%);animation-name:gd-plus}
+/* 두더지 잡기 (3×3 구멍) */
+.gd-hole{height:29%;overflow:hidden;isolation:isolate}
+.gd-hole:before{content:'';position:absolute;left:5%;right:5%;bottom:5%;height:34%;background:#B8977C;border:.7cqw solid #E8D6C0;border-radius:50%;z-index:-1}
+.gd-mole{position:absolute;left:17%;width:66%;height:84%;bottom:13%;transform:translateY(115%);animation-name:gd-mole}
+.gd-plus{font-size:4cqw;color:var(--sage-deep);opacity:0;transform:translateX(-50%);animation-name:gd-plus}
 [data-demo=mole] .gd-finger{animation-name:gdf-mole}
-@keyframes gd-mole{0%,8%{transform:translateY(120%)}16%,40%{transform:none}48%,100%{transform:translateY(120%)}}
+@keyframes gd-mole{0%,8%{transform:translateY(115%)}16%,40%{transform:none}48%,100%{transform:translateY(115%)}}
 @keyframes gd-plus{0%,36%{opacity:0;transform:translate(-50%,20%) scale(.6)}42%{opacity:1;transform:translate(-50%,0) scale(1.1)}48%,92%{opacity:1;transform:translate(-50%,0)}97%,100%{opacity:0;transform:translate(-50%,0)}}
-@keyframes gdf-mole{0%{left:86%;top:96%;transform:translate(-43%,-12%)}14%{left:80%;top:80%;transform:translate(-43%,-12%)}30%{left:50%;top:52%;transform:translate(-43%,-12%)}36%{left:50%;top:52%;transform:translate(-43%,-12%) scale(.85)}41%{left:50%;top:52%;transform:translate(-43%,-12%)}55%,92%{left:66%;top:86%;transform:translate(-43%,-12%)}100%{left:86%;top:96%;transform:translate(-43%,-12%)}}
-/* 숨은 그림 찾기 · 색칠하기의 그림 칸 */
-.gd-scene{overflow:hidden;border-radius:3cqw;background:#fff;border:.4cqw solid var(--line)}
+@keyframes gdf-mole{0%{left:86%;top:96%;transform:translate(-43%,-12%)}14%{left:80%;top:80%;transform:translate(-43%,-12%)}30%{left:50%;top:50%;transform:translate(-43%,-12%)}36%{left:50%;top:50%;transform:translate(-43%,-12%) scale(.85)}41%{left:50%;top:50%;transform:translate(-43%,-12%)}55%{left:72%;top:92%;transform:translate(-43%,-12%)}92%{left:72%;top:92%;transform:translate(-43%,-12%)}100%{left:86%;top:96%;transform:translate(-43%,-12%)}}
+
+/* 숨은 그림 찾기: 그림은 왼쪽, 목록은 오른쪽. 목록의 별은 반짝이기만, 손가락은 그림 속 별만 톡 */
+.gd-scene{overflow:hidden;border-radius:2.4cqw;background:#fff;border:.4cqw solid var(--line)}
 .gd-scene>img,.gd-scene>canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
-.gd-zoom{position:absolute;inset:0;transform:scale(1.8);transform-origin:91.4% 38.4%}
-.gd-zoom>img{display:block;width:100%;height:100%}
-.gd-found{position:absolute;border:.9cqw solid #F08A7A;border-radius:50%;box-shadow:0 0 0 .5cqw #ffffffaa;opacity:0;animation-name:gd-h-found}
-.gd-find{display:flex;flex-direction:column;align-items:center;gap:.5cqw;padding:1.6cqw 1cqw 1.2cqw;background:#fff;border:.4cqw solid var(--line);border-radius:3cqw;font-size:4.4cqw;line-height:1.1}
+.gd-found{position:absolute;border:.7cqw solid #F08A7A;border-radius:50%;box-shadow:0 0 0 .4cqw #ffffffaa;opacity:0;animation-name:gd-h-found}
+.gd-find{display:flex;flex-direction:column;align-items:center;gap:.4cqw;padding:1cqw .6cqw .8cqw;background:#fff;border:.3cqw solid var(--line);border-radius:2.2cqw;font-size:2.8cqw;line-height:1.1}
 .gd-find img{display:block;width:62%;aspect-ratio:1}
 .gd-h-star{animation-name:gd-h-star}
+.gd-h-c1{animation-name:gd-h-c1}.gd-h-c2{opacity:0;animation-name:gd-h-c2}
 [data-demo=hidden] .gd-finger{animation-name:gdf-hidden}
-@keyframes gd-h-found{0%,44%{opacity:0;transform:scale(.6)}48%{opacity:1;transform:scale(1.1)}52%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
-@keyframes gd-h-star{0%,16%{transform:none;background-color:#fff;border-color:var(--line)}19%{transform:scale(.92);background-color:#fff;border-color:var(--hue-d)}23%,46%{transform:none;background-color:#fff;border-color:var(--hue-d)}50%,94%{transform:none;background-color:var(--sage);border-color:var(--sage-d)}100%{transform:none;background-color:#fff;border-color:var(--line)}}
-@keyframes gdf-hidden{0%{left:88%;top:96%;transform:translate(-43%,-12%)}12%{left:64.5%;top:40%;transform:translate(-43%,-12%)}18%{left:64.5%;top:40%;transform:translate(-43%,-12%) scale(.85)}23%{left:64.5%;top:40%;transform:translate(-43%,-12%)}38%{left:44.3%;top:40%;transform:translate(-43%,-12%)}44%{left:44.3%;top:40%;transform:translate(-43%,-12%) scale(.85)}49%{left:44.3%;top:40%;transform:translate(-43%,-12%)}60%,92%{left:54%;top:82%;transform:translate(-43%,-12%)}100%{left:88%;top:96%;transform:translate(-43%,-12%)}}
-/* 색칠하기 (손가락이 누르는 칸은 도안을 읽어서 --tx·--ty로 정해요) */
-.gd-swatch{border-radius:50%;background:var(--paint);border:.7cqw solid #fff;box-shadow:0 0 0 .3cqw var(--line)}
-.gd-pick{animation-name:gd-pick}
+@keyframes gd-h-found{0%,37%{opacity:0;transform:scale(.6)}41%{opacity:1;transform:scale(1.1)}45%,94%{opacity:1;transform:none}100%{opacity:0;transform:none}}
+@keyframes gd-h-star{0%,3%{scale:1;box-shadow:0 0 0 0 #F6D77E00;background-color:#fff;border-color:var(--line)}4%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa;background-color:#fff;border-color:var(--line)}8%{scale:1;box-shadow:0 0 0 2.6cqw #F6D77E00;background-color:#fff;border-color:var(--line)}12%{scale:1.15;box-shadow:0 0 0 1.4cqw #F6D77Eaa;background-color:#fff;border-color:var(--line)}16%{scale:1;box-shadow:0 0 0 0 #F6D77E00;background-color:#fff;border-color:var(--line)}39%{scale:1;box-shadow:0 0 0 0 #F6D77E00;background-color:#fff;border-color:var(--line)}42%,94%{scale:1;box-shadow:0 0 0 0 #F6D77E00;background-color:var(--sage);border-color:var(--sage-d)}100%{scale:1;box-shadow:0 0 0 0 #F6D77E00;background-color:#fff;border-color:var(--line)}}
+@keyframes gd-h-c1{0%,40%{opacity:1}42%,95%{opacity:0}100%{opacity:1}}
+@keyframes gd-h-c2{0%,40%{opacity:0}42%,95%{opacity:1}100%{opacity:0}}
+@keyframes gdf-hidden{0%{left:90%;top:98%;transform:translate(-43%,-12%)}18%{left:90%;top:98%;transform:translate(-43%,-12%)}32%{left:45%;top:39.3%;transform:translate(-43%,-12%)}37%{left:45%;top:39.3%;transform:translate(-43%,-12%) scale(.85)}41%{left:45%;top:39.3%;transform:translate(-43%,-12%)}54%{left:52%;top:96%;transform:translate(-43%,-12%)}92%{left:52%;top:96%;transform:translate(-43%,-12%)}100%{left:90%;top:98%;transform:translate(-43%,-12%)}}
+
+/* 색칠하기: 색 톡 → 칸 톡(칠해짐) → 되돌리기 톡(다시 하얘짐). 누르는 칸은 도안을 읽어서 --tx·--ty로 정해요 */
 .gd-fill{opacity:0;animation-name:gd-c-fill}
+.gd-c-pick{animation-name:gd-c-pick}.gd-c-un{animation-name:gd-c-un}.gd-c-undo{animation-name:gd-c-undo}
 [data-demo=coloring] .gd-finger{animation-name:gdf-coloring}
-@keyframes gd-pick{0%,18%{transform:none;box-shadow:0 0 0 .3cqw var(--line)}21%,94%{transform:scale(1.1);box-shadow:0 0 0 .8cqw var(--ink)}100%{transform:none;box-shadow:0 0 0 .3cqw var(--line)}}
-@keyframes gd-c-fill{0%,44%{opacity:0}47%,94%{opacity:1}100%{opacity:0}}
-@keyframes gdf-coloring{0%{left:88%;top:96%;transform:translate(-43%,-12%)}12%{left:66.5%;top:43%;transform:translate(-43%,-12%)}18%{left:66.5%;top:43%;transform:translate(-43%,-12%) scale(.85)}23%{left:66.5%;top:43%;transform:translate(-43%,-12%)}38%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%)}44%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%) scale(.85)}49%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%)}60%,92%{left:58%;top:88%;transform:translate(-43%,-12%)}100%{left:88%;top:96%;transform:translate(-43%,-12%)}}
-/* 그림 그리기 (선이 그려지는 속도와 손가락이 같은 길을 같이 지나가요) */
-.gd-paper{left:6%;top:8%;width:58%;height:84%;background:#fff;border:.4cqw solid var(--line);border-radius:3cqw}
+@keyframes gd-c-fill{0%,36%{opacity:0}38%,65%{opacity:1}67%,100%{opacity:0}}
+@keyframes gd-c-pick{0%,16%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}18%,94%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}100%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}}
+@keyframes gd-c-un{0%,16%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}18%,94%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}100%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}}
+@keyframes gd-c-undo{0%,63%,67%,100%{transform:none}65%{transform:translateY(.5cqw)}}
+@keyframes gdf-coloring{0%{left:92%;top:98%;transform:translate(-43%,-12%)}12%{left:70.6%;top:12%;transform:translate(-43%,-12%)}16%{left:70.6%;top:12%;transform:translate(-43%,-12%) scale(.85)}19%{left:70.6%;top:12%;transform:translate(-43%,-12%)}32%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%)}36%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%) scale(.85)}39%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%)}48%{left:var(--tx);top:var(--ty);transform:translate(-43%,-12%)}60%{left:86.25%;top:44%;transform:translate(-43%,-12%)}65%{left:86.25%;top:44%;transform:translate(-43%,-12%) scale(.85)}68%{left:86.25%;top:44%;transform:translate(-43%,-12%)}92%{left:86.25%;top:44%;transform:translate(-43%,-12%)}100%{left:92%;top:98%;transform:translate(-43%,-12%)}}
+
+/* 그림 그리기: 색 톡 → 굵은 붓 톡 → 쓱쓱 (선이 그려지는 속도와 손가락이 같은 길을 같이 지나가요) */
+.gd-paper{left:3%;top:6.5%;width:58%;height:87%;background:#fff;border:.4cqw solid var(--line);border-radius:2.4cqw}
+.gd-dot{display:grid;place-items:center;border-radius:50%;background:#fff;box-shadow:0 0 0 .3cqw var(--line)}
+.gd-dot i{display:block;border-radius:50%;background:#EE7363;animation-name:gd-d-col}
+.gd-d-pick{animation-name:gd-d-pick}.gd-d-un{animation-name:gd-d-un}.gd-d-spick{animation-name:gd-d-spick}.gd-d-sun{animation-name:gd-d-sun}
 .gd-draw{inset:0;width:100%;height:100%;overflow:visible}
-.gd-draw path{fill:none;stroke:#6DB6E2;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:172;stroke-dashoffset:172;animation-name:gd-d-line;animation-timing-function:linear}
+.gd-draw path{fill:none;stroke:#6DB6E2;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:167;stroke-dashoffset:167;animation-name:gd-d-line;animation-timing-function:linear}
 [data-demo=drawing] .gd-finger{animation-name:gdf-drawing;animation-timing-function:linear}
-@keyframes gd-d-line{0%,40%{stroke-dashoffset:172;opacity:1}80%,94%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
-@keyframes gdf-drawing{0%{left:90%;top:96%;transform:translate(-43%,-12%)}12%{left:75%;top:34%;transform:translate(-43%,-12%)}18%{left:75%;top:34%;transform:translate(-43%,-12%) scale(.85)}23%{left:75%;top:34%;transform:translate(-43%,-12%)}36%{left:14%;top:70%;transform:translate(-43%,-12%)}40%{left:14%;top:70%;transform:translate(-43%,-12%) scale(.85)}50.4%{left:24%;top:30%;transform:translate(-43%,-12%) scale(.85)}60.8%{left:34%;top:70%;transform:translate(-43%,-12%) scale(.85)}71.2%{left:44%;top:30%;transform:translate(-43%,-12%) scale(.85)}80%{left:54%;top:62%;transform:translate(-43%,-12%) scale(.85)}84%,92%{left:54%;top:62%;transform:translate(-43%,-12%)}100%{left:90%;top:96%;transform:translate(-43%,-12%)}}
+@keyframes gd-d-col{0%,14%{background-color:#EE7363}16%,94%{background-color:#6DB6E2}100%{background-color:#EE7363}}
+@keyframes gd-d-spick{0%,14%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}16%,94%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}100%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}}
+@keyframes gd-d-sun{0%,14%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}16%,94%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}100%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}}
+@keyframes gd-d-pick{0%,30%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}32%,94%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}100%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}}
+@keyframes gd-d-un{0%,30%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}32%,94%{scale:1;box-shadow:0 0 0 .3cqw var(--line)}100%{scale:1.12;box-shadow:0 0 0 .8cqw var(--ink)}}
+@keyframes gd-d-line{0%,45%{stroke-dashoffset:167;opacity:1}80%,94%{stroke-dashoffset:0;opacity:1}97%,100%{stroke-dashoffset:0;opacity:0}}
+@keyframes gdf-drawing{0%{left:92%;top:98%;transform:translate(-43%,-12%)}10%{left:66.3%;top:21.6%;transform:translate(-43%,-12%)}14%{left:66.3%;top:21.6%;transform:translate(-43%,-12%) scale(.85)}17%{left:66.3%;top:21.6%;transform:translate(-43%,-12%)}26%{left:82.25%;top:37.5%;transform:translate(-43%,-12%)}30%{left:82.25%;top:37.5%;transform:translate(-43%,-12%) scale(.85)}33%{left:82.25%;top:37.5%;transform:translate(-43%,-12%)}42%{left:12%;top:72%;transform:translate(-43%,-12%)}45%{left:12%;top:72%;transform:translate(-43%,-12%) scale(.85)}54.2%{left:21%;top:32%;transform:translate(-43%,-12%) scale(.85)}63.4%{left:30%;top:72%;transform:translate(-43%,-12%) scale(.85)}72.6%{left:39%;top:32%;transform:translate(-43%,-12%) scale(.85)}80%{left:48%;top:62%;transform:translate(-43%,-12%) scale(.85)}84%{left:48%;top:62%;transform:translate(-43%,-12%)}92%{left:48%;top:62%;transform:translate(-43%,-12%)}100%{left:92%;top:98%;transform:translate(-43%,-12%)}}
 /* 퍼즐 맞추기 (조각과 손가락이 함께 움직여요) */
 .gd-board{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;aspect-ratio:1;overflow:hidden;background:#fff;border-radius:2cqw;box-shadow:0 0 0 .5cqw var(--hue-d)}
 .gd-board i{background:#FBF7F1 no-repeat;background-size:200% 200%}
@@ -912,7 +962,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 @keyframes gd-p-piece{0%,20%{left:66%;top:42%;opacity:1;transform:none;border-radius:2cqw;box-shadow:0 .8cqw 0 var(--line)}24%{left:66%;top:42%;opacity:1;transform:scale(1.08);border-radius:2cqw;box-shadow:0 2cqw 2.4cqw rgba(75,63,58,.28)}50%{left:28%;top:48%;opacity:1;transform:scale(1.08);border-radius:2cqw;box-shadow:0 2cqw 2.4cqw rgba(75,63,58,.28)}54%,94%{left:28%;top:48%;opacity:1;transform:none;border-radius:0;box-shadow:none}97%{left:28%;top:48%;opacity:0;transform:none;border-radius:0;box-shadow:none}98%{left:66%;top:42%;opacity:0;transform:none;border-radius:2cqw;box-shadow:0 .8cqw 0 var(--line)}100%{left:66%;top:42%;opacity:1;transform:none;border-radius:2cqw;box-shadow:0 .8cqw 0 var(--line)}}
 @keyframes gdf-puzzle{0%{left:90%;top:96%;transform:translate(-43%,-12%)}14%{left:76%;top:62%;transform:translate(-43%,-12%)}20%,24%{left:76%;top:62%;transform:translate(-43%,-12%) scale(.85)}50%{left:38%;top:68%;transform:translate(-43%,-12%) scale(.85)}54%{left:38%;top:68%;transform:translate(-43%,-12%)}66%,92%{left:52%;top:92%;transform:translate(-43%,-12%)}100%{left:90%;top:96%;transform:translate(-43%,-12%)}}
 /* 움직임 줄이기: 움직이지 않고 마지막 장면만 보여 줘요 */
-@media(prefers-reduced-motion:reduce){.guide-demo *{animation-delay:-2.25s!important;animation-play-state:paused!important}.gd-ripple{display:none}}
+@media(prefers-reduced-motion:reduce){.guide-demo *{animation-delay:calc(var(--dur) * -.9)!important;animation-play-state:paused!important}.gd-ripple{display:none}}
 </style>
 </head>
 <body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><button class="soft-btn feedback-link" id="feedback" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</button><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button></div><p class="parent-note">소리 끄기는 한 번, 켜기는 1초 꾹 · 보호자용 아래 버튼은 3초 꾹 누르면 열려요</p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
@@ -1063,43 +1113,52 @@ const COMING_SOON=['dress','phone'];
 // 문장은 어른이 읽어 주는 용도예요. 고칠 때는 여기만 바꾸면 돼요 (\n은 줄 바꿈)
 const guides={
  balloon:'위에 있는 글자와 같은 풍선을 톡!',
- order:"친구가 말한 과일을 말한 만큼 담아요.\n다 담으면 '다 담았어요'를 눌러요.",
+ order:"친구가 말한 과일을 말한 만큼 담아요.\n잘못 담았으면 바구니 과일을 톡 눌러 빼요.\n다 담으면 '다 담았어요'!",
  bridge:'다음 숫자가 적힌 돌을 톡 누르면 토끼가 폴짝!',
  memory:'카드를 두 장씩 뒤집어서 같은 그림을 찾아요.',
  shadow:'그림자를 보고 누구인지 아래에서 골라요.',
  mole:'두더지가 쏙 나오면 톡!',
  hidden:'옆에 있는 물건들을 그림 속에서 찾아 톡!',
- coloring:'색을 고르고, 칠하고 싶은 곳을 톡!',
- drawing:'색을 고르고 손가락으로 쓱쓱 그려요.',
+ coloring:'색을 고르고, 칠하고 싶은 곳을 톡!\n잘못 칠했으면 되돌리기를 눌러요.',
+ drawing:'색과 붓 크기를 고르고 손가락으로 쓱쓱 그려요.',
  puzzle:'조각을 끌어다 맞는 자리에 대 보세요.'};
+// 시범 아래 도구 안내 줄: [아이콘, 실제 화면의 버튼 이름, 하는 일] (실제 화면에 있는 도구만)
+const guideTools={
+ coloring:[[ui.undo,'되돌리기','방금 칠한 것 지우기'],[ui.trash,'모두 지우기','처음부터 다시'],[ui.save,'그림 저장','그림 간직하기']],
+ drawing:[['<svg class="dots" viewBox="0 0 24 12" aria-hidden="true"><circle cx="3" cy="6" r="1.6"/><circle cx="9.5" cy="6" r="2.6"/><circle cx="18.5" cy="6" r="4.2"/></svg>','붓 크기','굵기 고르기'],[ui.undo,'되돌리기','방금 그린 것 지우기'],[ui.trash,'모두 지우기','처음부터 다시'],[ui.save,'그림 저장','그림 간직하기']]};
+// 시범 한 바퀴 시간(초). 단계가 많은 놀이는 길게 (없으면 2.5초)
+const guideDur={balloon:4,order:6,bridge:6,hidden:4.5,coloring:5.5,drawing:5};
 const GUIDE_SEEN='mongle-guide-seen';
 function guideSeen(){try{const v=JSON.parse(localStorage.getItem(GUIDE_SEEN)||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
 function guideMark(g){const s=guideSeen();if(s.includes(g))return;s.push(g);try{localStorage.setItem(GUIDE_SEEN,JSON.stringify(s))}catch{}}
-// 시범 장면: 무대 안 위치는 모두 % (무대 가로:세로 = 2:1). 움직임은 CSS의 gd-·gdf- 애니메이션
+// 시범 장면: 무대 안 위치는 모두 % (무대 가로:세로 = 2:1), 배치는 실제 가로 화면과 같게. 움직임은 CSS의 gd-·gdf- 애니메이션
 const gdAt=(x,y,w)=>`left:${x}%;top:${y}%;width:${w}%;`;
-const gdTap=(x,y,s)=>`<i class="gd-ripple" style="left:${x};top:${y};animation-delay:${s}s"></i>`;
+// 눌린 곳 물결: f는 한 바퀴 중 누르는 때 (0~1)
+const gdTap=(x,y,f)=>`<i class="gd-ripple" style="left:${x};top:${y};animation-delay:calc(var(--dur) * ${f})"></i>`;
+const gdBtn=(icon,label,x,y,w,h,cls='')=>`<span class="gd-btn ${cls}" style="${gdAt(x,y,w)}height:${h}%">${icon}${label}</span>`;
+const gdStone=(x,y,img,v,cls='')=>`<span class="gd-stone ${cls}" style="left:${x}%;top:${y}%;background-image:url('images/bridge/${img}.webp')">${v}</span>`;
 const gdFinger='<span class="gd-finger"><svg viewBox="0 0 24 24"><path d="M9 15V4.5a1.5 1.5 0 0 1 3 0v5.1a1.5 1.5 0 0 1 3 .4v.6a1.5 1.5 0 0 1 3 .6V15a5.5 5.5 0 0 1-5.5 5.5h-.7a5.5 5.5 0 0 1-4.6-2.5l-2.3-3.7a1.4 1.4 0 0 1 2.3-1.5z"/><path d="M12 9.6v2.9M15 10.6v1.9"/></svg></span>';
 const guideScenes={
- balloon:()=>`<span class="gd-target" style="${gdAt(6,10,13)}">가</span><span class="gd-balloon gd-b-a" style="${gdAt(40,16,15)}background-image:url('${balloonImgs.pink}')">가</span><span class="gd-balloon" style="${gdAt(68,24,15)}background-image:url('${balloonImgs.mint}')">나</span><img class="gd-pop" src="${balloonImgs.pop}" alt="" style="${gdAt(47.5,32,24)}">${gdTap('12.5%','24%',.45)}${gdTap('47.5%','33%',1.1)}`,
- order:()=>{const s=rasterArt('strawberry');return `<span class="gd-pic" style="${gdAt(4,6,16)}">${rasterArt('bear')}</span><span class="gd-bubble" style="left:22%;top:12%"><span class="gd-ico">${s}</span>2개</span><span class="gd-box" style="${gdAt(6,50,17)}">${s}</span><span class="gd-basket" style="${gdAt(28,50,38)}"></span><span class="gd-pic gd-o-i1" style="${gdAt(34,57,11)}">${s}</span><span class="gd-pic gd-o-i2" style="${gdAt(47,57,11)}">${s}</span><span class="gd-go" style="${gdAt(69,55,28)}">다 담았어요</span>${gdTap('14.5%','66%',.4)}${gdTap('14.5%','66%',.75)}${gdTap('83%','68%',1.45)}`},
- bridge:()=>`<span class="gd-label" style="left:50%;top:6%">다음 <b>1</b></span><span class="gd-dock" style="${gdAt(32,74,36)}"></span><span class="gd-stone" style="${gdAt(20,38,24)}background-image:url('images/bridge/stone.webp')">1</span><span class="gd-stone gd-r-done" style="${gdAt(20,38,24)}background-image:url('images/bridge/stone-done.webp')">1</span><span class="gd-stone" style="${gdAt(56,38,24)}background-image:url('images/bridge/stone-s1.webp')">2</span><span class="gd-rabbit"><span class="gd-hop">${rasterArt('rabbit')}</span></span>${gdTap('32%','47%',.75)}`,
- memory:()=>[8,30,52,74].map((x,i)=>`<span class="gd-card" style="${gdAt(x,30,18)}"><i>?</i>${i===0||i===2?`<span class="gd-face gd-m-f${i?2:1}">${rasterArt('strawberry')}</span>`:''}</span>`).join('')+gdTap('17%','48%',.45)+gdTap('61%','48%',1.08),
- shadow:()=>`<span class="gd-shadow" style="${gdAt(6,10,38)}"><span class="gd-sd">${shadowImg('rabbit')}</span><span class="gd-sr">${rasterArt('rabbit')}</span></span><span class="gd-box gd-s-cat" style="${gdAt(52,28,19)}">${rasterArt('cat')}</span><span class="gd-box gd-s-right" style="${gdAt(76,28,19)}">${rasterArt('rabbit')}</span>${gdTap('85.5%','47%',.65)}`,
- mole:()=>[3,36,69].map(x=>`<span class="gd-hole" style="${gdAt(x,4,28)}">${x===36?`<span class="gd-mole">${moleSVG}</span>`:''}</span>`).join('')+`<span class="gd-plus" style="left:50%;top:8%">+5</span>${gdTap('50%','52%',.9)}`,
- hidden:()=>`<span class="gd-scene" style="${gdAt(5,7,43)}"><span class="gd-zoom"><img src="${hiddenScenes[1][2]}" alt=""><span class="gd-found" style="left:85%;top:32.4%;width:12.8%;height:12%"></span></span></span><span class="gd-find gd-h-star" style="${gdAt(55,22,19)}"><img src="${hiddenIcons['별']}" alt=""><b>별</b></span><span class="gd-find" style="${gdAt(77,22,19)}"><img src="${hiddenIcons['컵']}" alt=""><b>컵</b></span>${gdTap('64.5%','40%',.45)}${gdTap('44.3%','40%',1.1)}`,
- coloring:()=>`<span class="gd-scene" style="${gdAt(8,6,44)}"><canvas class="gd-fill" width="300" height="300"></canvas><img src="${coloringPages[0][2]}" alt=""></span>${[['#F6CD5C',62],['#7CC79A',74],['#6DB6E2',86]].map(([c,x],i)=>`<span class="gd-swatch${i?'':' gd-pick'}" style="${gdAt(x,34,9)}--paint:${c}"></span>`).join('')}${gdTap('66.5%','43%',.45)}${gdTap('var(--tx)','var(--ty)',1.1)}`,
- drawing:()=>`<span class="gd-paper"></span><span class="gd-swatch gd-pick" style="${gdAt(70,24,10)}--paint:#6DB6E2"></span><span class="gd-swatch" style="${gdAt(84,24,10)}--paint:#EE7363"></span><svg class="gd-draw" viewBox="0 0 200 100" preserveAspectRatio="none"><path d="M28 70L48 30L68 70L88 30L108 62"/></svg>${gdTap('75%','34%',.45)}${gdTap('14%','70%',1)}`,
- puzzle:()=>{const cat=`background-image:url('${rasterIcons.cat}');background-color:#fff;`;return `<span class="gd-board" style="${gdAt(8,8,40)}"><i style="${cat}background-position:0 0"></i><i style="${cat}background-position:100% 0"></i><i style="${cat}background-position:0 100%"></i><i></i></span><span class="gd-piece" style="background-image:url('${rasterIcons.cat}')"></span>${gdTap('76%','62%',.5)}`}};
+ balloon:()=>`<span class="gd-strip" style="height:24%"></span><span class="gd-prompt">찾아봐요 <b class="gd-target">가</b></span><span class="gd-pill" style="left:56%;top:6%;width:13%;height:12%">점수 0</span><span class="gd-pill" style="left:71%;top:6%;width:20%;height:12%">남은 시간 30초</span><span class="gd-sky"><span class="gd-balloon gd-b-r2" style="left:14%;background-image:url('${balloonImgs.yellow}')">다</span><span class="gd-balloon gd-b-a" style="left:42%;background-image:url('${balloonImgs.pink}')">가</span><span class="gd-balloon gd-b-r1" style="left:70%;background-image:url('${balloonImgs.mint}')">나</span></span><img class="gd-pop" src="${balloonImgs.pop}" alt="" style="${gdAt(48.5,52.4,20)}">${gdTap('48.5%','52.4%',.55)}`,
+ order:()=>{const s=rasterArt('strawberry');return `<span class="gd-pill" style="left:4%;top:5%;width:10%;height:10%">1 / 5</span><span class="gd-pic" style="${gdAt(17,8,16)}">${rasterArt('bear')}</span><span class="gd-bubble" style="left:25%;top:48%"><span class="gd-ico">${s}</span>딸기 2개 주세요!</span>${banks.fruits.slice(0,4).map(([e,n],i)=>`<span class="gd-food" style="${gdAt(53+i*11.5,5,9.5)}">${art(e)}${n}</span>`).join('')}<span class="gd-basket" style="${gdAt(53,34,44)}height:32%"></span>${[1,2,3].map(i=>`<span class="gd-pic gd-o-i${i}" style="${gdAt(47.5+i*11.5,41,9)}">${s}</span>`).join('')}${gdBtn(ui.minus,'하나 빼기',53,74,20,15)}${gdBtn(ui.check,'다 담았어요',75,74,22,15,'go gd-o-go')}${[.12,.22,.32].map(f=>gdTap('92.25%','17%',f)).join('')}${gdTap('86.5%','50%',.5)}${gdTap('86%','81.5%',.7)}`},
+ bridge:()=>`<span class="gd-strip" style="height:17%"></span><span class="gd-pill" style="left:4%;top:3%;width:12%;height:11%">0 / 10</span><span class="gd-label">다음은 <b><span class="gd-r-n1">1</span><span class="gd-r-n2">2</span></b></span>${gdBtn(ui.hint,'힌트 보기',80,3,16,11)}<span class="gd-river"></span><span class="gd-dock" style="${gdAt(33,88,34)}">출발</span>${gdStone(22,60.5,'stone','1')}${gdStone(22,60.5,'stone-done','1','gd-r-d0')}${gdStone(58,60.5,'stone-s1','2','gd-r-dim0')}${gdStone(22,34.5,'stone-s1','2','gd-r-row1a')}${gdStone(22,34.5,'stone-done','2','gd-r-d1')}${gdStone(58,34.5,'stone-s2','3','gd-r-row1b')}<span class="gd-rabbit"><span class="gd-hop">${rasterArt('rabbit')}</span></span>${gdTap('32%','69%',.2)}${gdTap('40%','43%',.64)}`,
+ memory:()=>[[34.5,15],[50.5,15],[34.5,53],[50.5,53]].map(([x,y],i)=>`<span class="gd-card" style="${gdAt(x,y,15)}"><i>?</i>${i===0||i===3?`<span class="gd-face gd-m-f${i?2:1}">${rasterArt('strawberry')}</span>`:''}</span>`).join('')+gdTap('42%','30%',.18)+gdTap('58%','68%',.43),
+ shadow:()=>`<span class="gd-shadow" style="${gdAt(6,10,38)}"><span class="gd-sd">${shadowImg('rabbit')}</span><span class="gd-sr">${rasterArt('rabbit')}</span></span><span class="gd-box gd-s-cat" style="${gdAt(52,28,19)}">${rasterArt('cat')}</span><span class="gd-box gd-s-right" style="${gdAt(76,28,19)}">${rasterArt('rabbit')}</span>${gdTap('85.5%','47%',.26)}`,
+ mole:()=>[21,41,61].flatMap(x=>[5,36,67].map(y=>`<span class="gd-hole" style="${gdAt(x,y,18)}">${x===41&&y===36?`<span class="gd-mole">${moleSVG}</span>`:''}</span>`)).join('')+`<span class="gd-plus" style="left:50%;top:40%">+5</span>${gdTap('50%','50%',.36)}`,
+ hidden:()=>`<span class="gd-scene" style="${gdAt(3,4,46)}"><img src="${hiddenScenes[1][2]}" alt=""><span class="gd-found" style="left:85%;top:32.4%;width:12.8%;height:12%"></span></span><span class="gd-pill" style="left:53%;top:6%;width:12%;height:11%"><span class="gd-h-c1">0 / 6</span><span class="gd-h-c2">1 / 6</span></span>${gdBtn(ui.hint,'힌트 보기',67,6,18,11)}${hiddenScenes[1][3].map(([n],i)=>`<span class="gd-find${n==='별'?' gd-h-star':''}" style="${gdAt(53+i%3*14.5,i<3?24:60,13)}"><img src="${hiddenIcons[n]}" alt=""><b>${n}</b></span>`).join('')}${gdTap('45%','39.3%',.37)}`,
+ coloring:()=>`<span class="gd-scene" style="${gdAt(3,4,46)}"><canvas class="gd-fill" width="300" height="300"></canvas><img src="${coloringPages[0][2]}" alt=""></span>${paintColors.map(([c],i)=>`<span class="gd-swatch${i===0?' gd-c-un':i===2?' gd-c-pick':''}" style="${gdAt(53+i%6*7.3,i<6?6:21,6)}--paint:${c}"></span>`).join('')}${gdBtn(ui.grid,'다른 그림',53,38,21.5,12)}${gdBtn(ui.undo,'되돌리기',75.5,38,21.5,12,'gd-c-undo')}${gdBtn(ui.trash,'모두 지우기',53,54,21.5,12)}${gdBtn(ui.save,'그림 저장',75.5,54,21.5,12)}${gdBtn(ui.save,'저장 위치 도움말',53,70,44,12)}${gdBtn(ui.check,'다 칠했어요',53,85,44,12,'go')}${gdTap('70.6%','12%',.16)}${gdTap('var(--tx)','var(--ty)',.36)}${gdTap('86.25%','44%',.65)}`,
+ drawing:()=>`<span class="gd-paper"></span>${paintColors.map(([c],i)=>`<span class="gd-swatch${i===0?' gd-d-sun':i===6?' gd-d-spick':''}" style="${gdAt(64+i%6*5.5,i<6?6:17,4.6)}--paint:${c}"></span>`).join('')}${[[1.2,'',0],[2,' gd-d-un',1],[3.2,' gd-d-pick',2]].map(([d,c,i])=>`<span class="gd-dot${c}" style="${gdAt(64+i*7.5,31,6.5)}"><i style="width:${d}cqw;height:${d}cqw"></i></span>`).join('')}${gdBtn(ui.erase,'지우개',64,46,16,11)}${gdBtn(ui.undo,'되돌리기',81,46,16,11)}${gdBtn(ui.trash,'모두 지우기',64,60,16,11)}${gdBtn(ui.save,'그림 저장',81,60,16,11)}${gdBtn(ui.save,'저장 위치 도움말',64,74,33,10)}${gdBtn(ui.check,'다 그렸어요',64,87,33,10,'go')}<svg class="gd-draw" viewBox="0 0 200 100" preserveAspectRatio="none"><path d="M24 72L42 32L60 72L78 32L96 62"/></svg>${gdTap('66.3%','21.6%',.14)}${gdTap('82.25%','37.5%',.3)}${gdTap('12%','72%',.45)}`,
+ puzzle:()=>{const cat=`background-image:url('${rasterIcons.cat}');background-color:#fff;`;return `<span class="gd-board" style="${gdAt(8,8,40)}"><i style="${cat}background-position:0 0"></i><i style="${cat}background-position:100% 0"></i><i style="${cat}background-position:0 100%"></i><i></i></span><span class="gd-piece" style="background-image:url('${rasterIcons.cat}')"></span>${gdTap('76%','62%',.2)}`}};
 // 색칠하기 시범: 도안에서 가장 큰 칸을 찾아 미리 칠해 두고(처음엔 숨김), 손가락이 그 칸을 누르게 해요
 function guidePaint(demo){const cv=$('.gd-fill',demo),N=cv.width,img=new Image();
  img.onload=()=>{if(!demo.isConnected)return;try{const ctx=cv.getContext('2d');ctx.drawImage(img,0,0,N,N);const d=ctx.getImageData(0,0,N,N).data,lab=new Int32Array(N*N),st=new Int32Array(N*N);for(let i=0;i<N*N;i++)lab[i]=d[i*4+3]>=60?-1:0;
   let id=0,best=null;for(let s=0;s<N*N;s++){if(lab[s])continue;id++;let sp=0,n=0,sx=0,sy=0,edge=false;st[sp++]=s;lab[s]=id;while(sp){const p=st[--sp],x=p%N,y=(p-x)/N;n++;sx+=x;sy+=y;if(!x||!y||x===N-1||y===N-1)edge=true;if(x>0&&!lab[p-1]){lab[p-1]=id;st[sp++]=p-1}if(x<N-1&&!lab[p+1]){lab[p+1]=id;st[sp++]=p+1}if(y>0&&!lab[p-N]){lab[p-N]=id;st[sp++]=p-N}if(y<N-1&&!lab[p+N]){lab[p+N]=id;st[sp++]=p+N}}if(!edge&&(!best||n>best.n))best={id,n,cx:sx/n,cy:sy/n}}
   if(!best)return;let tx=0,ty=0,bd=Infinity;const out=ctx.createImageData(N,N);for(let p=0;p<N*N;p++)if(lab[p]===best.id){out.data.set([246,205,92,255],p*4);const x=p%N,y=(p-x)/N,dd=(x-best.cx)**2+(y-best.cy)**2;if(dd<bd){bd=dd;tx=x;ty=y}}
-  ctx.putImageData(out,0,0);demo.style.setProperty('--tx',(8+44*tx/N).toFixed(1)+'%');demo.style.setProperty('--ty',(6+88*ty/N).toFixed(1)+'%')}catch{}};
+  ctx.putImageData(out,0,0);demo.style.setProperty('--tx',(3+46*tx/N).toFixed(1)+'%');demo.style.setProperty('--ty',(4+92*ty/N).toFixed(1)+'%')}catch{}};
  img.src=$('.gd-scene img',demo).src}
 function showGuide(g){if(!guides[g]||$('.guide-backdrop'))return;guideMark(g);const held=$('#pause')?pauseGame(false):false;
- const wrap=document.createElement('div');wrap.className='modal-backdrop guide-backdrop';
- wrap.innerHTML=`<section class="modal guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-text"><h2 id="guide-title">${titles[g][0]}</h2><div class="guide-demo" data-demo="${g}" data-hue="${hues[g]}" aria-hidden="true"${g==='coloring'?' style="--tx:30%;--ty:55%"':''}>${guideScenes[g]()}${gdFinger}</div><p class="guide-text" id="guide-text">${guides[g]}</p><button class="primary" id="guide-go">${ui.play}해 볼래요!</button></section>`;
+ const wrap=document.createElement('div');wrap.className='modal-backdrop guide-backdrop';const tools=guideTools[g];
+ wrap.innerHTML=`<section class="modal guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-text"><div class="guide-body"><h2 id="guide-title">${titles[g][0]}</h2><div class="guide-demo" data-demo="${g}" data-hue="${hues[g]}" aria-hidden="true" style="--dur:${guideDur[g]||2.5}s${g==='coloring'?';--tx:30%;--ty:55%':''}">${guideScenes[g]()}${gdFinger}</div><p class="guide-text" id="guide-text">${guides[g]}</p>${tools?`<ul class="guide-tools">${tools.map(([ic,n,d])=>`<li><i>${ic}${n}</i><span>${d}</span></li>`).join('')}</ul>`:''}</div><button class="primary" id="guide-go">${ui.play}해 볼래요!</button></section>`;
  overlays.append(wrap);
  const close=()=>{if(!wrap.isConnected)return;wrap.remove();if(held)resumeGame();$('#guide-btn')?.focus({preventScroll:true})};
  $('#guide-go',wrap).onclick=()=>{tone();close()};wrap.onclick=e=>{if(e.target===wrap)close()};
@@ -1535,7 +1594,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-22';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-23';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
