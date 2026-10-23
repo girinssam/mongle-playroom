@@ -969,8 +969,8 @@ function wirePalette(select){$$('[data-color]').forEach(b=>b.onclick=()=>{tone()
 let artSaving=false;
 function dataUrlFile(url,name){try{const [head,b64]=url.split(','),bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new File([u],name,{type:/:(.*?);/.exec(head)[1]})}catch{return null}}
 function saveCanvas(canvas,name){if(artSaving)return;artSaving=true;setTimeout(()=>artSaving=false,1500);
- const url=canvas.toDataURL('image/png'),fname=name+'.png',touch=navigator.maxTouchPoints>0,android=/Android/i.test(navigator.userAgent);
- if(touch&&!android&&navigator.share&&navigator.canShare){const file=dataUrlFile(url,fname);if(file&&navigator.canShare({files:[file]})){navigator.share({files:[file]}).then(()=>popup('그림을 저장했어요!','🌼',1200)).catch(()=>{});return}}
+ const url=canvas.toDataURL('image/png'),fname=name+'.png',apple=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+ if(apple&&navigator.share&&navigator.canShare){const file=dataUrlFile(url,fname);if(file&&navigator.canShare({files:[file]})){navigator.share({files:[file]}).then(()=>popup('그림을 저장했어요!','🌼',1200)).catch(()=>{});return}}
  const a=document.createElement('a');a.download=fname;a.href=url;document.body.append(a);a.click();a.remove();popup('그림을 저장했어요!','🌼',1200)}
 const coloringPages=[["rabbit", "토끼", "images/coloring/rabbit.png"], ["bear", "꿀단지 곰", "images/coloring/bear.png"], ["bubble", "비눗방울 곰", "images/coloring/bubble.png"], ["dog", "강아지", "images/coloring/dog.png"], ["cat", "고양이", "images/coloring/cat.png"], ["lion", "아기 사자", "images/coloring/lion.png"], ["duck", "오리 가족", "images/coloring/duck.png"], ["flower", "해바라기", "images/coloring/flower.png"], ["icecream", "아이스크림", "images/coloring/icecream.png"], ["cake", "생일 케이크", "images/coloring/cake.png"], ["house", "버섯집", "images/coloring/house.png"], ["balloon", "열기구", "images/coloring/balloon.png"], ["plane", "비행기", "images/coloring/plane.png"], ["train", "기차", "images/coloring/train.png"], ["bus", "버스", "images/coloring/bus.png"]];
 const sceneImgs={"sky": "images/scenes/sky.webp"};
