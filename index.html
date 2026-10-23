@@ -337,6 +337,13 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .puzzle-tray.jig .puzzle-piece[aria-pressed=true]{transform:scale(1.08)}
 .puzzle-tray.jig .puzzle-piece[aria-pressed=true] .jig-edge{stroke:var(--hue-d);stroke-width:4.5}
 .puzzle-tray.jig .puzzle-piece.used{visibility:hidden}
+.jig-drag{position:fixed;z-index:30;pointer-events:none;transform:scale(1.06);transform-origin:center;filter:drop-shadow(0 8px 10px rgba(75,63,58,.28))}
+.jig-drag svg{display:block;width:100%;height:100%;overflow:visible}
+.jig-drag .jig-edge{stroke:var(--hue-d,#9C8BCB);stroke-width:2.5}
+.puzzle-tray.jig .puzzle-piece{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
+.puzzle-tray.jig .puzzle-piece.dragging{opacity:.25}
+.jig-slot.near{fill:#E6F1DE;stroke:#5E8F6E;stroke-width:2.6;stroke-dasharray:none}
+
 .puzzle-tray.jig .puzzle-piece.nope{animation:shadow-shake .4s}
 
 .phone-friends .soft-btn{min-height:64px;padding:6px 20px 6px 8px;font-family:var(--play);font-size:19px}
@@ -545,7 +552,15 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .news-list ul{margin:0;padding-left:20px;display:grid;gap:6px;font-size:16px;line-height:1.55}
 .news-modal .primary{display:flex;margin:0 auto;min-width:200px}
 .puzzle-slot.filled{outline:0;background-color:#fff;background-repeat:no-repeat}
-.puzzle-slot.filled:active{opacity:.8}
+.puzzle-slot.filled:disabled{background-color:#fff}
+.puzzle-slot.near{background-color:#E6F1DE;outline:2.6px solid #5E8F6E;outline-offset:-3px}
+.puzzle-slot.nope{background-color:#F7DCD7}
+.puzzle-slot.pop-in{animation:pop .35s}
+.puzzle-tray .puzzle-piece{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
+.puzzle-piece.dragging{opacity:.25}
+.puzzle-tray:not(.jig) .puzzle-piece.used{visibility:hidden}
+.puzzle-piece.nope{animation:shadow-shake .4s}
+.sq-drag{position:fixed;z-index:30;pointer-events:none;background-color:#fff;background-repeat:no-repeat;border-radius:4px;outline:2.5px solid var(--hue-d,#A796D3);box-shadow:0 10px 18px rgba(75,63,58,.28);transform:scale(1.06)}
 .puzzle-piece.used{background-image:none!important;background-color:transparent;border-style:dashed;box-shadow:none}
 
 /* ===== 가로 화면(태블릿 가로·낮은 화면) 맞춤 ===== */
@@ -839,7 +854,7 @@ const words=['하나','둘','셋','넷','다섯','여섯','일곱','여덟','아
 const sequences={numbers:Array.from({length:10},(_,i)=>String(i+1)),consonants:[...'ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ'],vowels:[...'ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ'],syllables:[...'가나다라마바사아자차카타파하'],alphabet:[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ']};
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function later(fn,ms){const token=gameToken;const id=setTimeout(()=>{timers.delete(id);if(token===gameToken)fn()},ms);timers.add(id);return id}
-function clean(){draftNow();draftFlush=null;resumeMark(null);if(memoryObserver){memoryObserver.disconnect();memoryObserver=null}gameToken++;timers.forEach(clearTimeout);timers.clear();cancelAnimationFrame(frame);stopVoice();overlays.innerHTML='';paused=false;resumeAction=null;state={}}
+function clean(){document.querySelectorAll('.jig-drag,.sq-drag').forEach(x=>x.remove());draftNow();draftFlush=null;resumeMark(null);if(memoryObserver){memoryObserver.disconnect();memoryObserver=null}gameToken++;timers.forEach(clearTimeout);timers.clear();cancelAnimationFrame(frame);stopVoice();overlays.innerHTML='';paused=false;resumeAction=null;state={}}
 function audioReady(){if(!soundOn)return;try{audioCtx ||= new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}catch{}}
 function tone(type='tap'){if(!soundOn)return;audioReady();if(!audioCtx)return;const notes=type==='win'?[523,659,784,1047]:type==='good'?[660,880]:type==='soft'?[330,294]:[520];notes.forEach((f,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain(),t=audioCtx.currentTime+i*.1;o.type='sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.13,t+.012);g.gain.exponentialRampToValueAtTime(.001,t+.16);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+.18)})}
 const kidClip={"공": "word-ball", "일": "digit-1", "이": "digit-2", "삼": "digit-3", "사": "digit-4", "오": "digit-5", "육": "digit-6", "칠": "digit-7", "팔": "digit-8", "구": "digit-9", "십": "digit-10", "하나": "num-1", "둘": "num-2", "셋": "num-3", "넷": "num-4", "다섯": "num-5", "여섯": "num-6", "일곱": "num-7", "여덟": "num-8", "아홉": "num-9", "열": "num-10", "한 개 주세요!": "count-1", "두 개 주세요!": "count-2", "세 개 주세요!": "count-3", "네 개 주세요!": "count-4", "다섯 개 주세요!": "count-5", "여섯 개 주세요!": "count-6", "일곱 개 주세요!": "count-7", "여덟 개 주세요!": "count-8", "아홉 개 주세요!": "count-9", "열 개 주세요!": "count-10", "강아지": "word-dog", "고양이": "word-cat", "토끼": "word-rabbit", "곰": "word-bear", "돼지": "word-pig", "소": "word-cow", "개구리": "word-frog", "병아리": "word-chick", "판다": "word-panda", "사과": "word-apple", "바나나": "word-banana", "포도": "word-grape", "딸기": "word-strawberry", "수박": "word-watermelon", "오렌지": "word-orange", "복숭아": "word-peach", "배": "word-bae", "자동차": "word-car", "버스": "word-bus", "기차": "word-train", "비행기": "word-plane", "자전거": "word-bike", "구급차": "word-ambulance", "소방차": "word-firetruck", "신발": "word-shoe", "모자": "word-hat", "우산": "word-umbrella", "칫솔": "word-toothbrush", "숟가락": "word-spoon", "책": "word-book", "인형": "word-doll", "노란 티셔츠": "word-yellow-tee", "줄무늬 티셔츠": "word-stripe-tee", "분홍 후드티": "word-pink-hoodie", "초록 가디건": "word-green-cardigan", "노란 우비": "word-raincoat", "청반바지": "word-denim-shorts", "분홍 치마": "word-pink-skirt", "청멜빵바지": "word-overalls", "분홍 멜빵치마": "word-pinafore", "빨간 운동화": "word-sneakers", "머리띠": "word-headband", "안경": "word-glasses", "가방": "word-bag", "강아지 번호는": "phonebook-dog", "고양이 번호는": "phonebook-cat", "토끼 번호는": "phonebook-rabbit", "곰 번호는": "phonebook-bear", "돼지 번호는": "phonebook-pig", "개구리 번호는": "phonebook-frog", "병아리 번호는": "phonebook-chick", "판다 번호는": "phonebook-panda", "경찰서 번호는": "phonebook-police", "소방서 번호는": "phonebook-fire", "멍멍! 안녕, 나는 강아지야. 우리 같이 공 던지기 하고 놀자!": "call-dog", "야옹! 안녕, 나는 고양이야. 햇볕이 따뜻해서 낮잠 자고 있었어.": "call-cat", "안녕! 나는 토끼야. 당근 먹고 깡충깡충 뛰고 있었어!": "call-rabbit", "개굴개굴! 안녕, 나는 개구리야. 연못에서 헤엄치고 있었어.": "call-frog", "삐약삐약! 안녕, 나는 병아리야. 엄마랑 같이 산책하고 있어.": "call-chick", "참 잘했어요!": "praise", "고마워! 정말 맛있겠다!": "thanks-yummy", "조금 모자라요. 더 담아 볼까요?": "order-more", "조금 많아요. 하나 빼 볼까요?": "order-less", "없는 번호예요. 전화번호부를 보고 다시 걸어 볼까요?": "no-number", "안녕! 이 목소리로 이야기해 줄게.": "voice-hello", "기역": "read-c1", "니은": "read-c2", "디귿": "read-c3", "리을": "read-c4", "미음": "read-c5", "비읍": "read-c6", "시옷": "read-c7", "이응": "read-c8", "지읒": "read-c9", "치읓": "read-c10", "키읔": "read-c11", "티읕": "read-c12", "피읖": "read-c13", "히읗": "read-c14", "아": "read-v1", "야": "read-v2", "어": "read-v3", "여": "read-v4", "요": "read-v6", "우": "read-v7", "유": "read-v8", "으": "read-v9", "가": "read-s1", "나": "read-s2", "다": "read-s3", "라": "read-s4", "마": "read-s5", "바": "read-s6", "자": "read-s9", "차": "read-s10", "카": "read-s11", "타": "read-s12", "파": "read-s13", "하": "read-s14", "에이": "read-a1", "비": "read-a2", "씨": "read-a3", "디": "read-a4", "에프": "read-a6", "지": "read-a7", "에이치": "read-a8", "아이": "read-a9", "제이": "read-a10", "케이": "read-a11", "엘": "read-a12", "엠": "read-a13", "엔": "read-a14", "피": "read-a16", "큐": "read-a17", "알": "read-a18", "에스": "read-a19", "티": "read-a20", "브이": "read-a22", "더블유": "read-a23", "엑스": "read-a24", "와이": "read-a25", "제트": "read-a26", "양말": "hidden-3", "하트": "hidden-4", "연필": "hidden-5", "별": "hidden-7", "당근": "hidden-9", "컵": "hidden-11", "장갑": "hidden-13", "달": "hidden-14", "가위": "hidden-15", "리본": "hidden-16", "버섯": "hidden-17", "아이스크림": "hidden-18", "나뭇잎": "hidden-20", "사탕": "hidden-21", "물고기": "hidden-22"};
@@ -1129,31 +1144,84 @@ function jigsaw(picture='cat',level=0){shell('puzzle');currentRestart=()=>jigsaw
  const paths=Array.from({length:n},(_,i)=>jigPiecePath(Math.floor(i/cols),i%cols,cols,rows,hs,vs,W,H)),src=rasterIcons[picture];
  const art=i=>`<path class="jig-base" d="${paths[i]}"/><image href="${src}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid meet" clip-path="url(#jc${i})"/><path class="jig-edge" d="${paths[i]}"/>`;
  state={selected:null,board:Array(n).fill(null),done:false};
- $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board jig"><svg class="jig-svg" id="jig-board" viewBox="0 0 ${W} ${H}"><defs>${paths.map((d,i)=>`<clipPath id="jc${i}"><path d="${d}"/></clipPath>`).join('')}</defs>${paths.map((d,i)=>`<path class="jig-slot" data-slot="${i}" d="${d}" tabindex="0" role="button" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"/>`).join('')}<g id="jig-placed"></g></svg></div><div><div class="puzzle-reference">${rasterArt(picture)}</div></div></div><p class="hint" id="hint">아래 조각을 고르고 알맞은 자리를 눌러요</p><div class="puzzle-tray jig" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>{const r=Math.floor(i/cols),c=i%cols;return `<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"><svg viewBox="${(c*cw-m).toFixed(1)} ${(r*ch-m).toFixed(1)} ${(cw+2*m).toFixed(1)} ${(ch+2*m).toFixed(1)}" aria-hidden="true">${art(i)}</svg></button>`}).join('')}</div>`;
+ $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board jig"><svg class="jig-svg" id="jig-board" viewBox="0 0 ${W} ${H}"><defs>${paths.map((d,i)=>`<clipPath id="jc${i}"><path d="${d}"/></clipPath>`).join('')}</defs>${paths.map((d,i)=>`<path class="jig-slot" data-slot="${i}" d="${d}" tabindex="0" role="button" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"/>`).join('')}<g id="jig-placed"></g></svg></div><div><div class="puzzle-reference">${rasterArt(picture)}</div></div></div><p class="hint" id="hint">조각을 끌어다 알맞은 자리에 대어 봐요</p><div class="puzzle-tray jig" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>{const r=Math.floor(i/cols),c=i%cols;return `<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"><svg viewBox="${(c*cw-m).toFixed(1)} ${(r*ch-m).toFixed(1)} ${(cw+2*m).toFixed(1)} ${(ch+2*m).toFixed(1)}" aria-hidden="true">${art(i)}</svg></button>`}).join('')}</div>`;
  const draw=()=>{$$('[data-piece]').forEach(b=>{const p=+b.dataset.piece,used=state.board[p]!==null;b.classList.toggle('used',used);b.disabled=used;b.setAttribute('aria-pressed',String(p===state.selected))});
   const placed=state.board.filter(p=>p!==null).length;$('#puzzle-count').textContent=`${placed} / ${n}조각`;
   if(placed===n&&!state.done){state.done=true;$('#jig-board').classList.add('complete');hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),1100)}};
- $$('[data-piece]').forEach(b=>b.onclick=()=>{if(state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw();hint(state.selected===null?'아래 조각을 고르고 알맞은 자리를 눌러요':'조각이 들어갈 자리를 눌러요')});
+ // 키보드(엔터)로 고를 때만: 조각 고르기 → 자리 누르기
+ $$('[data-piece]').forEach(b=>b.onclick=e=>{if(e.detail!==0||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw();hint(state.selected===null?'조각을 끌어다 알맞은 자리에 대어 봐요':'조각이 들어갈 자리를 눌러요')});
+ // 손가락·마우스: 조각을 끌어다 대 보고, 알맞은 자리 가까이에 놓으면 쏙 들어가요
+ const boardBox=()=>{const r=$('#jig-board').getBoundingClientRect(),s=Math.min(r.width/W,r.height/H);return{s,ox:r.left+(r.width-W*s)/2,oy:r.top+(r.height-H*s)/2}};
+ let drag=null;
+ const place=i=>{const el=$(`[data-slot="${i}"]`);state.board[i]=i;state.selected=null;$('#jig-placed').insertAdjacentHTML('beforeend',`<g class="jig-in">${art(i)}</g>`);el.classList.remove('near');el.setAttribute('aria-label',`${Math.floor(i/cols)+1}줄 ${i%cols+1}칸, 조각이 맞게 들어갔어요`);tone('good');cheer(el);hint('딱 맞았어요!');draw()};
+ const endDrag=(ok)=>{if(!drag)return;const d=drag;drag=null;removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);
+  $$('.jig-slot.near').forEach(x=>x.classList.remove('near'));
+  if(ok){const {s,ox,oy}=boardBox(),r=Math.floor(d.i/cols),c=d.i%cols;d.fl.style.transition='left .12s ease-out,top .12s ease-out,transform .12s';d.fl.style.left=(ox+(c*cw-m)*s)+'px';d.fl.style.top=(oy+(r*ch-m)*s)+'px';d.fl.style.transform='none';
+   setTimeout(()=>{d.fl.remove();d.btn.classList.remove('dragging');place(d.i)},130);return}
+  const br=d.btn.getBoundingClientRect();d.fl.style.transition='left .22s ease-in-out,top .22s ease-in-out,width .22s,height .22s,transform .22s';d.fl.style.left=br.left+'px';d.fl.style.top=br.top+'px';d.fl.style.width=br.width+'px';d.fl.style.height=br.height+'px';d.fl.style.transform='none';
+  setTimeout(()=>{d.fl.remove();d.btn.classList.remove('dragging')},230)};
+ const near=()=>{const {s,ox,oy}=boardBox(),r=Math.floor(drag.i/cols),c=drag.i%cols,fr=drag.fl.getBoundingClientRect();
+  const dx=(fr.left+m*s)-(ox+c*cw*s),dy=(fr.top+m*s)-(oy+r*ch*s);return Math.hypot(dx,dy)<Math.min(cw,ch)*.3*s};
+ const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();drag.x=e.clientX;drag.y=e.clientY;
+  if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6){drag.moved=true}
+  drag.fl.style.left=(e.clientX-drag.fx)+'px';drag.fl.style.top=(e.clientY-drag.fy)+'px';
+  if(e.clientY<70)scrollBy(0,-14);else if(e.clientY>innerHeight-70)scrollBy(0,14);
+  const slot=$(`[data-slot="${drag.i}"]`);slot.classList.toggle('near',near())};
+ const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){endDrag(false);hint('조각을 꾹 잡고 끌어 봐요');return}
+  if(near()){endDrag(true);return}
+  const {s,ox,oy}=boardBox(),onBoard=e.clientX>ox&&e.clientX<ox+W*s&&e.clientY>oy&&e.clientY<oy+H*s;
+  if(onBoard){tone('soft');hint('조금 더 대어 봐요. 모양이 맞는 자리를 찾아요')}endDrag(false)};
+ const onCancel=e=>{if(drag&&e.pointerId===drag.id)endDrag(false)};
+ $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
+  const i=+b.dataset.piece,{s}=boardBox(),br=b.getBoundingClientRect(),w=(cw+2*m)*s,h=(ch+2*m)*s,fx=(e.clientX-br.left)/br.width*w,fy=(e.clientY-br.top)/br.height*h;
+  const fl=document.createElement('div');fl.className='jig-drag';fl.style.cssText=`left:${e.clientX-fx}px;top:${e.clientY-fy}px;width:${w}px;height:${h}px`;fl.innerHTML=b.innerHTML;document.body.append(fl);
+  b.classList.add('dragging');state.selected=null;tone();drag={i,b,btn:b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};
+  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel)});
  const tapSlot=el=>{if(state.done)return;const s=+el.dataset.slot;if(state.board[s]!==null)return;
   if(state.selected===null){hint('아래에서 조각을 먼저 골라요');return}
   if(state.selected!==s){tone('soft');const pb=$(`[data-piece="${state.selected}"]`);pb.classList.remove('nope');void pb.offsetWidth;pb.classList.add('nope');el.classList.add('nope');later(()=>el.classList.remove('nope'),400);hint('이 자리에는 모양이 안 맞아요');return}
   state.board[s]=s;state.selected=null;$('#jig-placed').insertAdjacentHTML('beforeend',`<g class="jig-in">${art(s)}</g>`);el.setAttribute('aria-label',`${Math.floor(s/cols)+1}줄 ${s%cols+1}칸, 조각이 맞게 들어갔어요`);
   cheer(el);hint('딱 맞았어요!');draw()};
- $$('[data-slot]').forEach(el=>{el.onclick=()=>tapSlot(el);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tapSlot(el)}}});
+ // 화면이 좁으면 판과 조각이 한 화면에 함께 보이도록 살짝 내려 줘요
+ later(()=>{const tr=$('.puzzle-tray.jig');if(tr&&tr.getBoundingClientRect().bottom>innerHeight)tr.scrollIntoView({block:'end',behavior:'smooth'})},250);
+ $$('[data-slot]').forEach(el=>{el.onclick=e=>{if(e.detail===0||state.selected!==null)tapSlot(el)};el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tapSlot(el)}}});
 draw()}
 
 function puzzle(picture='cat',level=0){shell('puzzle');currentRestart=()=>puzzle(picture,level);const cols=level===0?2:3,rows=level===2?3:2,n=cols*rows;state={selected:null,board:Array(n).fill(null),done:false};
- $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board" style="--cols:${cols};--rows:${rows}">${Array.from({length:n},(_,i)=>`<button class="puzzle-slot" data-slot="${i}" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸">${i+1}</button>`).join('')}</div><div><div class="puzzle-reference">${rasterArt(picture)}</div></div></div><p class="hint" id="hint">아래 조각을 고르고 칸을 눌러요</p><div class="puzzle-tray" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>`<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"></button>`).join('')}</div>`;
+ $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board" style="--cols:${cols};--rows:${rows}">${Array.from({length:n},(_,i)=>`<button class="puzzle-slot" data-slot="${i}" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"></button>`).join('')}</div><div><div class="puzzle-reference">${rasterArt(picture)}</div></div></div><p class="hint" id="hint">조각을 끌어다 알맞은 칸에 대어 봐요</p><div class="puzzle-tray" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>`<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"></button>`).join('')}</div>`;
  const decorate=(b,i)=>{b.style.backgroundImage=`url("${rasterIcons[picture]}")`;b.style.backgroundSize=`${cols*100}% ${rows*100}%`;b.style.backgroundPosition=`${i%cols/(cols-1)*100}% ${Math.floor(i/cols)/(rows-1)*100}%`};
- const pieceBtn=i=>$$('[data-piece]').find(x=>+x.dataset.piece===i);
- const draw=()=>{$$('[data-slot]').forEach(b=>{const s=+b.dataset.slot,p=state.board[s];if(p===null){b.style.backgroundImage='';b.textContent=s+1;b.classList.remove('filled');b.setAttribute('aria-label',`${Math.floor(s/cols)+1}줄 ${s%cols+1}칸 빈칸`)}else{decorate(b,p);b.textContent='';b.classList.add('filled');b.setAttribute('aria-label',`${Math.floor(s/cols)+1}줄 ${s%cols+1}칸, 조각이 놓여 있어요. 누르면 빼요`)}});
-  $$('[data-piece]').forEach(b=>{const used=state.board.includes(+b.dataset.piece);b.classList.toggle('used',used);b.disabled=used;b.setAttribute('aria-pressed',String(+b.dataset.piece===state.selected))});
+ const slotEl=s=>$(`[data-slot="${s}"]`);
+ const draw=()=>{$$('[data-piece]').forEach(b=>{const used=state.board.includes(+b.dataset.piece);b.classList.toggle('used',used);b.disabled=used;b.setAttribute('aria-pressed',String(+b.dataset.piece===state.selected))});
   const placed=state.board.filter(p=>p!==null).length;$('#puzzle-count').textContent=`${placed} / ${n}조각`;
-  if(placed===n){if(state.board.every((p,i)=>p===i)){state.done=true;$$('[data-slot]').forEach(b=>b.disabled=true);tone('good');hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),600)}else hint('조각을 다 놓았어요. 그림을 잘 보고 자리를 바꿔 볼까요?')}};
- $$('[data-piece]').forEach(b=>{decorate(b,+b.dataset.piece);b.onclick=()=>{if(state.done)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw();hint(state.selected===null?'아래 조각을 고르고 칸을 눌러요':'조각을 놓을 칸을 눌러요')}});
- $$('[data-slot]').forEach(b=>b.onclick=()=>{if(state.done)return;const s=+b.dataset.slot;
-  if(state.selected===null){if(state.board[s]!==null){state.board[s]=null;tone('soft');hint('조각을 뺐어요');draw()}else hint('아래에서 조각을 먼저 골라요');return}
-  state.board[s]=state.selected;state.selected=null;tone();hint('다른 조각도 놓아 봐요. 놓은 조각을 누르면 뺄 수 있어요');draw()});
+  if(placed===n&&!state.done){state.done=true;$$('[data-slot]').forEach(b=>b.disabled=true);hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),1100)}};
+ const place=i=>{const el=slotEl(i);state.board[i]=i;state.selected=null;decorate(el,i);el.classList.remove('near');el.classList.add('filled','pop-in');el.disabled=true;el.setAttribute('aria-label',`${Math.floor(i/cols)+1}줄 ${i%cols+1}칸, 조각이 맞게 들어갔어요`);tone('good');cheer(el);hint('딱 맞았어요!');draw()};
+ const nope=(b,el)=>{tone('soft');b.classList.remove('nope');void b.offsetWidth;b.classList.add('nope');if(el){el.classList.add('nope');later(()=>el.classList.remove('nope'),400)}hint('이 칸이 아니에요. 그림을 잘 보고 다시 대어 봐요')};
+ // 키보드(엔터)로 고를 때만: 조각 고르기 → 칸 누르기
+ $$('[data-piece]').forEach(b=>{decorate(b,+b.dataset.piece);b.onclick=e=>{if(e.detail!==0||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw()}});
+ $$('[data-slot]').forEach(el=>el.onclick=e=>{if(state.done||state.selected===null)return;const s=+el.dataset.slot;if(state.board[s]!==null)return;if(state.selected===s)place(s);else nope($(`[data-piece="${state.selected}"]`),el)});
+ // 손가락·마우스: 조각을 끌어다 대 보고, 알맞은 칸 가까이에 놓으면 쏙 들어가요
+ let drag=null;
+ const cellBox=i=>slotEl(i).getBoundingClientRect();
+ const isNear=()=>{const c=cellBox(drag.i),f=drag.fl.getBoundingClientRect(),fx=f.left+f.width/2,fy=f.top+f.height/2,cx=c.left+c.width/2,cy=c.top+c.height/2;return Math.hypot(fx-cx,fy-cy)<Math.min(c.width,c.height)*.3};
+ const stop=()=>{removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);$$('.puzzle-slot.near').forEach(x=>x.classList.remove('near'))};
+ const endDrag=ok=>{if(!drag)return;const d=drag;drag=null;stop();
+  if(ok){const c=cellBox(d.i);d.fl.style.transition='left .12s ease-out,top .12s ease-out,transform .12s';d.fl.style.left=c.left+'px';d.fl.style.top=c.top+'px';d.fl.style.transform='none';setTimeout(()=>{d.fl.remove();d.b.classList.remove('dragging');place(d.i)},130);return}
+  const br=d.b.getBoundingClientRect();d.fl.style.transition='left .22s ease-in-out,top .22s ease-in-out,width .22s,height .22s,transform .22s';d.fl.style.left=br.left+'px';d.fl.style.top=br.top+'px';d.fl.style.width=br.width+'px';d.fl.style.height=br.height+'px';d.fl.style.transform='none';
+  setTimeout(()=>{d.fl.remove();d.b.classList.remove('dragging')},230)};
+ const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6)drag.moved=true;
+  drag.fl.style.left=(e.clientX-drag.fx)+'px';drag.fl.style.top=(e.clientY-drag.fy)+'px';
+  if(e.clientY<70)scrollBy(0,-14);else if(e.clientY>innerHeight-70)scrollBy(0,14);
+  slotEl(drag.i).classList.toggle('near',isNear())};
+ const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){endDrag(false);hint('조각을 꾹 잡고 끌어 봐요');return}
+  if(isNear()){endDrag(true);return}
+  const r=$('.puzzle-board').getBoundingClientRect();if(e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom){tone('soft');hint('조금 더 대어 봐요. 그림이 이어지는 칸을 찾아요')}endDrag(false)};
+ const onCancel=e=>{if(drag&&e.pointerId===drag.id)endDrag(false)};
+ $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
+  const i=+b.dataset.piece,c=cellBox(i),br=b.getBoundingClientRect(),fx=(e.clientX-br.left)/br.width*c.width,fy=(e.clientY-br.top)/br.height*c.height;
+  const fl=document.createElement('div');fl.className='sq-drag';fl.style.cssText=`left:${e.clientX-fx}px;top:${e.clientY-fy}px;width:${c.width}px;height:${c.height}px`;decorate(fl,i);document.body.append(fl);
+  b.classList.add('dragging');state.selected=null;tone();drag={i,b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};
+  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel)});
+ later(()=>{const tr=$('.puzzle-tray');if(tr&&tr.getBoundingClientRect().bottom>innerHeight)tr.scrollIntoView({block:'end',behavior:'smooth'})},250);
 draw();
 }
 const phoneBook=[
@@ -1243,7 +1311,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-4';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-5';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
