@@ -1018,7 +1018,7 @@ function wirePalette(select){$$('[data-color]').forEach(b=>b.onclick=()=>{tone()
 let artSaving=false;
 function dataUrlFile(url,name){try{const [head,b64]=url.split(','),bin=atob(b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new File([u],name,{type:/:(.*?);/.exec(head)[1]})}catch{return null}}
 function saveCanvas(canvas,name){if(artSaving)return;artSaving=true;setTimeout(()=>artSaving=false,1500);
- const url=canvas.toDataURL('image/png'),fname=name+'.png',apple=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
+ const d=new Date(),p2=n=>String(n).padStart(2,'0'),url=canvas.toDataURL('image/png'),fname=name+'_'+d.getFullYear()+p2(d.getMonth()+1)+p2(d.getDate())+'-'+p2(d.getHours())+p2(d.getMinutes())+p2(d.getSeconds())+'.png',apple=/iPad|iPhone|iPod/.test(navigator.userAgent)||(/Macintosh/.test(navigator.userAgent)&&navigator.maxTouchPoints>1);
  if(apple&&navigator.share&&navigator.canShare){const file=dataUrlFile(url,fname);if(file&&navigator.canShare({files:[file]})){navigator.share({files:[file]}).then(()=>popup('선택한 앱이나 저장 위치를 확인해 주세요','🌼',1600)).catch(()=>{});return}}
  const a=document.createElement('a');a.download=fname;a.href=url;document.body.append(a);a.click();a.remove();popup('다운로드 목록에서 그림을 확인해 주세요','🌼',1600)}
 const coloringPages=[["rabbit", "토끼", "images/coloring/rabbit.png"], ["bear", "꿀단지 곰", "images/coloring/bear.png"], ["bubble", "비눗방울 곰", "images/coloring/bubble.png"], ["dog", "강아지", "images/coloring/dog.png"], ["cat", "고양이", "images/coloring/cat.png"], ["lion", "아기 사자", "images/coloring/lion.png"], ["duck", "오리 가족", "images/coloring/duck.png"], ["flower", "해바라기", "images/coloring/flower.png"], ["icecream", "아이스크림", "images/coloring/icecream.png"], ["cake", "생일 케이크", "images/coloring/cake.png"], ["house", "버섯집", "images/coloring/house.png"], ["balloon", "열기구", "images/coloring/balloon.png"], ["plane", "비행기", "images/coloring/plane.png"], ["train", "기차", "images/coloring/train.png"], ["bus", "버스", "images/coloring/bus.png"]];
@@ -1350,7 +1350,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-20';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-21';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
