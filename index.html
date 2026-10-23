@@ -784,6 +784,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(>.puzzle-layout)>.puzzle-tray.jig{gap:3px}
  .stage:has(>.puzzle-layout)>.hint{margin:0;min-height:0}
 }
+#main[data-hue]~footer{display:none}
 </style>
 </head>
 <body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><button class="soft-btn feedback-link" id="feedback" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</button><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button></div><p class="parent-note">소리 끄기는 한 번, 켜기는 1초 꾹 · 보호자용 아래 버튼은 3초 꾹 누르고 손을 떼요</p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
@@ -1346,7 +1347,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-15';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-16';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
