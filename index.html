@@ -31,7 +31,7 @@
 [data-hue=lilac]{--hue:var(--lilac);--hue-d:var(--lilac-d)}
 *{box-sizing:border-box}
 /* 아이가 실수로 화면을 당기거나·확대하거나·길게 눌러 메뉴를 띄우지 않게 */
-html{-webkit-text-size-adjust:100%;overscroll-behavior:none;touch-action:manipulation}
+html{-webkit-text-size-adjust:100%;overscroll-behavior:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body{overscroll-behavior:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 body{margin:0;word-break:keep-all;background:var(--paper);color:var(--ink);font-family:var(--ui);font-weight:400;line-height:1.5}
@@ -308,7 +308,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .swatch{width:52px;height:52px;border-radius:50%;background:var(--paint);border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line),0 3px 0 var(--line);color:#fff;font-size:22px;text-shadow:0 1px 2px #0006}
 .swatch[aria-pressed=true]{box-shadow:0 0 0 3px var(--ink);transform:scale(1.08)}
 .studio-tools .soft-btn[aria-pressed=true],.phone-friends .soft-btn[aria-pressed=true]{background:var(--hue);border-color:var(--hue-d);box-shadow:0 3px 0 var(--hue-d)}
-#art-canvas{display:block;width:100%;max-width:800px;height:auto;aspect-ratio:4/3;margin:auto;background:#fff;border-radius:22px;border:2px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none}
+#art-canvas{display:block;width:100%;max-width:800px;height:auto;aspect-ratio:4/3;margin:auto;background:#fff;border-radius:22px;border:2px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .reward-modal>.soft-btn{margin-top:12px}
 .puzzle-layout{display:grid;grid-template-columns:minmax(0,440px) 140px;justify-content:center;gap:22px;align-items:center}
 .puzzle-board{display:grid;grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);aspect-ratio:1;background:#fff;border:3px solid var(--hue-d);border-radius:18px;overflow:hidden}
@@ -723,7 +723,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .hidden-card svg{position:absolute;right:-6px;bottom:-6px;width:58px;height:58px;fill:#ffffffcc;stroke:var(--ink);stroke-width:2.2;stroke-linecap:round}
 .card-art .card-pic:has(.hidden-card){width:auto;height:auto}
 .hidden-layout{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:680px;margin:auto}
-.hidden-board{position:relative;width:100%;aspect-ratio:1;background:#fff;border-radius:20px;border:2px solid var(--line);overflow:hidden;touch-action:manipulation;cursor:pointer;user-select:none;-webkit-user-select:none}
+.hidden-board{position:relative;width:100%;aspect-ratio:1;background:#fff;border-radius:20px;border:2px solid var(--line);overflow:hidden;touch-action:manipulation;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 .hidden-board img{display:block;width:100%;height:100%;pointer-events:none}
 .h-found{position:absolute;border:5px solid #F08A7A;border-radius:50%;box-shadow:0 0 0 3px #ffffffaa;animation:pop .35s;pointer-events:none}
 .h-miss{position:absolute;border:3px solid #B9A9DA;border-radius:50%;opacity:.8;animation:h-miss .45s ease-out forwards;pointer-events:none}
@@ -1344,7 +1344,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.23-12';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.23-13';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
