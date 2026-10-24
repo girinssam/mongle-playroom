@@ -1150,7 +1150,7 @@ const COMING_SOON=['dress','phone'];
 // 문장은 어른이 읽어 주는 용도예요. 고칠 때는 여기만 바꾸면 돼요 (\n은 줄 바꿈)
 const guides={
  balloon:'위에 있는 글자와 같은 풍선을 톡!',
- order:"친구가 말한 과일을 말한 만큼 담아요.\n잘못 담았으면\n바구니 과일을 톡 눌러 빼요.\n다 담으면 '다 담았어요'!",
+ order:"친구가 말한 과일을\n말한 만큼 담아요.\n잘못 담았으면\n바구니 과일을 톡 눌러 빼요.\n다 담으면 '다 담았어요'!",
  bridge:'다음 숫자가 적힌 돌을 톡 누르면 토끼가 폴짝!',
  memory:'카드를 두 장씩 뒤집어서 같은 그림을 찾아요.',
  shadow:'그림자를 보고\n누구인지 아래에서 골라요.',
@@ -1632,7 +1632,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-3';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-4';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
