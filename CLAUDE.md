@@ -7,7 +7,7 @@
 
 ## 파일 구조
 - index.html 한 개에 HTML·CSS·JS가 모두 들어 있음 (빌드 없음)
-- images/ 폴더: cards(첫 화면 그림·버튼 그림), icons, balloons, bridge, coloring, hidden, dress, scenes, brand(기린 로고·파비콘)
+- images/ 폴더: cards(첫 화면 그림·버튼 그림), icons, balloons, bridge, coloring, hidden, dress, scenes, brand(기린 로고·파비콘), celebrate(칭찬 창 기린 3장)
 - GitHub Pages로 main 브랜치 루트에서 바로 배포
 
 ## 놀이 (3묶음 12개)
@@ -27,6 +27,7 @@
 - 사용자는 글을 못 읽는 아이: 놀이 중 불필요한 글자는 넣지 않음
 - 같은 그림 찾기·퍼즐·숨은 그림 찾기·그림자 맞추기는 틀려도 알림창을 띄우지 않음
 - 맞혔을 때는 별·칭찬 말풍선 등 축하를 크게 (cheer 함수)
+- 칭찬 창에는 대표 캐릭터 기린(images/celebrate)이 무작위로 나옴. 작품을 보여 주는 놀이는 작품을 보여 줌
 - 각 놀이는 처음 할 때 '놀이 방법' 팝업(시범 애니메이션 + 짧은 문장)을 한 번 띄우고, 물음표 버튼으로 다시 볼 수 있음. 문장은 guides 객체에서 수정
 - 놀이 방법 시범에서 손가락은 실제로 누르는 것만 누르고, 보기만 하는 것은 반짝임으로 표시. 배치는 실제 화면과 같게
 
