@@ -793,6 +793,20 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(>.puzzle-layout)[data-pieces=right]>.puzzle-tray{grid-column:2}
  .stage:has(>.puzzle-layout)[data-pieces=right] .puzzle-layout>div:last-child{grid-column:1}
 }
+/* 휴대폰 가로 화면: 판은 왼쪽에 화면 높이만큼, 오른쪽에 조각들과 보기 그림 (자리 바꾸기 버튼은 세로 화면에서만) */
+@media(orientation:landscape) and (max-height:500px){
+ .stage:has(>.puzzle-layout){--phb:min(calc(100dvh - 96px),calc(100vw - 400px));--ref:clamp(70px,13vw,120px);display:grid;grid-template-columns:var(--phb) auto auto;grid-template-rows:auto auto 1fr;justify-content:center;align-items:start;gap:8px 14px;padding:12px;min-height:0}
+ .stage:has(>.puzzle-layout)>.status{grid-column:2/-1;grid-row:1;margin:0;min-height:34px;justify-content:center}
+ .stage:has(>.puzzle-layout)>.puzzle-layout{display:contents}
+ .stage:has(>.puzzle-layout) .puzzle-board{grid-column:1;grid-row:1/-1;width:var(--phb);height:auto;aspect-ratio:1}
+ .stage:has(>.puzzle-layout)>.puzzle-tray{width:min(calc(100dvh - 150px),calc(100vw - var(--phb) - var(--ref) - 120px));max-width:none;margin:0;gap:6px;grid-template-columns:repeat(var(--cols),1fr)}
+ .stage:has(>.puzzle-layout)>.puzzle-tray.jig{gap:3px}
+ .stage:has(>.puzzle-layout)[data-pieces]>.puzzle-tray{grid-column:2;grid-row:2}
+ .stage:has(>.puzzle-layout)[data-pieces] .puzzle-layout>div:last-child{grid-column:3;grid-row:2;display:block}
+ .stage:has(>.puzzle-layout) .puzzle-reference{width:var(--ref);padding:8px}
+ .stage:has(>.puzzle-layout)>.hint{grid-column:2/-1;grid-row:3;margin:0;min-height:0;text-align:left}
+ .stage:has(>.puzzle-layout) .puzzle-side{display:none}
+}
 #main[data-hue]~footer{display:none}
 
 /* 놀이 방법 안내: 처음 한 번 + 물음표 버튼. 시범 장면은 --dur마다 되풀이 (가로:세로 = 2:1 무대, 위치는 %, 배치는 실제 가로 화면과 같게)
@@ -1712,7 +1726,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-14';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-15';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
