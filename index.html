@@ -1464,35 +1464,42 @@ function jigsaw(picture='cat',level=0){shell('puzzle');currentRestart=()=>jigsaw
  const draw=()=>{$$('[data-piece]').forEach(b=>{const p=+b.dataset.piece,used=state.board[p]!==null;b.classList.toggle('used',used);b.disabled=used;b.setAttribute('aria-pressed',String(p===state.selected))});
   const placed=state.board.filter(p=>p!==null).length;$('#puzzle-count').textContent=`${placed} / ${n}조각`;
   if(placed===n&&!state.done){state.done=true;$('#jig-board').classList.add('complete');hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),1100)}};
+ let lastPiecePointer=0;
  // 키보드로도 선택 가능 (터치·마우스 선택은 pointerup에서 처리): 조각 고르기 → 자리 누르기
- $$('[data-piece]').forEach(b=>b.onclick=e=>{if(e.detail!==0||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw();hint(state.selected===null?'조각을 끌거나, 조각과 자리를 차례로 눌러요':'조각이 들어갈 자리를 눌러요')});
+ $$('[data-piece]').forEach(b=>b.onclick=e=>{if(e.detail!==0||performance.now()-lastPiecePointer<600||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw();hint(state.selected===null?'조각을 끌거나, 조각과 자리를 차례로 눌러요':'조각이 들어갈 자리를 눌러요')});
  // 손가락·마우스: 조각을 끌어다 대 보고, 알맞은 자리 가까이에 놓으면 쏙 들어가요
  const boardBox=()=>{const r=$('#jig-board').getBoundingClientRect(),s=Math.min(r.width/W,r.height/H);return{s,ox:r.left+(r.width-W*s)/2,oy:r.top+(r.height-H*s)/2}};
  let drag=null;
  const place=i=>{const el=$(`[data-slot="${i}"]`);state.board[i]=i;state.selected=null;$('#jig-placed').insertAdjacentHTML('beforeend',`<g class="jig-in">${art(i)}</g>`);el.classList.remove('near');el.setAttribute('aria-label',`${Math.floor(i/cols)+1}줄 ${i%cols+1}칸, 조각이 맞게 들어갔어요`);tone('good');cheer(el);hint('딱 맞았어요!');draw()};
- const endDrag=(ok)=>{if(!drag)return;const d=drag;drag=null;removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);
+ const endDrag=(ok,quick)=>{if(!drag)return;const d=drag;drag=null;removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);removeEventListener('lostpointercapture',onCancel);removeEventListener('blur',onAway);document.removeEventListener('visibilitychange',onAway);
   $$('.jig-slot.near').forEach(x=>x.classList.remove('near'));
+  if(quick){d.fl.remove();d.btn.classList.remove('dragging');return}
   if(ok){const {s,ox,oy}=boardBox(),r=Math.floor(d.i/cols),c=d.i%cols;d.fl.style.transition='left .12s ease-out,top .12s ease-out,transform .12s';d.fl.style.left=(ox+(c*cw-m)*s)+'px';d.fl.style.top=(oy+(r*ch-m)*s)+'px';d.fl.style.transform='none';
    setTimeout(()=>{d.fl.remove();d.btn.classList.remove('dragging');place(d.i)},130);return}
   const br=d.btn.getBoundingClientRect();d.fl.style.transition='left .22s ease-in-out,top .22s ease-in-out,width .22s,height .22s,transform .22s';d.fl.style.left=br.left+'px';d.fl.style.top=br.top+'px';d.fl.style.width=br.width+'px';d.fl.style.height=br.height+'px';d.fl.style.transform='none';
   setTimeout(()=>{d.fl.remove();d.btn.classList.remove('dragging')},230)};
  const near=()=>{const {s,ox,oy}=boardBox(),r=Math.floor(drag.i/cols),c=drag.i%cols,fr=drag.fl.getBoundingClientRect();
   const dx=(fr.left+m*s)-(ox+c*cw*s),dy=(fr.top+m*s)-(oy+r*ch*s);return Math.hypot(dx,dy)<Math.min(cw,ch)*.3*s};
- const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();drag.x=e.clientX;drag.y=e.clientY;
+ const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();drag.t=performance.now();drag.x=e.clientX;drag.y=e.clientY;
   if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6){drag.moved=true}
   drag.fl.style.left=(e.clientX-drag.fx)+'px';drag.fl.style.top=(e.clientY-drag.fy)+'px';
   if(e.clientY<70)scrollBy(0,-14);else if(e.clientY>innerHeight-70)scrollBy(0,14);
   const slot=$(`[data-slot="${drag.i}"]`);slot.classList.toggle('near',near())};
- const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){const i=drag.i;endDrag(false);state.selected=i;draw();hint('조각이 들어갈 자리를 눌러요');return}
+ const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;lastPiecePointer=performance.now();if(!drag.moved){const i=drag.i;endDrag(false);state.selected=i;draw();hint('조각이 들어갈 자리를 눌러요');return}
   if(near()){endDrag(true);return}
   const {s,ox,oy}=boardBox(),onBoard=e.clientX>ox&&e.clientX<ox+W*s&&e.clientY>oy&&e.clientY<oy+H*s;
   if(onBoard){tone('soft');hint('조금 더 대어 봐요. 모양이 맞는 자리를 찾아요')}endDrag(false)};
  const onCancel=e=>{if(drag&&e.pointerId===drag.id)endDrag(false)};
- $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
+ // 끄는 중에 화면이 안 보이거나 창을 벗어나면 떼지 못한 조각을 제자리로 돌려요
+ const onAway=e=>{if(e.type==='blur'||document.hidden)endDrag(false)};
+ $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{lastPiecePointer=performance.now();
+  // 놓친 손 떼기 정리: 같은 손가락이 다시 눌렸거나(이미 뗌) 1초 넘게 움직임이 없으면 남은 조각을 치워요
+  if(drag&&(e.pointerId===drag.id||lastPiecePointer-drag.t>1000))endDrag(false,true);
+  if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
   const i=+b.dataset.piece,{s}=boardBox(),br=b.getBoundingClientRect(),w=(cw+2*m)*s,h=(ch+2*m)*s,fx=(e.clientX-br.left)/br.width*w,fy=(e.clientY-br.top)/br.height*h;
   const fl=document.createElement('div');fl.className='jig-drag';fl.style.cssText=`left:${e.clientX-fx}px;top:${e.clientY-fy}px;width:${w}px;height:${h}px`;fl.innerHTML=b.innerHTML;document.body.append(fl);
-  b.classList.add('dragging');state.selected=null;tone();drag={i,b,btn:b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};
-  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel)});
+  b.classList.add('dragging');state.selected=null;tone();drag={i,b,btn:b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false,t:lastPiecePointer};
+  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel);addEventListener('lostpointercapture',onCancel);addEventListener('blur',onAway);document.addEventListener('visibilitychange',onAway)});
  const tapSlot=el=>{if(state.done)return;const s=+el.dataset.slot;if(state.board[s]!==null)return;
   if(state.selected===null){hint('아래에서 조각을 먼저 골라요');return}
   if(state.selected!==s){tone('soft');const pb=$(`[data-piece="${state.selected}"]`);pb.classList.remove('nope');void pb.offsetWidth;pb.classList.add('nope');el.classList.add('nope');later(()=>el.classList.remove('nope'),400);hint('이 자리에는 모양이 안 맞아요');return}
@@ -1512,31 +1519,38 @@ function puzzle(picture='cat',level=0){shell('puzzle');currentRestart=()=>puzzle
   if(placed===n&&!state.done){state.done=true;$$('[data-slot]').forEach(b=>b.disabled=true);hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),1100)}};
  const place=i=>{const el=slotEl(i);state.board[i]=i;state.selected=null;decorate(el,i);el.classList.remove('near');el.classList.add('filled','pop-in');el.disabled=true;el.setAttribute('aria-label',`${Math.floor(i/cols)+1}줄 ${i%cols+1}칸, 조각이 맞게 들어갔어요`);tone('good');cheer(el);hint('딱 맞았어요!');draw()};
  const nope=(b,el)=>{tone('soft');b.classList.remove('nope');void b.offsetWidth;b.classList.add('nope');if(el){el.classList.add('nope');later(()=>el.classList.remove('nope'),400)}hint('이 칸이 아니에요. 그림을 잘 보고 다시 대어 봐요')};
+ let lastPiecePointer=0;
  // 키보드로도 선택 가능 (터치·마우스 선택은 pointerup에서 처리): 조각 고르기 → 칸 누르기
- $$('[data-piece]').forEach(b=>{decorate(b,+b.dataset.piece);b.onclick=e=>{if(e.detail!==0||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw()}});
+ $$('[data-piece]').forEach(b=>{decorate(b,+b.dataset.piece);b.onclick=e=>{if(e.detail!==0||performance.now()-lastPiecePointer<600||state.done||b.disabled)return;const i=+b.dataset.piece;state.selected=state.selected===i?null:i;tone();draw()}});
  $$('[data-slot]').forEach(el=>el.onclick=e=>{if(state.done||state.selected===null)return;const s=+el.dataset.slot;if(state.board[s]!==null)return;if(state.selected===s)place(s);else nope($(`[data-piece="${state.selected}"]`),el)});
  // 손가락·마우스: 조각을 끌어다 대 보고, 알맞은 칸 가까이에 놓으면 쏙 들어가요
  let drag=null;
  const cellBox=i=>slotEl(i).getBoundingClientRect();
  const isNear=()=>{const c=cellBox(drag.i),f=drag.fl.getBoundingClientRect(),fx=f.left+f.width/2,fy=f.top+f.height/2,cx=c.left+c.width/2,cy=c.top+c.height/2;return Math.hypot(fx-cx,fy-cy)<Math.min(c.width,c.height)*.3};
- const stop=()=>{removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);$$('.puzzle-slot.near').forEach(x=>x.classList.remove('near'))};
- const endDrag=ok=>{if(!drag)return;const d=drag;drag=null;stop();
+ const stop=()=>{removeEventListener('pointermove',onMove);removeEventListener('pointerup',onUp);removeEventListener('pointercancel',onCancel);removeEventListener('lostpointercapture',onCancel);removeEventListener('blur',onAway);document.removeEventListener('visibilitychange',onAway);$$('.puzzle-slot.near').forEach(x=>x.classList.remove('near'))};
+ const endDrag=(ok,quick)=>{if(!drag)return;const d=drag;drag=null;stop();
+  if(quick){d.fl.remove();d.b.classList.remove('dragging');return}
   if(ok){const c=cellBox(d.i);d.fl.style.transition='left .12s ease-out,top .12s ease-out,transform .12s';d.fl.style.left=c.left+'px';d.fl.style.top=c.top+'px';d.fl.style.transform='none';setTimeout(()=>{d.fl.remove();d.b.classList.remove('dragging');place(d.i)},130);return}
   const br=d.b.getBoundingClientRect();d.fl.style.transition='left .22s ease-in-out,top .22s ease-in-out,width .22s,height .22s,transform .22s';d.fl.style.left=br.left+'px';d.fl.style.top=br.top+'px';d.fl.style.width=br.width+'px';d.fl.style.height=br.height+'px';d.fl.style.transform='none';
   setTimeout(()=>{d.fl.remove();d.b.classList.remove('dragging')},230)};
- const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6)drag.moved=true;
+ const onMove=e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();drag.t=performance.now();if(!drag.moved&&Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)>6)drag.moved=true;
   drag.fl.style.left=(e.clientX-drag.fx)+'px';drag.fl.style.top=(e.clientY-drag.fy)+'px';
   if(e.clientY<70)scrollBy(0,-14);else if(e.clientY>innerHeight-70)scrollBy(0,14);
   slotEl(drag.i).classList.toggle('near',isNear())};
- const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;if(!drag.moved){const i=drag.i;endDrag(false);state.selected=i;draw();hint('조각이 들어갈 자리를 눌러요');return}
+ const onUp=e=>{if(!drag||e.pointerId!==drag.id)return;lastPiecePointer=performance.now();if(!drag.moved){const i=drag.i;endDrag(false);state.selected=i;draw();hint('조각이 들어갈 자리를 눌러요');return}
   if(isNear()){endDrag(true);return}
   const r=$('.puzzle-board').getBoundingClientRect();if(e.clientX>r.left&&e.clientX<r.right&&e.clientY>r.top&&e.clientY<r.bottom){tone('soft');hint('조금 더 대어 봐요. 그림이 이어지는 칸을 찾아요')}endDrag(false)};
  const onCancel=e=>{if(drag&&e.pointerId===drag.id)endDrag(false)};
- $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
+ // 끄는 중에 화면이 안 보이거나 창을 벗어나면 떼지 못한 조각을 제자리로 돌려요
+ const onAway=e=>{if(e.type==='blur'||document.hidden)endDrag(false)};
+ $$('[data-piece]').forEach(b=>b.onpointerdown=e=>{lastPiecePointer=performance.now();
+  // 놓친 손 떼기 정리: 같은 손가락이 다시 눌렸거나(이미 뗌) 1초 넘게 움직임이 없으면 남은 조각을 치워요
+  if(drag&&(e.pointerId===drag.id||lastPiecePointer-drag.t>1000))endDrag(false,true);
+  if(state.done||b.disabled||drag||(e.pointerType==='mouse'&&e.button!==0))return;e.preventDefault();
   const i=+b.dataset.piece,c=cellBox(i),br=b.getBoundingClientRect(),fx=(e.clientX-br.left)/br.width*c.width,fy=(e.clientY-br.top)/br.height*c.height;
   const fl=document.createElement('div');fl.className='sq-drag';fl.style.cssText=`left:${e.clientX-fx}px;top:${e.clientY-fy}px;width:${c.width}px;height:${c.height}px`;decorate(fl,i);document.body.append(fl);
-  b.classList.add('dragging');state.selected=null;tone();drag={i,b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false};
-  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel)});
+  b.classList.add('dragging');state.selected=null;tone();drag={i,b,fl,fx,fy,id:e.pointerId,sx:e.clientX,sy:e.clientY,moved:false,t:lastPiecePointer};
+  addEventListener('pointermove',onMove,{passive:false});addEventListener('pointerup',onUp);addEventListener('pointercancel',onCancel);addEventListener('lostpointercapture',onCancel);addEventListener('blur',onAway);document.addEventListener('visibilitychange',onAway)});
  later(()=>$('#main').scrollIntoView({block:'start'}),0);
 draw();guideReady('puzzle');
 }
@@ -1632,7 +1646,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-4';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-5';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
