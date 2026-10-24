@@ -315,7 +315,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .reward-modal>.soft-btn{margin-top:12px}
 .puzzle-layout{display:grid;grid-template-columns:minmax(0,440px) 140px;justify-content:center;gap:22px;align-items:center}
 .puzzle-board{display:grid;grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);aspect-ratio:1;background:#fff;border:3px solid var(--hue-d);border-radius:18px;overflow:hidden}
-.puzzle-slot{min-width:0;min-height:0;border-radius:0;background-color:#FBF7F1;background-repeat:no-repeat;outline:1.5px dashed var(--line);outline-offset:-1px;font-family:var(--play);font-size:24px;color:#CDBFB0}
+.puzzle-slot{--ghost:rgba(251,247,241,.68);min-width:0;min-height:0;border-radius:0;background-color:#FBF7F1;background-repeat:no-repeat;outline:1.5px dashed var(--line);outline-offset:-1px;font-family:var(--play);font-size:24px;color:#CDBFB0}
 .puzzle-slot:disabled{outline:0;background-color:#fff}
 .puzzle-layout .center{text-align:center;color:var(--muted);font-size:15px;margin-bottom:6px}
 .puzzle-reference{background:var(--hue);border-radius:18px;padding:10px}
@@ -566,8 +566,8 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .news-modal .primary{display:flex;margin:0 auto;min-width:200px}
 .puzzle-slot.filled{outline:0;background-color:#fff;background-repeat:no-repeat}
 .puzzle-slot.filled:disabled{background-color:#fff}
-.puzzle-slot.near{background-color:#E6F1DE;outline:2.6px solid #5E8F6E;outline-offset:-3px}
-.puzzle-slot.nope{background-color:#F7DCD7}
+.puzzle-slot.near{--ghost:rgba(230,241,222,.55);background-color:#E6F1DE;outline:2.6px solid #5E8F6E;outline-offset:-3px}
+.puzzle-slot.nope{--ghost:rgba(247,220,215,.6);background-color:#F7DCD7}
 .puzzle-slot.pop-in{animation:pop .35s}
 .puzzle-tray .puzzle-piece{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
 .puzzle-piece.dragging{opacity:.25}
@@ -613,7 +613,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(> #art-canvas)>#art-canvas.color-canvas{--cs:min(var(--avail),calc(min(100vw,1080px) - 420px));width:var(--cs);height:var(--cs)}
  /* 퍼즐: 판은 왼쪽, 조각은 오른쪽 */
  .stage:has(> .puzzle-layout){display:grid;grid-template-columns:auto minmax(240px,1fr);grid-template-rows:auto auto 1fr;column-gap:24px;align-items:start}
- .stage:has(> .puzzle-layout)>.puzzle-layout{--pb:min(var(--avail),calc(min(100vw,1080px) - 520px));grid-column:1;grid-row:1/-1;grid-template-columns:var(--pb) 96px;gap:14px}
+ .stage:has(> .puzzle-layout)>.puzzle-layout{--pb:min(var(--avail),calc(min(100vw,1080px) - 552px));grid-column:1;grid-row:1/-1;grid-template-columns:var(--pb) 160px;gap:14px}
  .stage:has(> .puzzle-layout) .puzzle-board{width:var(--pb)}
  .stage:has(> .puzzle-layout)>.status{grid-column:2;grid-row:1;justify-content:flex-start}
  .stage:has(> .puzzle-layout)>.puzzle-tray{grid-column:2;grid-row:2;margin:0;max-width:340px;gap:10px}
@@ -1531,6 +1531,9 @@ function puzzle(picture='cat',level=0){shell('puzzle','',puzzleSetup);currentRes
  $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span><span class="puzzle-mini" aria-hidden="true">${puzzleThumb(picture)}</span></div><div class="puzzle-layout"><div class="puzzle-board" style="--cols:${cols};--rows:${rows}">${Array.from({length:n},(_,i)=>`<button class="puzzle-slot" data-slot="${i}" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"></button>`).join('')}</div><div><div class="puzzle-reference">${puzzleThumb(picture)}</div></div></div><p class="hint" id="hint">조각을 끌거나, 조각과 칸을 차례로 눌러요</p><div class="puzzle-tray" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>`<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"></button>`).join('')}</div>`;
  const decorate=(b,i)=>{b.style.backgroundImage=`url("${puzzleSrc(picture)}")`;b.style.backgroundSize=`${cols*100}% ${rows*100}%`;b.style.backgroundPosition=`${i%cols/(cols-1)*100}% ${Math.floor(i/cols)/(rows-1)*100}%`};
  const slotEl=s=>$(`[data-slot="${s}"]`);
+ // 빈칸에는 그 칸의 그림을 흐리게 깔아 두어 조각과 비교하며 넣을 수 있어요
+ const ghost=(el,i)=>{decorate(el,i);el.style.backgroundImage=`linear-gradient(var(--ghost),var(--ghost)),url("${puzzleSrc(picture)}")`;el.style.backgroundSize='100% 100%,'+el.style.backgroundSize;el.style.backgroundPosition='0 0,'+el.style.backgroundPosition};
+ $$('[data-slot]').forEach(el=>ghost(el,+el.dataset.slot));
  // 그림이 거의 없는(대부분 투명한) 조각끼리는 서로 바꿔 넣어도 맞아요 (비행기·자동차 모서리 등)
  const blank=new Set(),fits=(i,s)=>i===s||(blank.has(i)&&blank.has(s));
  if(!isStory(picture)){const im=new Image();im.onload=()=>{const S=96,cv=document.createElement('canvas');cv.width=cv.height=S;const cx=cv.getContext('2d',{willReadFrequently:true});cx.drawImage(im,0,0,S,S);const d=cx.getImageData(0,0,S,S).data;
@@ -1671,7 +1674,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-9';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-10';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
