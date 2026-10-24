@@ -1450,7 +1450,7 @@ function artStudio(mode='drawing',template='flower'){
  $('#art-save').onclick=()=>saveCanvas(canvas,'몽글몽글-'+titles[mode][0]);$('#art-done').onclick=()=>{if(!state.strokes.length&&!Object.keys(state.fills).length){popup('먼저 그림에 색을 더해 볼까요?');return}draftDone(dk);result('멋진 작품이 완성됐어요!','내가 고른 색으로 세상을 꾸몄어요.');const m=$('.reward-mascot');if(m){m.classList.add('work');m.innerHTML=`<img class="drawn-art" src="${canvas.toDataURL('image/png')}" alt="내가 그린 그림">`}const save=document.createElement('button');save.className='soft-btn';save.innerHTML=ui.save+'그림 저장';save.onclick=()=>saveCanvas(canvas,'몽글몽글-'+titles[mode][0]);{const acts=$('.modal-actions');acts.classList.add('three');acts.prepend(save)}};render();guideReady(mode);
 }
 // 퍼즐 그림: 그림 하나(배경 없음, images/icons 그림 그대로) / 이야기 그림(배경 있음, images/puzzle/키.webp, 작은 그림은 thumb/)
-const puzzleSolo=[['cat','고양이'],['dog','강아지'],['car','자동차'],['train','기차'],['plane','비행기'],['bus','버스'],['fire','소방차'],['panda','판다'],['frog','개구리']];
+const puzzleSolo=[['cat','고양이'],['dog','강아지'],['panda','판다'],['frog','개구리'],['car','자동차'],['train','기차'],['plane','비행기'],['bus','버스'],['fire','소방차']];
 const puzzleStory=[['picnic','소풍'],['beach','바닷가'],['playground','놀이터'],['birthday','생일 파티'],['rain','비 갠 날'],['sea','바닷속'],['snow','눈사람'],['carrot','당근 뽑기']];
 const isStory=p=>puzzleStory.some(([k])=>k===p);
 // 조각 수 [가로, 세로]: 그림 하나 4·6·9, 이야기 그림 6·9·12 (네모·퍼즐 모양 같음)
@@ -1669,7 +1669,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-7';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-8';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
