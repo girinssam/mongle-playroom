@@ -1126,7 +1126,7 @@ function popup(text,icon='💛',ms=550){const previous=$('.feedback-popup');if(p
 function celebrate(){tone('win');for(let i=0;i<9;i++){const el=document.createElement('span');el.className='confetti';el.style.left=(15+Math.random()*70)+'vw';el.style.background=['#F6D77E','#A6C8A0','#9FC7DD','#E6B0A7','#B8A8DA'][i%5];el.style.animationDelay=Math.random()*.35+'s';overlays.append(el);later(()=>el.remove(),2600)}}
 // 칭찬 창 기린: 세 장 중 무작위로 나오고, 바로 전과 같은 기린은 연달아 나오지 않아요
 const celebrateGiraffes=['star','clap','jump'];let lastGiraffe=null;
-function celebrateGiraffe(){const pick=celebrateGiraffes.filter(n=>n!==lastGiraffe);lastGiraffe=pick[Math.floor(Math.random()*pick.length)];return `<img class="drawn-art" src="images/celebrate/giraffe-${lastGiraffe}.webp" alt="">`}
+function celebrateGiraffe(){const pick=celebrateGiraffes.filter(n=>n!==lastGiraffe);lastGiraffe=pick[Math.floor(Math.random()*pick.length)];return `<img class="drawn-art" src="images/celebrate/giraffe-${lastGiraffe}.webp" alt="" onerror="const m=this.closest('.reward-mascot');if(m)m.innerHTML=pet('rabbit')">`}
 function result(title,desc,icon='🌟'){
  state.running=false;cancelAnimationFrame(frame);
  const mascot=celebrateGiraffe();
@@ -1646,7 +1646,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-5';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-6';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
