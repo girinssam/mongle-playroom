@@ -315,7 +315,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .reward-modal>.soft-btn{margin-top:12px}
 .puzzle-layout{display:grid;grid-template-columns:minmax(0,440px) 140px;justify-content:center;gap:22px;align-items:center}
 .puzzle-board{display:grid;grid-template-columns:repeat(var(--cols),1fr);grid-template-rows:repeat(var(--rows),1fr);aspect-ratio:1;background:#fff;border:3px solid var(--hue-d);border-radius:18px;overflow:hidden}
-.puzzle-slot{--ghost:rgba(251,247,241,.68);min-width:0;min-height:0;border-radius:0;background-color:#FBF7F1;background-repeat:no-repeat;outline:1.5px dashed var(--line);outline-offset:-1px;font-family:var(--play);font-size:24px;color:#CDBFB0}
+.puzzle-slot{--ghost:rgba(251,247,241,.8);min-width:0;min-height:0;border-radius:0;background-color:#FBF7F1;background-repeat:no-repeat;outline:1.5px dashed var(--line);outline-offset:-1px;font-family:var(--play);font-size:24px;color:#CDBFB0}
 .puzzle-slot:disabled{outline:0;background-color:#fff}
 .puzzle-layout .center{text-align:center;color:var(--muted);font-size:15px;margin-bottom:6px}
 .puzzle-reference{background:var(--hue);border-radius:18px;padding:10px}
@@ -566,8 +566,8 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .news-modal .primary{display:flex;margin:0 auto;min-width:200px}
 .puzzle-slot.filled{outline:0;background-color:#fff;background-repeat:no-repeat}
 .puzzle-slot.filled:disabled{background-color:#fff}
-.puzzle-slot.near{--ghost:rgba(230,241,222,.55);background-color:#E6F1DE;outline:2.6px solid #5E8F6E;outline-offset:-3px}
-.puzzle-slot.nope{--ghost:rgba(247,220,215,.6);background-color:#F7DCD7}
+.puzzle-slot.near{--ghost:rgba(230,241,222,.7);background-color:#E6F1DE;outline:2.6px solid #5E8F6E;outline-offset:-3px}
+.puzzle-slot.nope{--ghost:rgba(247,220,215,.72);background-color:#F7DCD7}
 .puzzle-slot.pop-in{animation:pop .35s}
 .puzzle-tray .puzzle-piece{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:grab}
 .puzzle-piece.dragging{opacity:.25}
@@ -616,7 +616,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(> .puzzle-layout)>.puzzle-layout{--pb:min(var(--avail),calc(min(100vw,1080px) - 552px));grid-column:1;grid-row:1/-1;grid-template-columns:var(--pb) 160px;gap:14px}
  .stage:has(> .puzzle-layout) .puzzle-board{width:var(--pb)}
  .stage:has(> .puzzle-layout)>.status{grid-column:2;grid-row:1;justify-content:flex-start}
- .stage:has(> .puzzle-layout)>.puzzle-tray{grid-column:2;grid-row:2;margin:0;max-width:340px;gap:10px}
+ .stage:has(> .puzzle-layout)>.puzzle-tray{grid-column:2;grid-row:2;margin:0;max-width:340px;gap:10px;grid-template-columns:repeat(var(--tcols,var(--cols)),1fr)}
  .stage:has(> .puzzle-layout)>.puzzle-tray.jig{max-width:none;gap:4px}
  .stage:has(> .puzzle-layout)>.hint{grid-column:2;grid-row:3;text-align:left}
 
@@ -770,7 +770,6 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .parent-tips ul{margin:0;padding-left:18px}
 .parent-tips li+li{margin-top:4px}
 
-.puzzle-mini{display:none}
 @media(max-width:600px){
  .hero{grid-template-columns:minmax(0,1fr) 96px;gap:6px;padding:16px;border-radius:24px}
  .hero h1{font-size:clamp(20px,5.5vw,28px);white-space:normal}
@@ -779,16 +778,16 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .game-group{margin-top:22px}
 }
 @media(max-width:899px),(orientation:portrait){
- .stage:has(>.puzzle-layout){--puzzle-space:max(220px,calc(100svh - 240px));display:flex;flex-direction:column;align-items:center;gap:10px;padding:12px;min-height:0}
- .stage:has(>.puzzle-layout)>.status{margin:0;min-height:40px;gap:12px}
- .stage:has(>.puzzle-layout) .puzzle-mini{display:block;width:40px;height:40px}
- .puzzle-mini .drawn-art{width:100%;height:100%}
- .stage:has(>.puzzle-layout)>.puzzle-layout{display:block;width:min(100%,calc(var(--puzzle-space)*.56));margin:0}
- .stage:has(>.puzzle-layout) .puzzle-board{width:100%;height:auto;aspect-ratio:1}
- .stage:has(>.puzzle-layout) .puzzle-layout>div:last-child{display:none}
- .stage:has(>.puzzle-layout)>.puzzle-tray{width:min(100%,calc(var(--puzzle-space)*.44));max-width:none;margin:0;gap:6px}
+ /* 판은 위, 아래 줄에 조각들과 보기 그림을 나란히 */
+ .stage:has(>.puzzle-layout){--puzzle-space:max(220px,calc(100svh - 240px));--ref:clamp(80px,24vw,220px);display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;gap:10px 12px;padding:12px;min-height:0}
+ .stage:has(>.puzzle-layout)>.status{grid-column:1/-1;grid-row:1;margin:0;min-height:40px;gap:12px}
+ .stage:has(>.puzzle-layout)>.puzzle-layout{display:contents}
+ .stage:has(>.puzzle-layout) .puzzle-board{grid-column:1/-1;grid-row:2;justify-self:center;width:min(calc(100vw - 48px),calc(var(--puzzle-space)*.56));height:auto;aspect-ratio:1}
+ .stage:has(>.puzzle-layout)>.hint{grid-column:1/-1;grid-row:3;margin:0;min-height:0}
+ .stage:has(>.puzzle-layout)>.puzzle-tray{grid-column:1;grid-row:4;width:min(calc(100vw - 64px - var(--ref)),calc(var(--puzzle-space)*.44));max-width:none;margin:0;gap:6px}
  .stage:has(>.puzzle-layout)>.puzzle-tray.jig{gap:3px}
- .stage:has(>.puzzle-layout)>.hint{margin:0;min-height:0}
+ .stage:has(>.puzzle-layout) .puzzle-layout>div:last-child{grid-column:2;grid-row:4;display:block}
+ .stage:has(>.puzzle-layout) .puzzle-reference{width:var(--ref);padding:8px}
 }
 #main[data-hue]~footer{display:none}
 
@@ -1459,7 +1458,7 @@ const isStory=p=>puzzleStory.some(([k])=>k===p);
 const puzzleGrid=(p,level)=>(isStory(p)?[[3,2],[3,3],[4,3]]:[[2,2],[3,2],[3,3]])[level];
 // 조각 칸에서 그림이 있는 부분이 이 비율보다 적으면(대부분 투명하면) '빈 조각'
 const BLANK_PIECE=.2;
-// 큰 그림은 퍼즐판과 조각에만, 고르는 화면·참고 그림·미리보기는 작은 그림
+// 큰 그림은 퍼즐판과 조각에만, 고르는 화면·보기 그림은 작은 그림
 const puzzleSrc=p=>isStory(p)?`images/puzzle/${p}.webp`:rasterIcons[p];
 const puzzleThumb=p=>isStory(p)?`<img class="drawn-art story-art" src="images/puzzle/thumb/${p}.webp" alt="" draggable="false">`:rasterArt(p);
 function puzzleSetup(){shell('puzzle');currentRestart=puzzleSetup;const saved=setupSaved.puzzle||{};let picture=saved.picture||'cat',level=saved.level||0,shape=saved.shape||'square';
@@ -1477,7 +1476,7 @@ function jigsaw(picture='cat',level=0){shell('puzzle','',puzzleSetup);currentRes
  const paths=Array.from({length:n},(_,i)=>jigPiecePath(Math.floor(i/cols),i%cols,cols,rows,hs,vs,W,H)),src=puzzleSrc(picture);
  const art=i=>`<path class="jig-base" d="${paths[i]}"/><image href="${src}" x="0" y="0" width="${W}" height="${H}" preserveAspectRatio="xMidYMid meet" clip-path="url(#jc${i})"/><path class="jig-edge" d="${paths[i]}"/>`;
  state={selected:null,board:Array(n).fill(null),done:false};
- $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span><span class="puzzle-mini" aria-hidden="true">${puzzleThumb(picture)}</span></div><div class="puzzle-layout"><div class="puzzle-board jig"><svg class="jig-svg" id="jig-board" viewBox="0 0 ${W} ${H}"><defs>${paths.map((d,i)=>`<clipPath id="jc${i}"><path d="${d}"/></clipPath>`).join('')}</defs>${paths.map((d,i)=>`<path class="jig-slot" data-slot="${i}" d="${d}" tabindex="0" role="button" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"/>`).join('')}<g id="jig-placed"></g></svg></div><div><div class="puzzle-reference">${puzzleThumb(picture)}</div></div></div><p class="hint" id="hint">조각을 끌거나, 조각과 자리를 차례로 눌러요</p><div class="puzzle-tray jig" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>{const r=Math.floor(i/cols),c=i%cols;return `<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"><svg viewBox="${(c*cw-m).toFixed(1)} ${(r*ch-m).toFixed(1)} ${(cw+2*m).toFixed(1)} ${(ch+2*m).toFixed(1)}" aria-hidden="true">${art(i)}</svg></button>`}).join('')}</div>`;
+ $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board jig"><svg class="jig-svg" id="jig-board" viewBox="0 0 ${W} ${H}"><defs>${paths.map((d,i)=>`<clipPath id="jc${i}"><path d="${d}"/></clipPath>`).join('')}</defs>${paths.map((d,i)=>`<path class="jig-slot" data-slot="${i}" d="${d}" tabindex="0" role="button" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"/>`).join('')}<g id="jig-placed"></g></svg></div><div><div class="puzzle-reference">${puzzleThumb(picture)}</div></div></div><p class="hint" id="hint">조각을 끌거나, 조각과 자리를 차례로 눌러요</p><div class="puzzle-tray jig" style="--cols:${cols};--rows:${rows};--tcols:${Math.min(cols,3)}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>{const r=Math.floor(i/cols),c=i%cols;return `<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"><svg viewBox="${(c*cw-m).toFixed(1)} ${(r*ch-m).toFixed(1)} ${(cw+2*m).toFixed(1)} ${(ch+2*m).toFixed(1)}" aria-hidden="true">${art(i)}</svg></button>`}).join('')}</div>`;
  const draw=()=>{$$('[data-piece]').forEach(b=>{const p=+b.dataset.piece,used=state.board[p]!==null;b.classList.toggle('used',used);b.disabled=used;b.setAttribute('aria-pressed',String(p===state.selected))});
   const placed=state.board.filter(p=>p!==null).length;$('#puzzle-count').textContent=`${placed} / ${n}조각`;
   if(placed===n&&!state.done){state.done=true;$('#jig-board').classList.add('complete');hint('짝짝짝! 그림이 완성됐어요');later(()=>result('퍼즐을 완성했어요!',`${n}개의 조각이 멋진 그림이 됐어요.`),1100)}};
@@ -1528,7 +1527,7 @@ function jigsaw(picture='cat',level=0){shell('puzzle','',puzzleSetup);currentRes
 draw();guideReady('puzzle')}
 
 function puzzle(picture='cat',level=0){shell('puzzle','',puzzleSetup);currentRestart=()=>puzzle(picture,level);const [cols,rows]=puzzleGrid(picture,level),n=cols*rows;state={selected:null,board:Array(n).fill(null),done:false};
- $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span><span class="puzzle-mini" aria-hidden="true">${puzzleThumb(picture)}</span></div><div class="puzzle-layout"><div class="puzzle-board" style="--cols:${cols};--rows:${rows}">${Array.from({length:n},(_,i)=>`<button class="puzzle-slot" data-slot="${i}" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"></button>`).join('')}</div><div><div class="puzzle-reference">${puzzleThumb(picture)}</div></div></div><p class="hint" id="hint">조각을 끌거나, 조각과 칸을 차례로 눌러요</p><div class="puzzle-tray" style="--cols:${cols};--rows:${rows}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>`<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"></button>`).join('')}</div>`;
+ $('#stage').innerHTML=`<div class="status"><span class="stat" id="puzzle-count">0 / ${n}조각</span></div><div class="puzzle-layout"><div class="puzzle-board" style="--cols:${cols};--rows:${rows}">${Array.from({length:n},(_,i)=>`<button class="puzzle-slot" data-slot="${i}" aria-label="${Math.floor(i/cols)+1}줄 ${i%cols+1}칸 빈칸"></button>`).join('')}</div><div><div class="puzzle-reference">${puzzleThumb(picture)}</div></div></div><p class="hint" id="hint">조각을 끌거나, 조각과 칸을 차례로 눌러요</p><div class="puzzle-tray" style="--cols:${cols};--rows:${rows};--tcols:${Math.min(cols,3)}">${shuffle(Array.from({length:n},(_,i)=>i)).map(i=>`<button class="puzzle-piece" data-piece="${i}" aria-label="그림 조각 ${i+1}" aria-pressed="false"></button>`).join('')}</div>`;
  const decorate=(b,i)=>{b.style.backgroundImage=`url("${puzzleSrc(picture)}")`;b.style.backgroundSize=`${cols*100}% ${rows*100}%`;b.style.backgroundPosition=`${i%cols/(cols-1)*100}% ${Math.floor(i/cols)/(rows-1)*100}%`};
  const slotEl=s=>$(`[data-slot="${s}"]`);
  // 빈칸에는 그 칸의 그림을 흐리게 깔아 두어 조각과 비교하며 넣을 수 있어요
@@ -1674,7 +1673,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.24-10';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.24-11';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
