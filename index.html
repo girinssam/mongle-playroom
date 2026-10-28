@@ -285,6 +285,7 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
  .order-scene{gap:16px}
  .order-scene{flex-direction:column;gap:12px}.speech{font-size:19px}.speech:before{left:50%;top:-15px;transform:translateX(-50%);border:11px solid transparent;border-top:0;border-bottom:16px solid var(--blush)}
  .food-shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:320px;margin:auto}.food{min-width:84px;padding:10px 6px}.food span{width:60px;height:60px}.food small{font-size:14px}
+ .basket{min-height:96px;padding:10px;gap:8px;margin:18px auto 14px}
  .basket .basket-item{width:56px;height:56px}
  .balloon{width:70px;height:88px;font-size:30px}.balloon:after{top:86px}
  .journey{height:430px}
@@ -1739,7 +1740,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.28-6';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.28-7';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
