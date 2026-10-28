@@ -169,12 +169,12 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .order-what strong{font-weight:400;font-size:1.08em}
 .food-preview{display:block;flex-shrink:0;width:1.9em;height:1.9em}
 .food-shelf{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-.food{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:104px;padding:12px 10px 10px;background:#fff;border:2px solid var(--line);border-radius:22px;box-shadow:0 4px 0 var(--line)}
+.food{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:128px;padding:14px 12px 12px;background:#fff;border:2px solid var(--line);border-radius:22px;box-shadow:0 4px 0 var(--line)}
 .food:not(:disabled):active{transform:translateY(4px);box-shadow:0 0 0 var(--line)}
-.food span{width:64px;height:64px}
+.food span{width:80px;height:80px}
 .food small{font-size:16px}
-.basket{margin:24px auto 18px;max-width:600px;min-height:100px;background:#FBF1DE;border:2px dashed #E0C79C;border-radius:22px 22px 44px 44px;padding:16px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
-.basket .basket-item{width:58px;height:58px;padding:2px;border:0;background:none;border-radius:16px;animation:pop .25s;transition:transform .18s,opacity .18s}
+.basket{margin:24px auto 18px;max-width:700px;min-height:140px;background:#FBF1DE;border:2px dashed #E0C79C;border-radius:22px 22px 44px 44px;padding:16px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+.basket .basket-item{width:70px;height:70px;padding:2px;border:0;background:none;border-radius:16px;animation:pop .25s;transition:transform .18s,opacity .18s}
 .basket .basket-item .drawn-art{width:100%;height:100%;pointer-events:none}
 .basket .basket-item:active{transform:scale(.88)}
 .basket .basket-item.leaving{transform:scale(.2);opacity:0}
@@ -284,8 +284,8 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
  .animal{width:96px;height:96px}
  .order-scene{gap:16px}
  .order-scene{flex-direction:column;gap:12px}.speech{font-size:19px}.speech:before{left:50%;top:-15px;transform:translateX(-50%);border:11px solid transparent;border-top:0;border-bottom:16px solid var(--blush)}
- .food-shelf{gap:8px}.food{min-width:70px;padding:8px 4px}.food span{width:48px;height:48px}.food small{font-size:14px}
- .basket .basket-item{width:46px;height:46px}
+ .food-shelf{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:320px;margin:auto}.food{min-width:84px;padding:10px 6px}.food span{width:60px;height:60px}.food small{font-size:14px}
+ .basket .basket-item{width:56px;height:56px}
  .balloon{width:70px;height:88px;font-size:30px}.balloon:after{top:86px}
  .journey{height:430px}
  .journey-row{left:9%;width:82%;gap:8px}
@@ -644,9 +644,9 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(> .order-scene)>.order-scene{grid-area:scene;flex-direction:column;gap:14px;margin:0}
  .stage:has(> .order-scene) .speech:before{left:50%;top:-15px;transform:translateX(-50%);border:11px solid transparent;border-top:0;border-bottom:16px solid var(--blush)}
  .stage:has(> .order-scene)>.food-shelf{grid-area:shelf;gap:8px}
- .stage:has(> .order-scene) .food{min-width:76px;padding:8px 6px}.stage:has(> .order-scene) .food span{width:50px;height:50px}
+ .stage:has(> .order-scene) .food{min-width:92px;padding:10px 8px}.stage:has(> .order-scene) .food span{width:64px;height:64px}
  .stage:has(> .order-scene) .animal{width:130px;height:130px}
- .stage:has(> .order-scene) .basket{min-height:80px}
+ .stage:has(> .order-scene) .basket{min-height:120px}
  .stage:has(> .order-scene)>.basket{grid-area:basket;margin:12px 0;width:100%}
  .stage:has(> .order-scene)>.order-actions{grid-area:actions}
  .stage:has(> .order-scene)>.hint{grid-area:hint}
@@ -1739,7 +1739,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.28-4';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.28-5';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
