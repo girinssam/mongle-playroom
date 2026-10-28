@@ -1162,7 +1162,9 @@ function koVoices(){return 'speechSynthesis'in window?speechSynthesis.getVoices(
 function resolveVoice(type){const vs=koVoices();if(!vs.length)return{voice:null,real:type==='f'};for(const r of voiceNames[type]){const v=vs.find(x=>r.test(x.name)&&!(type==='m'&&/female|여성/i.test(x.name)));if(v)return{voice:v,real:true}}if(type==='f')return{voice:vs[0],real:true};return{voice:vs.find(v=>v.localService)||vs[0],real:false}}
 function voiceName(v){return v?v.name.replace(/Microsoft |Google |\(.*?\)| - .*|Online|Natural/g,'').trim()||v.name:''}
 // profile을 따로 넘기면(전화기) 기기 목소리로, 아니면 고른 목소리의 녹음 파일로 읽어요
-function speak(text,profile){if(!VOICE_ON||!soundOn)return;stopVoice();const p=profile||voiceProfiles[voiceKey];if(!profile){const f=kidFiles(String(text));if(f){playClips(voiceKey,f,()=>ttsSpeak(text,p));return}}ttsSpeak(text,p)}
+// 놀이 방법 안내 팝업이 떠 있는 동안 온 문장은 맡아 두었다가(마지막 것만) 팝업을 닫으면 읽어요
+let lastSpeech=null,heldSpeech=null;
+function speak(text,profile){if(!VOICE_ON||!soundOn)return;if($('.guide-backdrop')){heldSpeech=[text,profile];return}lastSpeech=[text,profile];stopVoice();const p=profile||voiceProfiles[voiceKey];if(!profile){const f=kidFiles(String(text));if(f){playClips(voiceKey,f,()=>ttsSpeak(text,p));return}}ttsSpeak(text,p)}
 function ttsSpeak(text,p){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const r=resolveVoice(p.type);const u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';if(r.voice)u.voice=r.voice;u.pitch=Math.min(2,Math.max(.1,r.real?p.pitch:(p.emPitch??p.pitch)));u.rate=r.real?p.rate:(p.emRate??p.rate);speechSynthesis.speak(u)}
 function say(text){$('#announce').textContent=text}
 function hint(text){const el=$('#hint');if(el)el.textContent=text.replace(/[\p{Extended_Pictographic}\uFE0F]/gu,'');say(text)}
@@ -1242,11 +1244,13 @@ function showGuide(g){if(!guides[g]||$('.guide-backdrop'))return;guideMark(g);co
  const wrap=document.createElement('div');wrap.className='modal-backdrop guide-backdrop';const tools=guideTools[g];
  wrap.innerHTML=`<section class="modal guide-modal" role="dialog" aria-modal="true" aria-labelledby="guide-title" aria-describedby="guide-text"><div class="guide-body"><h2 id="guide-title">${titles[g][0]}</h2><div class="guide-demo" data-demo="${g}" data-hue="${hues[g]}" aria-hidden="true" style="--dur:${guideDur[g]||2.5}s${g==='coloring'?';--t1x:26%;--t1y:60%;--t2x:15%;--t2y:25%;--t3x:38%;--t3y:25%':''}">${guideScenes[g]()}${gdFinger}</div><p class="guide-text" id="guide-text">${guides[g]}</p>${tools?`<ul class="guide-tools">${tools.map(([ic,n,d])=>`<li><i>${ic}${n}</i><span>${d}</span></li>`).join('')}</ul>`:''}</div><button class="primary" id="guide-go">${ui.play}해 볼래요!</button></section>`;
  overlays.append(wrap);
- const close=()=>{if(!wrap.isConnected)return;stopVoice();wrap.remove();if(held)resumeGame();$('#guide-btn')?.focus({preventScroll:true})};
+ const close=()=>{if(!wrap.isConnected)return;stopVoice();wrap.remove();if(heldSpeech){const h=heldSpeech;heldSpeech=null;speak(...h)}if(held)resumeGame();$('#guide-btn')?.focus({preventScroll:true})};
  $('#guide-go',wrap).onclick=()=>{tone();close()};wrap.onclick=e=>{if(e.target===wrap)close()};
  wrap.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}else if(e.key==='Tab'){e.preventDefault();$('#guide-go',wrap).focus()}};
  if(g==='coloring')guidePaint($('.guide-demo',wrap));
  // 안내 문장 읽어 주기: 녹음(guide-놀이.mp3)이 없으면 기기 목소리로
+ // 막 읽기 시작한 놀이 첫 문장(아직 읽는 중)은 맡아 두고 안내를 먼저 읽어요
+ heldSpeech=(curAudio||('speechSynthesis'in window&&speechSynthesis.speaking))?lastSpeech:null;
  if(VOICE_ON&&soundOn){stopVoice();playClips(voiceKey,['guide-'+g],()=>ttsSpeak(guides[g].replace(/\n/g,' '),voiceProfiles[voiceKey]))}
  $('#guide-go',wrap).focus({preventScroll:true})}
 // 놀이 화면이 처음 그려질 때 부르기: '홈으로' 왼쪽에 물음표 버튼을 달고, 이 기기에서 처음이면 안내를 띄워요
@@ -1733,7 +1737,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.28-1';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.28-2';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
