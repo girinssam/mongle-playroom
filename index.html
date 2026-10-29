@@ -2,8 +2,13 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FBF7F1"><meta name="description" content="4~6세 어린이를 위한 열두 가지 터치 놀이. 기억력, 숫자, 글자를 즐겁게 배워요.">
+<meta name="theme-color" content="#FBF7F1"><meta name="description" content="4~6세 어린이를 위한 열 가지 터치 놀이. 기억력, 숫자, 글자를 즐겁게 배워요.">
 <title>몽글몽글 놀이방</title>
+<meta property="og:type" content="website"><meta property="og:site_name" content="몽글몽글 놀이방"><meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="몽글몽글 놀이방"><meta property="og:description" content="광고 없이 무료로 즐기는 4~6세 터치 놀이 10가지">
+<meta property="og:url" content="https://girinssam.github.io/mongle-playroom/">
+<meta property="og:image" content="https://girinssam.github.io/mongle-playroom/images/brand/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="몽글몽글 놀이방: 동물 친구들과 기린">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="몽글몽글 놀이방"><meta name="twitter:description" content="광고 없이 무료로 즐기는 4~6세 터치 놀이 10가지"><meta name="twitter:image" content="https://girinssam.github.io/mongle-playroom/images/brand/og.png">
 <link rel="icon" type="image/png" href="images/brand/favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
@@ -770,6 +775,11 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 @keyframes holdNudge{20%{translate:-4px 0}40%{translate:4px 0}60%{translate:-3px 0}80%{translate:2px 0}}
 @media(prefers-reduced-motion:reduce){.hold.holding::after{transition:none}.hold.nudge{animation:none}}
 .parent-note{margin-top:10px;font-size:13px;color:var(--muted)}
+.credit-note{margin:2px 0 0;font-size:11px;line-height:1.6;color:var(--muted);text-align:center;max-width:560px}
+.credit-note span{display:block}
+.news-feedback{display:flex;justify-content:center;margin-top:12px}
+.news-privacy{margin:0 0 18px;padding:12px 16px;border:1.5px dashed var(--line);border-radius:16px;font-size:14px;line-height:1.65;color:#5E4E44}
+.news-privacy h3{margin:0 0 4px;font-size:15px}
 @media(max-width:480px){.parent-note{line-height:1.8;text-align:center}.parent-note-line{display:block;white-space:nowrap}.parent-note-separator{display:none}}
 .news-modal{max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow-y:auto}
 .parent-tips{margin:0 0 18px;padding:14px 18px;border:1.5px dashed var(--line);border-radius:18px;font-size:15px;line-height:1.65;color:#5E4E44}
@@ -1049,7 +1059,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 @media(max-width:480px){.news-dialog{padding:20px 16px}.news-tab{flex-direction:column;gap:3px;font-size:13px}.news-dialog .news-intro{padding:14px 12px;font-size:15px}}
 </style>
 </head>
-<body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><a class="soft-btn feedback-link" id="feedback" href="https://forms.gle/s5a8f1qH3ZmPnb1w8" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</a><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button></div><p class="parent-note"><span class="parent-note-line">의견 보내기는 한 번</span><span class="parent-note-separator"> · </span><span class="parent-note-line">보호자 안내와 소리 켜기는 1초 꾹</span><span class="parent-note-separator"> · </span><span class="parent-note-line">소리 끄기는 한 번</span></p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
+<body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button></div><p class="parent-note"><span class="parent-note-line">보호자 안내와 소리 켜기는 1초 꾹</span><span class="parent-note-separator"> · </span><span class="parent-note-line">소리 끄기는 한 번</span></p><p class="credit-note"><span>이 사이트에는 클로바더빙(CLOVA Dubbing)의 AI 보이스(다인, 하준, 아라, 종혁)가 사용되었습니다.</span><span>© 2026 언어재활사 꿈부자기린쌤 · 그림과 글의 무단 복제·재배포를 금지합니다</span></p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
 <script>
 'use strict';
 const rasterIcons={"dog": "images/icons/dog.webp", "toothbrush": "images/icons/toothbrush.webp", "spoon": "images/icons/spoon.webp", "cat": "images/icons/cat.webp", "rabbit": "images/icons/rabbit.webp", "bear": "images/icons/bear.webp", "pig": "images/icons/pig.webp", "apple": "images/icons/apple.webp", "banana": "images/icons/banana.webp", "grapes": "images/icons/grapes.webp", "car": "images/icons/car.webp", "bus": "images/icons/bus.webp", "train": "images/icons/train.webp", "cow": "images/icons/cow.webp", "frog": "images/icons/frog.webp", "chick": "images/icons/chick.webp", "panda": "images/icons/panda.webp", "mole": "images/icons/mole.webp", "strawberry": "images/icons/strawberry.webp", "watermelon": "images/icons/watermelon.webp", "orange": "images/icons/orange.webp", "peach": "images/icons/peach.webp", "pear": "images/icons/pear.webp", "plane": "images/icons/plane.webp", "boat": "images/icons/boat.webp", "bike": "images/icons/bike.webp", "ambulance": "images/icons/ambulance.webp", "ball": "images/icons/ball.webp", "shoe": "images/icons/shoe.webp", "hat": "images/icons/hat.webp", "umbrella": "images/icons/umbrella.webp", "book": "images/icons/book.webp", "basket": "images/icons/basket.webp", "balloon": "images/icons/balloon.webp", "fire": "images/icons/fire.webp", "pencils": "images/icons/pencils.webp", "phone": "images/icons/phone.webp", "police": "images/icons/police.webp"};
@@ -1121,9 +1131,11 @@ function holdify(el,ms,action){if(!el)return;el.classList.add('hold');el.style.s
  const reset=()=>{clearTimeout(t);t=null;ready=false;el.classList.remove('holding','ready')};
  // 시간이 다 차면 손을 떼기 전에 바로 실행하고, 손을 뗄 때 생기는 click은 한 번 막아요 (방금 열린 창이 그 click에 닫히거나 두 번 실행되지 않게)
  const fire=()=>{reset();const stop=ev=>{ev.stopPropagation();ev.preventDefault()},up=()=>{document.removeEventListener('pointerup',up,true);document.removeEventListener('pointercancel',up,true);setTimeout(()=>document.removeEventListener('click',stop,true),300)};document.addEventListener('click',stop,true);document.addEventListener('pointerup',up,true);document.addEventListener('pointercancel',up,true);action()};
- el.addEventListener('pointerdown',e=>{if(e.button>0)return;reset();fired=false;const duration=typeof ms==='function'?ms():ms;el.style.setProperty('--hold-ms',duration+'ms');void el.offsetWidth;el.classList.add('holding');if(duration===0){ready=true;return}t=setTimeout(()=>{t=null;tone('good');fire()},duration)});
+ // 누르는 동안 손가락이 조금 밀려도 풀리지 않게 포인터를 붙잡고, 버튼 밖으로 멀리(24px 넘게) 나가면 취소해요
+ el.addEventListener('pointerdown',e=>{if(e.button>0)return;reset();fired=false;try{el.setPointerCapture(e.pointerId)}catch{}const duration=typeof ms==='function'?ms():ms;el.style.setProperty('--hold-ms',duration+'ms');void el.offsetWidth;el.classList.add('holding');if(duration===0){ready=true;return}t=setTimeout(()=>{t=null;tone('good');fire()},duration)});
  el.addEventListener('pointerup',e=>{const go=ready;reset();if(go){fired=true;action()}});
- el.addEventListener('pointercancel',reset);el.addEventListener('pointerleave',reset);
+ el.addEventListener('pointermove',e=>{if(!el.classList.contains('holding'))return;const r=el.getBoundingClientRect(),m=24;if(e.clientX<r.left-m||e.clientX>r.right+m||e.clientY<r.top-m||e.clientY>r.bottom+m)reset()});
+ el.addEventListener('pointercancel',reset);el.addEventListener('lostpointercapture',()=>{if(t)reset()});el.addEventListener('contextmenu',e=>e.preventDefault());
  el.addEventListener('click',e=>{e.preventDefault();if(fired){fired=false;return}if(e.detail===0){action();return}el.classList.remove('nudge');void el.offsetWidth;el.classList.add('nudge')})}
 // 뒤로 가기(버튼·화면 끝 쓸기)를 하면 사이트 밖이 아니라 놀이방 안에서 한 단계 뒤로 와요 (고르는 화면이 있는 놀이는 고르는 화면, 아니면 홈)
 let navFromPop=false;
@@ -1753,10 +1765,11 @@ function showNews(){
  <div class="news-tabs" role="tablist" aria-label="보호자 안내 항목">${tabs.map(([id,label,icon],i)=>`<button class="news-tab" id="news-tab-${id}" role="tab" aria-selected="${i===0}" aria-controls="news-panel-${id}" tabindex="${i===0?0:-1}">${icon}<span>${label}</span></button>`).join('')}</div>
  <div class="news-panels">
  <div id="news-panel-intro" role="tabpanel" aria-labelledby="news-tab-intro" tabindex="0">
- <div class="news-intro"><p>몽글몽글 놀이방은<br>광고 없이 태블릿을 잠시 사용할 때<br>안심하고 놀이할 수 있는 공간입니다.</p><p>불편한 점이나 오류가 있거나<br>‘이런 놀이가 있으면 좋겠어요’ 하는 제안이 있으면<br>의견 보내기를 통해 보내주세요!</p></div>
+ <div class="news-intro"><p>몽글몽글 놀이방은<br>광고 없이 태블릿을 잠시 사용할 때<br>안심하고 놀이할 수 있는 공간입니다.</p><p>불편한 점이나 오류가 있거나<br>‘이런 놀이가 있으면 좋겠어요’ 하는 제안이 있으면<br>의견 보내기를 통해 보내주세요!</p><p class="news-feedback"><a class="soft-btn feedback-link" id="feedback" href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</a></p></div>
+ <div class="news-privacy"><h3>개인정보</h3><p>회원가입이 없고 아이의 이름·사진 같은 개인정보를 모으지 않아요. 방문 수와 놀이별 시작 수만 쿠키 없이 세요(GoatCounter). 그리던 그림은 이 기기의 브라우저에만 저장돼요. 의견 보내기는 구글 설문으로 연결돼요.</p></div>
  <p class="news-maker">언어재활사 <b>꿈부자기린쌤</b>이 만들었어요 · Instagram <a href="https://www.instagram.com/slp_girin/" target="_blank" rel="noopener">@slp_girin</a></p>
  <p class="news-maker news-voice">목소리: 네이버 클로바더빙 (다인·하준·아라·종혁)</p></div>
- <div id="news-panel-help" role="tabpanel" aria-labelledby="news-tab-help" tabindex="0" hidden><div class="parent-tips"><h3>보호자 도움말</h3><ul><li>홈 화면에 추가하면 주소창 없이 앱처럼 열려요. 아이패드·아이폰은 사파리 공유 버튼에서 ‘홈 화면에 추가’를 눌러요. 갤럭시탭 등 안드로이드는 크롬 메뉴(⋮)에서 ‘홈 화면에 추가’를 누른 뒤 ‘앱으로 설치’를 골라요. 다른 옵션(바로가기)을 고르면 주소창이 보여요.</li><li>아이 혼자 쓸 때는 화면 고정을 켜 두세요. 아이패드·아이폰은 설정 › 손쉬운 사용 › 사용법 유도 접근, 안드로이드는 설정에서 ‘앱 고정’을 찾아 켜요.</li><li>소리가 안 나면 기기의 무음 모드와 음량을 확인해 주세요.</li><li>소리 끄기는 한 번만 누르면 돼요. 소리 켜기는 1초 꾹 누르면 돼요. 의견 보내기는 한 번 누르면 열려요. 보호자 안내는 1초 꾹 누르면 열려요.</li><li>퍼즐은 조각을 끌어다 놓거나, 조각을 누른 다음 맞는 자리를 눌러도 돼요. 풍선 놀이는 시간 제한 없이 15개 찾기와 30초 도전 중에서 고를 수 있어요.</li></ul></div></div>
+ <div id="news-panel-help" role="tabpanel" aria-labelledby="news-tab-help" tabindex="0" hidden><div class="parent-tips"><h3>보호자 도움말</h3><ul><li>홈 화면에 추가하면 주소창 없이 앱처럼 열려요. 아이패드·아이폰은 사파리 공유 버튼에서 ‘홈 화면에 추가’를 눌러요. 갤럭시탭 등 안드로이드는 크롬 메뉴(⋮)에서 ‘홈 화면에 추가’를 누른 뒤 ‘앱으로 설치’를 골라요. 다른 옵션(바로가기)을 고르면 주소창이 보여요.</li><li>아이 혼자 쓸 때는 화면 고정을 켜 두세요. 아이패드·아이폰은 설정 › 손쉬운 사용 › 사용법 유도 접근, 안드로이드는 설정에서 ‘앱 고정’을 찾아 켜요.</li><li>소리가 안 나면 기기의 무음 모드와 음량을 확인해 주세요.</li><li>소리 끄기는 한 번만 누르면 돼요. 소리 켜기는 1초 꾹 누르면 돼요. 보호자 안내는 1초 꾹 누르면 열려요. 의견 보내기는 보호자 안내의 ‘소개’ 탭에 있어요.</li><li>퍼즐은 조각을 끌어다 놓거나, 조각을 누른 다음 맞는 자리를 눌러도 돼요. 풍선 놀이는 시간 제한 없이 15개 찾기와 30초 도전 중에서 고를 수 있어요.</li></ul></div></div>
  <div id="news-panel-save" role="tabpanel" aria-labelledby="news-tab-save" tabindex="0" hidden><div class="parent-tips">${saveHelpHTML}</div></div>
  <div id="news-panel-updates" role="tabpanel" aria-labelledby="news-tab-updates" tabindex="0" hidden>${siteNews.length?`<h3 class="news-heading">업데이트 소식</h3><div class="news-list">${siteNews.map(([d,items])=>`<article><h4>${d}</h4><ul>${items.map(t=>`<li>${t}</li>`).join('')}</ul></article>`).join('')}</div>`:''}</div>
  </div><button class="primary" id="news-close">${ui.check}확인했어요</button></section>`);
@@ -1768,7 +1781,7 @@ function showNews(){
  wrap.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}else if(e.key==='Tab'){const focusable=$$('button,a[href],[tabindex="0"]',wrap).filter(el=>el.tabIndex>=0&&!el.closest('[hidden]')),first=focusable[0],last=focusable[focusable.length-1];if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}};buttons[0].focus();
 }
 document.addEventListener('click',e=>{if(e.target.closest('[data-save-help]'))showSaveHelp()});
-const FEEDBACK_URL='https://forms.gle/s5a8f1qH3ZmPnb1w8';holdify($('#news-btn'),1000,showNews);$('#news-btn').title='1초 꾹 누르면 보호자 안내가 열려요';$('#feedback').href=FEEDBACK_URL;soundLabel();$('#brand-icon').innerHTML='<img class="drawn-art brand-giraffe" src="images/brand/giraffe.webp" alt="" draggable="false">';
+const FEEDBACK_URL='https://forms.gle/s5a8f1qH3ZmPnb1w8';holdify($('#news-btn'),1000,showNews);$('#news-btn').title='1초 꾹 누르면 보호자 안내가 열려요';soundLabel();$('#brand-icon').innerHTML='<img class="drawn-art brand-giraffe" src="images/brand/giraffe.webp" alt="" draggable="false">';
 // 방문자 수 세기 (GoatCounter): 쿠키와 개인정보 없이 방문 수와 놀이별 시작 수만 셉니다.
 // GoatCounter에서 만든 코드(예: mongle-playroom)를 따옴표 안에 넣으면 켜지고, 비워 두면 꺼져요.
 const STATS_CODE='mongle-playroom';
@@ -1776,7 +1789,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.28-11';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.29-1';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});

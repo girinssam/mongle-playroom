@@ -53,7 +53,11 @@
 - const FEEDBACK_URL → 의견 보내기 구글 설문지 주소
 - const STATS_CODE → GoatCounter 방문자 수 세기 코드 (쿠키·개인정보 없음)
 - 소리 버튼: 끄기는 한 번 누르기, 켜기는 1초 꾹 누르기
-- 의견 보내기는 한 번 누르는 링크, 보호자 안내는 꾹 누르기(holdify) 1초. 이 하단 버튼과 안내 문장은 홈 화면에서만 보임 (놀이 화면에서는 #main[data-hue]~footer로 숨김)
+- 보호자 안내는 꾹 누르기(holdify) 1초. 이 하단 버튼과 안내 문장, 출처·저작권 두 줄(.credit-note)은 홈 화면에서만 보임 (놀이 화면에서는 #main[data-hue]~footer로 숨김)
+- 의견 보내기는 보호자 안내 '소개' 탭 안의 한 번 누르는 링크 버튼(FEEDBACK_URL, 새 창). 홈 하단에 두지 않음 (링크를 꾹 누르면 브라우저 링크 메뉴가 떠서 꾹 누르기가 끊기고, 코드로 새 창을 열면 팝업 차단될 수 있음)
+- holdify는 누르는 동안 setPointerCapture로 포인터를 붙잡고(24px 넘게 벗어나면 취소), 길게 누르기 메뉴(contextmenu)를 막음
+- 보호자 안내 '소개' 탭에 개인정보 안내(.news-privacy)가 있음. 모으는 정보가 바뀌면 이 문장도 고치기
+- SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×630). 놀이 개수가 바뀌면 meta description·og:description도 고치기
 - 보호자 안내 창의 업데이트 소식은 siteNews 배열에 ['날짜',['소식']] 형식으로 추가
 
 ## 작업 규칙
