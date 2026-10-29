@@ -14,10 +14,12 @@
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="몽글몽글"><meta name="apple-mobile-web-app-status-bar-style" content="default">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/jua.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/gowun-dodum.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* 글꼴: 사이트에서 쓰는 글자만 남긴 서브셋 (fonts/, 다시 만드는 법은 CLAUDE.md '글꼴') */
+@font-face{font-family:'Jua';src:url('fonts/jua.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
+@font-face{font-family:'Gowun Dodum';src:url('fonts/gowun-dodum.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 :root{
  --paper:#FBF7F1;--card:#fff;--ink:#4B3F3A;--muted:#857870;--line:#EADFD2;
  --butter:#FBEBBB;--butter-d:#E8CF86;
@@ -786,6 +788,11 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .news-feedback{display:flex;justify-content:center;margin-top:12px}
 .news-privacy{margin:0 0 18px;padding:12px 16px;border:1.5px dashed var(--line);border-radius:16px;font-size:14px;line-height:1.65;color:#5E4E44}
 .news-privacy h3{margin:0 0 4px;font-size:15px}
+.news-intro .news-brand{font-family:var(--play)}
+.offline-action{display:flex;justify-content:center;margin:10px 0 6px}
+.offline-btn{background:var(--sage);border-color:var(--sage-d);box-shadow:0 3px 0 var(--sage-d);white-space:normal;text-align:center}
+.offline-btn:disabled{opacity:1;box-shadow:none;transform:none;cursor:default}
+.offline-status{margin:4px 0 0;font-size:12px;line-height:1.6;color:var(--muted);text-align:center}
 @media(max-width:480px){.parent-note{line-height:1.8;text-align:center}.parent-note-line{display:block;white-space:nowrap}.parent-note-separator{display:none}}
 .news-modal{max-height:calc(100vh - 40px);max-height:calc(100dvh - 40px);overflow-y:auto}
 .parent-tips{margin:0 0 18px;padding:14px 18px;border:1.5px dashed var(--line);border-radius:18px;font-size:15px;line-height:1.65;color:#5E4E44}
@@ -1207,7 +1214,8 @@ function voiceName(v){return v?v.name.replace(/Microsoft |Google |\(.*?\)| - .*|
 // 놀이 방법 안내 팝업이 떠 있는 동안 온 문장은 맡아 두었다가(마지막 것만) 팝업을 닫으면 읽어요
 let lastSpeech=null,heldSpeech=null;
 function speak(text,profile){if(!VOICE_ON||!soundOn)return;if($('.guide-backdrop')){heldSpeech=[text,profile];return}lastSpeech=[text,profile];stopVoice();const p=profile||voiceProfiles[voiceKey];if(!profile){const f=kidFiles(String(text));if(f){playClips(voiceKey,f,()=>ttsSpeak(text,p));return}}ttsSpeak(text,p)}
-function ttsSpeak(text,p){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const r=resolveVoice(p.type);const u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';if(r.voice)u.voice=r.voice;u.pitch=Math.min(2,Math.max(.1,r.real?p.pitch:(p.emPitch??p.pitch)));u.rate=r.real?p.rate:(p.emRate??p.rate);speechSynthesis.speak(u)}
+// 녹음 파일을 못 쓸 때 기기 목소리로 읽어요. 한국어(ko) 음성만 쓰고, 한국어 음성이 없으면 다른 언어로 읽지 않고 소리 없이 넘어가요
+function ttsSpeak(text,p){if(!('speechSynthesis'in window))return;speechSynthesis.cancel();const r=resolveVoice(p.type);if(!r.voice)return;const u=new SpeechSynthesisUtterance(text);u.lang='ko-KR';if(r.voice)u.voice=r.voice;u.pitch=Math.min(2,Math.max(.1,r.real?p.pitch:(p.emPitch??p.pitch)));u.rate=r.real?p.rate:(p.emRate??p.rate);speechSynthesis.speak(u)}
 function say(text){$('#announce').textContent=text}
 function hint(text){const el=$('#hint');if(el)el.textContent=text.replace(/[\p{Extended_Pictographic}\uFE0F]/gu,'');say(text)}
 function popup(text,icon='💛',ms=550){const previous=$('.feedback-popup');if(previous)previous.remove();const el=document.createElement('div');el.className='feedback-popup';el.setAttribute('role','status');const card=document.createElement('div');card.className='feedback-card';const pic=document.createElement('span');pic.className='feedback-icon';pic.innerHTML=art(icon);const message=document.createElement('div');message.textContent=text;card.append(pic);card.append(message);el.append(card);overlays.append(el);say(text);later(()=>{el.classList.add('leaving');later(()=>el.remove(),150)},ms)}
@@ -1762,8 +1770,9 @@ function dress(){shell('dress');currentRestart=dress;state={worn:{},animal:state
 
 $('#brand').onclick=()=>{home();scrollTo(0,0)};holdify($('#sound'),()=>soundOn?0:1000,()=>{soundOn=!soundOn;$('#sound').setAttribute('aria-pressed',String(soundOn));soundLabel();if(soundOn)tone();else stopVoice()});['pointerup','click','keydown'].forEach(event=>document.addEventListener(event,audioReady,{passive:true}));addEventListener('pageshow',checkAudioReturn);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAudioReturn();if(document.hidden)draftNow();if(document.hidden&&state.running&&!paused&&$('#pause'))$('#pause').click()});function soundLabel(){$('#sound').title=soundOn?'한 번 눌러 소리 끄기':'1초 꾹 누르면 소리가 켜져요';$('#sound').innerHTML=(soundOn?ui.on:ui.off)+'<span class="btn-label">'+(soundOn?'소리 켜짐':'소리 꺼짐')+'</span>';$('#sound').setAttribute('aria-label',soundOn?'소리 켜짐':'소리 꺼짐')}function voiceLabel(){$('#voice-btn').innerHTML=ui.voice+'<span class="btn-label">목소리</span>';$('#voice-btn').setAttribute('aria-label','목소리 고르기: 지금은 '+voiceProfiles[voiceKey].label)}
 function voicePicker(){const old=$('.voice-backdrop');if(old)old.remove();const wrap=document.createElement('div');wrap.className='modal-backdrop voice-backdrop';wrap.innerHTML=`<section class="modal voice-modal" role="dialog" aria-modal="true" aria-labelledby="voice-title"><h2 id="voice-title">어떤 목소리로 읽어 줄까요?</h2><p>누르면 목소리를 미리 들어 볼 수 있어요.</p><div class="voice-grid">${Object.entries(voiceProfiles).map(([k,v])=>`<button class="choice-block" data-voice="${k}" data-t="${v.kid?'kid':v.type}" aria-pressed="${k===voiceKey}"><span class="voice-pic"><img src="images/voice/${k}.webp" alt="" width="58" height="58" draggable="false"></span><strong>${v.label}</strong><small>${v.name}</small><span class="choice-check" aria-hidden="true">✓</span></button>`).join('')}</div><small class="voice-note">목소리: 네이버 클로바더빙</small><button class="primary" id="voice-done">${ui.check}다 골랐어요</button></section>`;overlays.append(wrap);
- $$('[data-voice]',wrap).forEach(b=>b.onclick=()=>{voiceKey=b.dataset.voice;try{localStorage.setItem('mongle-voice',voiceKey)}catch{}$$('[data-voice]',wrap).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));voiceLabel();speak('안녕! 이 목소리로 이야기해 줄게.')});
+ $$('[data-voice]',wrap).forEach(b=>b.onclick=()=>{voiceKey=b.dataset.voice;try{localStorage.setItem('mongle-voice',voiceKey)}catch{}swWarmVoice();$$('[data-voice]',wrap).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));voiceLabel();speak('안녕! 이 목소리로 이야기해 줄게.')});
  const close=()=>{wrap.remove();$('#voice-btn').focus()};$('#voice-done',wrap).onclick=close;wrap.onclick=e=>{if(e.target===wrap)close()};wrap.onkeydown=e=>{if(e.key==='Escape')close()};$('#voice-done',wrap).focus()}if(VOICE_ON){const vb=document.createElement('button');vb.className='soft-btn';vb.id='voice-btn';$('.header-actions').prepend(vb);voiceLabel();vb.onclick=()=>{tone();voicePicker()}}const siteNews=[
+ ['2026.10.29',['의견 보내기 버튼이 보호자 안내의 ‘소개’ 탭으로 옮겨졌어요.','한 번 열어 본 홈 화면과 해 본 놀이는 인터넷이 없어도 열려요. 보호자 안내 ‘소개’ 탭에서 ‘인터넷 없이 쓰기 준비’를 누르면 모든 놀이의 그림과 고른 목소리를 미리 받아 둘 수 있어요.']],
  ['2026.10.28',['놀이 안내와 낱말을 읽어 주는 음성이 추가되었어요. 상단의 목소리 버튼에서 원하는 목소리를 고를 수 있어요.','소리는 화면 상단의 소리 버튼을 한 번 눌러 끌 수 있어요. 다시 켜려면 1초 꾹 눌러 주세요.','풍선 터뜨리기의 ‘시간 없이 놀기’가 ‘풍선 15개 찾기’로 바뀌었어요. 시간 제한 없이 15개를 찾으면 놀이가 끝나요. 30초 도전도 그대로 즐길 수 있어요.','동물들의 주문 받기에서 과일 버튼과 그림을 더 크고 누르기 편하게 바꿨어요. 바구니 크기도 화면에 맞게 조정했어요.']],
  // 정식 배포 전이라 숨겨 둠. 다시 보이게 하려면 아래 줄 앞의 //만 지워요
  // ['2026.10.23',['소리 끄기는 한 번, 소리 켜기는 1초 길게 누르기로 바뀌었어요.','퍼즐의 드래그와 눌러 놓기를 모두 지원하고, 세로 화면을 정리했어요.','풍선 놀이에 시간 없이 놀기와 30초 도전을 추가했어요.','폰의 소개 그림을 줄이고 저장 위치 도움말을 추가했어요.']],
@@ -1783,7 +1792,8 @@ function showNews(){
  <div class="news-tabs" role="tablist" aria-label="보호자 안내 항목">${tabs.map(([id,label,icon],i)=>`<button class="news-tab" id="news-tab-${id}" role="tab" aria-selected="${i===0}" aria-controls="news-panel-${id}" tabindex="${i===0?0:-1}">${icon}<span>${label}</span></button>`).join('')}</div>
  <div class="news-panels">
  <div id="news-panel-intro" role="tabpanel" aria-labelledby="news-tab-intro" tabindex="0">
- <div class="news-intro"><p>몽글몽글 놀이방은<br>광고 없이 태블릿을 잠시 사용할 때<br>안심하고 놀이할 수 있는 공간입니다.</p><p>불편한 점이나 오류가 있거나<br>‘이런 놀이가 있으면 좋겠어요’ 하는 제안이 있으면<br>의견 보내기를 통해 보내주세요!</p><p class="news-feedback"><a class="soft-btn feedback-link" id="feedback" href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</a></p></div>
+ <div class="news-intro"><p><span class="news-brand">몽글몽글 놀이방</span>은 광고 없이 태블릿을 잠시 사용할 때 안심하고 놀이할 수 있는 공간입니다.</p><p>불편한 점이나 오류가 있거나 ‘이런 놀이가 있으면 좋겠어요’ 하는 제안이 있으면 의견 보내기를 통해 보내주세요!</p><p class="news-feedback"><a class="soft-btn feedback-link" id="feedback" href="${FEEDBACK_URL}" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="M4.5 7l7.5 6 7.5-6"/></svg>의견 보내기</a></p></div>
+ <div class="news-privacy news-offline"><h3>인터넷 없이 쓰기</h3><p>차 안이나 여행지처럼 인터넷이 없는 곳에서도 놀 수 있게 그림과 목소리를 이 기기에 미리 받아 둬요. 와이파이에서 눌러 주세요.</p><p class="offline-action"><button class="soft-btn offline-btn" id="offline-btn">${ui.save}<span>인터넷 없이 쓰기 준비 (약 ${OFFLINE_MB}MB)</span></button></p><p class="offline-status" id="offline-status" aria-live="polite"></p></div>
  <div class="news-privacy"><h3>개인정보</h3><p>회원가입이 없고 아이의 이름·사진 같은 개인정보를 모으지 않아요. 방문 수와 놀이별 시작 수만 쿠키 없이 세요(GoatCounter). 그리던 그림은 이 기기의 브라우저에만 저장돼요. 의견 보내기는 구글 설문으로 연결돼요.</p></div>
  <p class="news-maker">언어재활사 <b>꿈부자기린쌤</b>이 만들었어요 · Instagram <a href="https://www.instagram.com/slp_girin/" target="_blank" rel="noopener">@slp_girin</a></p>
  <p class="news-maker news-voice">목소리: 네이버 클로바더빙 (다인·하준·아라·종혁)</p></div>
@@ -1791,7 +1801,7 @@ function showNews(){
  <div id="news-panel-save" role="tabpanel" aria-labelledby="news-tab-save" tabindex="0" hidden><div class="parent-tips">${saveHelpHTML}</div></div>
  <div id="news-panel-updates" role="tabpanel" aria-labelledby="news-tab-updates" tabindex="0" hidden>${siteNews.length?`<h3 class="news-heading">업데이트 소식</h3><div class="news-list">${siteNews.map(([d,items])=>`<article><h4>${d}</h4><ul>${items.map(t=>`<li>${t}</li>`).join('')}</ul></article>`).join('')}</div>`:''}</div>
  </div><button class="primary" id="news-close">${ui.check}확인했어요</button></section>`);
- overlays.append(wrap);
+ overlays.append(wrap);offlineInit(wrap);
  const buttons=$$('[role=tab]',wrap),panels=$$('[role=tabpanel]',wrap);
  const select=i=>{buttons.forEach((b,n)=>{b.setAttribute('aria-selected',String(n===i));b.tabIndex=n===i?0:-1;panels[n].hidden=n!==i});$('.news-panels',wrap).scrollTop=0};
  buttons.forEach((b,i)=>{b.onclick=()=>select(i);b.onkeydown=e=>{let n;if(e.key==='ArrowRight')n=(i+1)%buttons.length;else if(e.key==='ArrowLeft')n=(i+buttons.length-1)%buttons.length;else if(e.key==='Home')n=0;else if(e.key==='End')n=buttons.length-1;else return;e.preventDefault();select(n);buttons[n].focus()}});
@@ -1814,7 +1824,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.29-8';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.29-9';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
@@ -1835,4 +1845,53 @@ const gameArt={balloon:[...preloadDir('balloons'),...preloadDir('scenes')],order
 function preloadHome(){preload([heroArt,...Object.entries(cardArt).filter(([k])=>dressFitMode||!COMING_SOON.includes(k)).map(([,v])=>v)])}
 function preloadGame(g){if(COMING_SOON.includes(g))return;preload([...(gameArt[g]||[]),...preloadDir('celebrate')])}
 if(document.readyState==='complete')preloadHome();else addEventListener('load',preloadHome);
+
+// 인터넷 없이 열기 (sw.js 서비스 워커): 한 번 열어 본 홈과 써 본 놀이는 인터넷이 없어도 열려요
+// SW_ON=false로 바꿔 push하면 모든 기기에서 서비스 워커를 해제하고 저장본을 지워요 (문제가 생겼을 때. CLAUDE.md '서비스 워커' 참고)
+const SW_ON=true;
+// 준비 중인 놀이(COMING_SOON)에만 쓰는 목소리 파일: 미리 저장하지 않아요. 그 놀이를 열면(COMING_SOON에서 빼면) 저절로 저장 목록에 들어가요
+const soonVoice={phone:/^(phonebook-|call-|help-11|no-number)/,dress:/^word-(yellow-tee|stripe-tee|pink-hoodie|green-cardigan|raincoat|denim-shorts|pink-skirt|overalls|pinafore|sneakers|headband|glasses|bag)$/};
+// 앱으로 설치해서 열었는지: manifest의 display가 fullscreen(대신 standalone)이라 둘 다 봐요. 일부 브라우저가 쓰는 minimal-ui, 아이패드·아이폰 홈 화면(navigator.standalone)도 포함
+// 크롬의 '바로가기'로 추가하면 브라우저 탭(display-mode: browser)이라 설치 모드가 아니에요
+const appInstalled=()=>['fullscreen','standalone','minimal-ui'].some(m=>matchMedia(`(display-mode: ${m})`).matches)||navigator.standalone===true;
+function swWarm(urls,keep){try{const sw=navigator.serviceWorker.controller;if(sw&&urls.length)sw.postMessage({type:'warm',urls,keep})}catch{}}
+const swClips=()=>[...new Set(Object.values(kidClip))].filter(f=>!COMING_SOON.some(g=>soonVoice[g]&&soonVoice[g].test(f)));
+// 앱으로 설치해서 열었을 때만: 지금 고른 목소리 폴더 중 저장본에 없는 파일을 뒤에서 미리 저장
+function swWarmVoice(){if(!SW_ON||!appInstalled())return;swWarm(swClips().map(f=>`voice/${voiceKey}/${f}.mp3`))}
+function swStart(){
+ // 서비스 워커가 켜지기 전에 이미 받은 그림·글꼴과 홈 그림을 저장본에 넣어요
+ const seen=performance.getEntriesByType('resource').map(e=>e.name).filter(u=>u.startsWith(location.origin));
+ const homeArt=[heroArt,...Object.entries(cardArt).filter(([k])=>!COMING_SOON.includes(k)).map(([,v])=>v)];
+ swWarm([...seen,...homeArt]);
+ // 앱으로 설치해서 열었을 때만: 공개된 놀이의 그림 전체 중 없는 것만 뒤에서 미리 저장
+ // keep = 지금 사이트에서 쓰는 그림·목소리·글꼴 전체. 여기에 없는 예전 파일은 저장본에서 지워요
+ if(appInstalled()){const art=[...preloadAll,...puzzleStory.map(([k])=>`images/puzzle/${k}.webp`),...Object.keys(voiceProfiles).map(k=>`images/voice/${k}.webp`)];
+  const keep=[...art,...homeArt,'fonts/jua.woff2','fonts/gowun-dodum.woff2',...['apple-touch-icon.png','icon-192.png','icon-512.png','icon-maskable-512.png'].map(f=>'images/brand/'+f),...Object.keys(voiceProfiles).flatMap(v=>swClips().map(f=>`voice/${v}/${f}.mp3`))];
+  swWarm(art,keep);swWarmVoice()}
+}
+// 인터넷 없이 쓰기 (보호자 안내 '소개' 탭 버튼): 공개된 놀이의 그림 전체와 지금 고른 목소리 폴더를 mongle-assets 저장본에 받아 둬요
+// 이미 받은 파일은 건너뛰어서, 중간에 끊겨도 다시 누르면 없는 것만 받아요. 받을 크기(OFFLINE_MB)는 그림·목소리를 많이 바꾸면 다시 계산해요
+const OFFLINE_MB=5;
+const offlineArt=()=>[...new Set([...preloadAll,...puzzleStory.map(([k])=>`images/puzzle/${k}.webp`),...Object.keys(voiceProfiles).map(k=>`images/voice/${k}.webp`),heroArt,...Object.entries(cardArt).filter(([k])=>!COMING_SOON.includes(k)).map(([,v])=>v)])];
+const offlineVoice=()=>swClips().map(f=>`voice/${voiceKey}/${f}.mp3`);
+const offlineKey=u=>new URL(u,location.href).href;
+async function offlineCount(list){try{const c=await caches.open('mongle-assets');let n=0;for(const u of list)if(await c.match(offlineKey(u)))n++;return n}catch{return 0}}
+async function offlineInit(wrap){const btn=$('#offline-btn',wrap),st=$('#offline-status',wrap);if(!btn)return;
+ if(!('caches' in window)||!('serviceWorker' in navigator)||!SW_ON){btn.hidden=true;st.textContent='이 브라우저에서는 인터넷 없이 쓰기를 할 수 없어요.';return}
+ const art=offlineArt(),voice=offlineVoice();let note='';
+ const show=async()=>{const a=await offlineCount(art),v=await offlineCount(voice),done=a===art.length&&v===voice.length;
+  st.textContent=(note?note+' · ':'')+`서비스 워커 ${navigator.serviceWorker.controller?'작동 중':'꺼짐'} · 앱 설치 모드 ${appInstalled()?'예':'아니요'} · 그림 ${a}/${art.length} · 목소리(${voiceProfiles[voiceKey].name}) ${v}/${voice.length}`;
+  btn.disabled=done;btn.innerHTML=done?ui.check+'<span>준비 완료</span>':ui.save+`<span>인터넷 없이 쓰기 준비 (약 ${OFFLINE_MB}MB)</span>`;return done};
+ await show();
+ btn.onclick=async()=>{if(btn.disabled)return;btn.disabled=true;note='';const list=[...art,...voice],c=await caches.open('mongle-assets');let i=0,done=0,fail=0;
+  const label=()=>{btn.innerHTML=ui.save+`<span>받는 중 ${done}/${list.length}</span>`};label();
+  // 서비스 워커가 맡고 있으면 fetch가 저장본에 넣어 주고, 아니면 여기서 넣어요 (200 응답만)
+  const worker=async()=>{while(i<list.length){const key=offlineKey(list[i++]);try{if(!(await c.match(key))){const res=await fetch(key);if(res.status!==200)throw 0;if(!(await c.match(key)))await c.put(key,res)}}catch{fail++}done++;label()}};
+  await Promise.all([worker(),worker(),worker()]);if(fail)note=`${fail}개를 받지 못했어요. 와이파이에서 다시 눌러 주세요`;await show()}}
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
+ if(SW_ON){addEventListener('load',()=>{navigator.serviceWorker.register('sw.js?v='+encodeURIComponent(APP_VERSION),{updateViaCache:'none'}).then(()=>navigator.serviceWorker.ready).then(()=>{if(navigator.serviceWorker.controller)swStart()}).catch(()=>{})});
+  // 새 서비스 워커가 맡게 되면(처음 설치·새 버전) 새 저장본에 다시 넣어요
+  navigator.serviceWorker.addEventListener('controllerchange',swStart)}
+ else navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).then(()=>caches.keys()).then(ks=>Promise.all(ks.filter(k=>k.startsWith('mongle-')).map(k=>caches.delete(k)))).catch(()=>{});
+}
 </script></body></html>
