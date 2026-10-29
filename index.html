@@ -329,6 +329,11 @@ footer{margin-top:36px;text-align:center;color:var(--muted);font-size:14px}
 .puzzle-reference .drawn-art{height:auto}
 .puzzle-group{text-align:left;font-size:14px;color:var(--muted);margin:4px 6px 8px}
 .puzzle-group+.choice-grid+.puzzle-group{margin-top:16px}
+/* 퍼즐 고르는 화면: 그림 버튼 안의 그림을 버튼 폭에 맞게 크게 */
+.choice-block[data-picture]{padding:10px 8px 12px;gap:4px}
+.choice-block[data-picture] .choice-picture{width:100%;height:auto}
+.choice-block[data-picture] .choice-picture .drawn-art{width:min(100%,112px);height:auto;aspect-ratio:1;object-fit:contain}
+.choice-block[data-picture] .choice-picture .story-art{border-radius:14px;object-fit:cover}
 .story-art{border-radius:12px}
 .puzzle-reference .story-art{border-radius:10px}
 .puzzle-tray{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:12px;max-width:440px;margin:18px auto 0}
@@ -546,7 +551,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .games.n4 .card-stones i{width:36px;height:30px;font-size:17px}
 .games.n4 .game-card h3{font-size:21px}
 @media(max-width:900px){.games.n4{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.games.n3{grid-template-columns:repeat(2,minmax(0,1fr))}.games.n3 .game-card:last-child{grid-column:span 2}.games.n4 .game-card:last-child{grid-column:auto}}
+@media(max-width:760px){.games.n3{grid-template-columns:repeat(4,minmax(0,1fr))}.games.n3 .game-card{grid-column:span 2}.games.n3 .game-card:last-child{grid-column:2/span 2}.games.n4 .game-card:last-child{grid-column:auto}}
 @media(max-width:480px){.games .card-pic{width:64px;height:64px}.games .card-pic.small{width:40px;height:40px}.games .card-stones i{width:30px;height:26px;font-size:15px}.games .card-stones{gap:4px}}
 .card-art .card-pic{flex-shrink:0}
 .game-card.soon .card-art:after{content:'';position:absolute;inset:0;background:rgba(94,78,68,.16);pointer-events:none}
@@ -601,7 +606,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .controls+.stage{--avail:max(300px,calc(100dvh - 200px))}
  .status{margin-bottom:10px}.stat{padding:6px 16px;font-size:16px}
  .hint{margin-top:10px;font-size:17px;min-height:26px}
- .start-panel{min-height:calc(var(--avail) - 10px);gap:10px}.start-pic{width:110px;height:110px}
+ .start-panel{min-height:calc(var(--avail) - 20px);gap:10px}.start-pic{width:110px;height:110px}
  /* 고르기 화면 */
  .setup-screen h3{margin:14px 4px 8px}.choice-block{min-height:108px;padding:10px 8px}.choice-picture{height:56px}.choice-picture .drawn-art{width:56px;height:56px}.setup-start{margin-top:18px}
  .page-grid{grid-template-columns:repeat(8,1fr);gap:10px;margin-top:12px}.page-pick strong{font-size:14px}
@@ -825,6 +830,13 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
  .stage:has(>.puzzle-layout) .puzzle-side{display:none}
 }
 #main[data-hue]~footer{display:none}
+/* 목소리·소리 버튼도 홈 화면에서만 보여요 (놀이 화면 = #main에 data-hue가 있을 때) */
+.app:has(>#main[data-hue]) .header-actions{display:none}
+/* 앱 안 브라우저 안내 띠 (보호자용, 홈 화면에서만) */
+.inapp-note{display:flex;align-items:center;gap:10px;margin:0 0 14px;padding:8px 8px 8px 16px;background:#FBF1DE;border:1.5px solid var(--butter-d);border-radius:18px;font-size:14px;line-height:1.5;color:#5E4E44}
+.inapp-note p{flex:1;margin:0}
+.inapp-note .inapp-close{min-height:40px;padding:6px 14px;font-size:14px;flex-shrink:0}
+.app:has(>#main[data-hue]) .inapp-note{display:none}
 
 /* 놀이 방법 안내: 처음 한 번 + 물음표 버튼. 시범 장면은 --dur마다 되풀이 (가로:세로 = 2:1 무대, 위치는 %, 배치는 실제 가로 화면과 같게)
    손가락은 실제로 누르는 것만 누르고, 보기만 하는 것은 반짝임(커졌다 작아지는 노란 빛)으로 표시해요. 손가락 움직임은 아래 gdf- 애니메이션 */
@@ -1220,7 +1232,7 @@ function home(){clean();popGameState();screen='home';currentRestart=null;delete 
 const titles={memory:['같은 그림 찾기','카드를 뒤집어 같은 그림 두 장을 찾아요.'],mole:['두더지 잡기','빼꼼 나온 두더지를 톡! 잡을 때마다 5점이에요.'],balloon:['풍선 터뜨리기','위에 있는 목표와 같은 풍선을 눌러요. 맞히면 5점!'],order:['동물들의 주문 받기','친구가 부탁한 과일을 하나씩 눌러 담아요.'],bridge:['징검다리 건너기','다음 순서의 돌을 골라 앞으로 폴짝! 위쪽 도착 다리까지 건너요.']};
 function shell(game,controls='',back=null){clean();screen=game;backTo=back;main.dataset.hue=hues[game];main.innerHTML=`<div class="game-head"><div><h2>${titles[game][0]}</h2><p>${titles[game][1]}</p></div><div class="head-actions">${back?`<button class="soft-btn" id="step-back" aria-label="뒤로, 다시 고르기">${ui.prev}<span class="btn-label">뒤로</span></button>`:''}<button class="soft-btn" id="back" aria-label="홈으로">${ui.home}<span class="btn-label">홈으로</span></button></div></div>${controls?`<div class="controls">${controls}</div>`:''}<section class="stage" id="stage"></section>`;$('#back').onclick=()=>{tone();home()};if(back)$('#step-back').onclick=()=>{tone();back()};pushGameState()}
 function levelButtons(level){return `<div class="control-group"><span class="control-label">난이도</span>${['쉬움','보통','어려움'].map((s,i)=>`<button class="pill" data-level="${i}" aria-pressed="${level===i}">${s}</button>`).join('')}</div>`}
-// 준비 중인 놀이: 다 고치면 목록에서 이름을 빼요 (주소 뒤 ?fit=1 이면 준비 중이어도 열려요)
+// 준비 중인 놀이: 다 고치면 목록에서 이름을 빼요 (localhost에서 주소 뒤 ?fit=1 이면 준비 중이어도 열려요)
 const COMING_SOON=['dress','phone'];
 // 놀이 방법 안내: 각 놀이를 이 기기에서 처음 할 때 한 번 뜨고, 놀이 화면의 물음표 버튼으로 다시 볼 수 있어요
 // 문장은 어른이 읽어 주는 용도예요. 고칠 때는 여기만 바꾸면 돼요 (\n은 줄 바꿈)
@@ -1288,7 +1300,7 @@ function showGuide(g){if(!guides[g]||$('.guide-backdrop'))return;guideMark(g);co
 function guideReady(g){const back=$('#back');if(!guides[g]||COMING_SOON.includes(g)||!back||$('#guide-btn'))return;
  const b=document.createElement('button');b.className='soft-btn guide-btn';b.id='guide-btn';b.setAttribute('aria-label','놀이 방법');b.innerHTML=ui.help;back.parentElement.prepend(b);b.onclick=()=>{tone();showGuide(g)};
  if(!guideSeen().includes(g))showGuide(g)}
-function openGame(g){if(COMING_SOON.includes(g)&&!dressFitMode){const nm=(titles[g]||[g])[0];popup(`${josa(nm,'은','는')} 준비 중이에요!`,'🐰',1600);return}if(g==='hidden')hiddenPick();else if(g==='shadow')shadowSetup();else if(g==='coloring')coloringPick();else if(g==='drawing')artStudio(g);else if(g==='puzzle')puzzleSetup();else if(g==='phone')phone();else if(g==='dress')dress();else if(g==='mole')moleIntro();else setupGame(g)}
+function openGame(g){if(COMING_SOON.includes(g)&&!dressFitMode){const nm=(titles[g]||[g])[0];popup(`${josa(nm,'은','는')} 준비 중이에요!`,'🐰',1600);return}preloadGame(g);if(g==='hidden')hiddenPick();else if(g==='shadow')shadowSetup();else if(g==='coloring')coloringPick();else if(g==='drawing')artStudio(g);else if(g==='puzzle')puzzleSetup();else if(g==='phone')phone();else if(g==='dress')dress();else if(g==='mole')moleIntro();else setupGame(g)}
 
 const setupSaved={};
 function setupGame(g){
@@ -1713,7 +1725,8 @@ const dressItems={tee:['노란 티셔츠','top'],stripe:['줄무늬 티셔츠','
 // 동물별·옷별 미세 조정값 {동물:{옷:{x:가로%,y:세로%,s:배율}}} — '맞추기 모드'에서 복사한 값을 여기에 붙여 넣어요
 const DRESS_FIT={};
 let dressFitLocal={};try{dressFitLocal=JSON.parse(localStorage.getItem('mongle-dress-fit')||'{}')}catch{}
-const dressFitMode=new URLSearchParams(location.search).has('fit');
+// 옷 위치 맞추기 모드(?fit=1)는 개발용이라 내 컴퓨터(localhost)에서 열 때만 켜져요
+const dressFitMode=new URLSearchParams(location.search).has('fit')&&['localhost','127.0.0.1','[::1]'].includes(location.hostname);
 function dressFit(an,item){return Object.assign({x:0,y:0,s:1},(DRESS_FIT[an]||{})[item],(dressFitLocal[an]||{})[item])}
 function dressImg(n){return `<img class="drawn-art" src="${dressIcons[n]}" alt="" draggable="false">`}
 function dressPlace(item,an){const a=dressAnimals[an],R=dressAnimals.rabbit,[cx,top,w,h,z,slot]=dressBase[item],s=a.s;let X,Y,w2=w*s,h2=h*s;
@@ -1783,6 +1796,13 @@ function showNews(){
 }
 document.addEventListener('click',e=>{if(e.target.closest('[data-save-help]'))showSaveHelp()});
 const FEEDBACK_URL='https://forms.gle/s5a8f1qH3ZmPnb1w8';holdify($('#news-btn'),1000,showNews);$('#news-btn').title='1초 꾹 누르면 보호자 안내가 열려요';soundLabel();$('#brand-icon').innerHTML='<img class="drawn-art brand-giraffe" src="images/brand/giraffe.webp" alt="" draggable="false">';
+// 앱 안 브라우저(인스타그램·카카오톡·페이스북·네이버)로 열면 홈 위에 보호자용 안내 띠를 보여 줘요 (닫으면 이번 방문 동안 안 보임)
+// 카카오톡은 처음 한 번 바깥 브라우저(크롬·사파리)로 바로 열어요
+(function(){const ua=navigator.userAgent,kakao=/KAKAOTALK/i.test(ua);if(!kakao&&!/Instagram|FBAN|FBAV|FB_IAB|NAVER\(inapp/i.test(ua))return;
+ if(kakao){try{if(!sessionStorage.getItem('mongle-kakao-out')){sessionStorage.setItem('mongle-kakao-out','1');location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(location.href)}}catch{}}
+ try{if(sessionStorage.getItem('mongle-inapp-closed'))return}catch{}
+ const note=document.createElement('div');note.className='inapp-note';note.setAttribute('role','note');note.innerHTML='<p>크롬이나 사파리에서 열면 그림 저장과 앱 설치가 잘 돼요</p><button class="soft-btn inapp-close" aria-label="안내 닫기">'+I('<path d="M7 7l10 10M17 7 7 17"/>')+'<span>닫기</span></button>';
+ $('.app').prepend(note);$('.inapp-close',note).onclick=()=>{note.remove();try{sessionStorage.setItem('mongle-inapp-closed','1')}catch{}}})();
 // 방문자 수 세기 (GoatCounter): 쿠키와 개인정보 없이 방문 수와 놀이별 시작 수만 셉니다.
 // GoatCounter에서 만든 코드(예: mongle-playroom)를 따옴표 안에 넣으면 켜지고, 비워 두면 꺼져요.
 const STATS_CODE='mongle-playroom';
@@ -1790,7 +1810,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.29-5';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.29-6';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
@@ -1800,6 +1820,15 @@ home();
 if(resumeInfo){try{if(resumeInfo.g==='drawing')artStudio('drawing');else if(resumeInfo.g==='shapes')artStudio('coloring',resumeInfo.template||'flower');else if(resumeInfo.g==='coloring'&&coloringPages[resumeInfo.idx])coloringBook(resumeInfo.idx)}catch{}}
 versionCheck();
 
-// 그림 미리 받아 두기: 첫 화면이 뜬 뒤 쉬는 시간에 나머지 그림을 조금씩 받아 둬요
-(function(){const list=["images/balloons/lilac.webp", "images/balloons/mint.webp", "images/balloons/pink.webp", "images/balloons/pop.webp", "images/balloons/red.webp", "images/balloons/sky.webp", "images/balloons/yellow.webp", "images/brand/favicon.png", "images/brand/giraffe.webp", "images/bridge/journey.webp", "images/bridge/river-dock.webp", "images/bridge/stone-done.webp", "images/bridge/stone-s1.webp", "images/bridge/stone-s2.webp", "images/bridge/stone.webp", "images/cards/balloon.webp", "images/cards/bridge.webp", "images/cards/coloring.webp", "images/cards/drawing.webp", "images/cards/dress.webp", "images/cards/hero.webp", "images/cards/hidden.webp", "images/cards/memory.webp", "images/cards/mole.webp", "images/cards/order.webp", "images/cards/phone.webp", "images/cards/puzzle.webp", "images/cards/shadow.webp", "images/celebrate/giraffe-clap.webp", "images/celebrate/giraffe-jump.webp", "images/celebrate/giraffe-star.webp", "images/coloring/balloon.png", "images/coloring/bear.png", "images/coloring/bubble.png", "images/coloring/bus.png", "images/coloring/cake.png", "images/coloring/cat.png", "images/coloring/dog.png", "images/coloring/duck.png", "images/coloring/flower.png", "images/coloring/house.png", "images/coloring/icecream.png", "images/coloring/lion.png", "images/coloring/plane.png", "images/coloring/rabbit.png", "images/coloring/train.png", "images/dress/backpack.webp", "images/dress/body-bear.webp", "images/dress/body-cat.webp", "images/dress/body-panda.webp", "images/dress/body-puppy.webp", "images/dress/body-rabbit.webp", "images/dress/cardigan.webp", "images/dress/glasses.webp", "images/dress/hat.webp", "images/dress/headband.webp", "images/dress/hoodie.webp", "images/dress/overalls.webp", "images/dress/pinafore.webp", "images/dress/raincoat.webp", "images/dress/shorts.webp", "images/dress/skirt.webp", "images/dress/sneakers.webp", "images/dress/stripe.webp", "images/dress/tee.webp", "images/hidden/apple.png", "images/hidden/banana.png", "images/hidden/beach.png", "images/hidden/candy.png", "images/hidden/carrot.png", "images/hidden/cup.png", "images/hidden/farm.png", "images/hidden/fish.png", "images/hidden/glove.png", "images/hidden/hat.png", "images/hidden/heart.png", "images/hidden/house.png", "images/hidden/icecream.png", "images/hidden/leaf.png", "images/hidden/moon.png", "images/hidden/mushroom.png", "images/hidden/park.png", "images/hidden/party.png", "images/hidden/pencil.png", "images/hidden/picnic.png", "images/hidden/ribbon.png", "images/hidden/scissors.png", "images/hidden/shoe.png", "images/hidden/sock.png", "images/hidden/spoon.png", "images/hidden/star.png", "images/hidden/toothbrush.png", "images/hidden/umbrella.png", "images/icons/ambulance.webp", "images/icons/apple.webp", "images/icons/ball.webp", "images/icons/balloon.webp", "images/icons/banana.webp", "images/icons/basket.webp", "images/icons/bear.webp", "images/icons/bike.webp", "images/icons/boat.webp", "images/icons/book.webp", "images/icons/bus.webp", "images/icons/car.webp", "images/icons/cat.webp", "images/icons/chick.webp", "images/icons/cow.webp", "images/icons/dog.webp", "images/icons/fire.webp", "images/icons/frog.webp", "images/icons/grapes.webp", "images/icons/hat.webp", "images/icons/mole.webp", "images/icons/orange.webp", "images/icons/panda.webp", "images/icons/peach.webp", "images/icons/pear.webp", "images/icons/pencils.webp", "images/icons/phone.webp", "images/icons/pig.webp", "images/icons/plane.webp", "images/icons/police.webp", "images/icons/rabbit.webp", "images/icons/shoe.webp", "images/icons/spoon.webp", "images/icons/strawberry.webp", "images/icons/toothbrush.webp", "images/icons/train.webp", "images/icons/umbrella.webp", "images/icons/watermelon.webp", "images/puzzle/thumb/beach.webp", "images/puzzle/thumb/birthday.webp", "images/puzzle/thumb/carrot.webp", "images/puzzle/thumb/picnic.webp", "images/puzzle/thumb/playground.webp", "images/puzzle/thumb/rain.webp", "images/puzzle/thumb/sea.webp", "images/puzzle/thumb/snow.webp", "images/scenes/sky.webp"];let i=0;const next=()=>{if(i>=list.length)return;const im=new Image();im.onload=im.onerror=()=>setTimeout(next,30);im.src=list[i++]};const go=()=>setTimeout(next,800);if(document.readyState==='complete')go();else addEventListener('load',go)})();
+// 그림 미리 받아 두기: 첫 화면에서는 홈 카드 그림만, 각 놀이 그림은 그 놀이(고르는 화면)를 처음 열 때 쉬는 시간에 조금씩 받아 둬요
+// 준비 중인 놀이(COMING_SOON) 그림은 넣지 않아요. 새 그림을 넣으면 preloadAll에 경로를 더해요 (폴더 이름으로 놀이에 나눠요)
+const preloadAll=["images/balloons/lilac.webp", "images/balloons/mint.webp", "images/balloons/pink.webp", "images/balloons/pop.webp", "images/balloons/red.webp", "images/balloons/sky.webp", "images/balloons/yellow.webp", "images/brand/favicon.png", "images/brand/giraffe.webp", "images/bridge/journey.webp", "images/bridge/river-dock.webp", "images/bridge/stone-done.webp", "images/bridge/stone-s1.webp", "images/bridge/stone-s2.webp", "images/bridge/stone.webp", "images/cards/balloon.webp", "images/cards/bridge.webp", "images/cards/coloring.webp", "images/cards/drawing.webp", "images/cards/hero.webp", "images/cards/hidden.webp", "images/cards/memory.webp", "images/cards/mole.webp", "images/cards/order.webp", "images/cards/puzzle.webp", "images/cards/shadow.webp", "images/celebrate/giraffe-clap.webp", "images/celebrate/giraffe-jump.webp", "images/celebrate/giraffe-star.webp", "images/coloring/balloon.png", "images/coloring/bear.png", "images/coloring/bubble.png", "images/coloring/bus.png", "images/coloring/cake.png", "images/coloring/cat.png", "images/coloring/dog.png", "images/coloring/duck.png", "images/coloring/flower.png", "images/coloring/house.png", "images/coloring/icecream.png", "images/coloring/lion.png", "images/coloring/plane.png", "images/coloring/rabbit.png", "images/coloring/train.png", "images/hidden/apple.png", "images/hidden/banana.png", "images/hidden/beach.png", "images/hidden/candy.png", "images/hidden/carrot.png", "images/hidden/cup.png", "images/hidden/farm.png", "images/hidden/fish.png", "images/hidden/glove.png", "images/hidden/hat.png", "images/hidden/heart.png", "images/hidden/house.png", "images/hidden/icecream.png", "images/hidden/leaf.png", "images/hidden/moon.png", "images/hidden/mushroom.png", "images/hidden/park.png", "images/hidden/party.png", "images/hidden/pencil.png", "images/hidden/picnic.png", "images/hidden/ribbon.png", "images/hidden/scissors.png", "images/hidden/shoe.png", "images/hidden/sock.png", "images/hidden/spoon.png", "images/hidden/star.png", "images/hidden/toothbrush.png", "images/hidden/umbrella.png", "images/icons/ambulance.webp", "images/icons/apple.webp", "images/icons/ball.webp", "images/icons/balloon.webp", "images/icons/banana.webp", "images/icons/basket.webp", "images/icons/bear.webp", "images/icons/bike.webp", "images/icons/boat.webp", "images/icons/book.webp", "images/icons/bus.webp", "images/icons/car.webp", "images/icons/cat.webp", "images/icons/chick.webp", "images/icons/cow.webp", "images/icons/dog.webp", "images/icons/fire.webp", "images/icons/frog.webp", "images/icons/grapes.webp", "images/icons/hat.webp", "images/icons/mole.webp", "images/icons/orange.webp", "images/icons/panda.webp", "images/icons/peach.webp", "images/icons/pear.webp", "images/icons/pencils.webp", "images/icons/pig.webp", "images/icons/plane.webp", "images/icons/police.webp", "images/icons/rabbit.webp", "images/icons/shoe.webp", "images/icons/spoon.webp", "images/icons/strawberry.webp", "images/icons/toothbrush.webp", "images/icons/train.webp", "images/icons/umbrella.webp", "images/icons/watermelon.webp", "images/puzzle/thumb/beach.webp", "images/puzzle/thumb/birthday.webp", "images/puzzle/thumb/carrot.webp", "images/puzzle/thumb/picnic.webp", "images/puzzle/thumb/playground.webp", "images/puzzle/thumb/rain.webp", "images/puzzle/thumb/sea.webp", "images/puzzle/thumb/snow.webp", "images/scenes/sky.webp"];
+const preloadQueue=[],preloadSeen=new Set();let preloadBusy=false;
+function preload(list){list.forEach(src=>{if(src&&!preloadSeen.has(src)){preloadSeen.add(src);preloadQueue.push(src)}});if(!preloadBusy&&preloadQueue.length){preloadBusy=true;setTimeout(preloadNext,300)}}
+function preloadNext(){const src=preloadQueue.shift();if(!src){preloadBusy=false;return}const im=new Image();im.onload=im.onerror=()=>setTimeout(preloadNext,30);im.src=src}
+const preloadDir=d=>preloadAll.filter(p=>p.startsWith('images/'+d+'/')),preloadIcons=preloadDir('icons');
+const gameArt={balloon:[...preloadDir('balloons'),...preloadDir('scenes')],order:preloadIcons,bridge:[...preloadDir('bridge'),...preloadIcons],memory:preloadIcons,shadow:preloadIcons,mole:preloadIcons,hidden:preloadDir('hidden'),coloring:[...preloadDir('coloring'),...hiddenScenes.map(h=>h[2])],puzzle:[...puzzleSolo.map(([k])=>rasterIcons[k]),...preloadDir('puzzle/thumb')],drawing:[]};
+function preloadHome(){preload([heroArt,...Object.entries(cardArt).filter(([k])=>dressFitMode||!COMING_SOON.includes(k)).map(([,v])=>v)])}
+function preloadGame(g){if(COMING_SOON.includes(g))return;preload([...(gameArt[g]||[]),...preloadDir('celebrate')])}
+if(document.readyState==='complete')preloadHome();else addEventListener('load',preloadHome);
 </script></body></html>
