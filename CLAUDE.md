@@ -60,7 +60,7 @@
 - 의견 보내기는 보호자 안내 '소개' 탭 안의 한 번 누르는 링크 버튼(FEEDBACK_URL, 새 창). 홈 하단에 두지 않음 (링크를 꾹 누르면 브라우저 링크 메뉴가 떠서 꾹 누르기가 끊기고, 코드로 새 창을 열면 팝업 차단될 수 있음)
 - holdify는 누르는 동안 setPointerCapture로 포인터를 붙잡고(24px 넘게 벗어나면 취소), 길게 누르기 메뉴(contextmenu)를 막음
 - 보호자 안내 '소개' 탭에 개인정보 안내(.news-privacy)가 있음. 모으는 정보가 바뀌면 이 문장도 고치기
-- SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×630). 놀이 개수가 바뀌면 meta description·og:description도 고치기
+- SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×630). 사이트 설명 문장은 meta description·og:description·twitter:description 세 곳을 같은 문장으로 맞추기
 - 보호자 안내 창의 업데이트 소식은 siteNews 배열에 ['날짜',['소식']] 형식으로 추가
 
 ## 작업 규칙

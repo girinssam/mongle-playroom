@@ -2,13 +2,13 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#FBF7F1"><meta name="description" content="4~6세 어린이를 위한 열 가지 터치 놀이. 기억력, 숫자, 글자를 즐겁게 배워요.">
+<meta name="theme-color" content="#FBF7F1"><meta name="description" content="4~6세 눈높이에 맞춘 광고 없는 무료 터치 놀이">
 <title>몽글몽글 놀이방</title>
 <meta property="og:type" content="website"><meta property="og:site_name" content="몽글몽글 놀이방"><meta property="og:locale" content="ko_KR">
-<meta property="og:title" content="몽글몽글 놀이방"><meta property="og:description" content="광고 없이 무료로 즐기는 4~6세 터치 놀이 10가지">
+<meta property="og:title" content="몽글몽글 놀이방"><meta property="og:description" content="4~6세 눈높이에 맞춘 광고 없는 무료 터치 놀이">
 <meta property="og:url" content="https://girinssam.github.io/mongle-playroom/">
 <meta property="og:image" content="https://girinssam.github.io/mongle-playroom/images/brand/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="몽글몽글 놀이방: 동물 친구들과 기린">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="몽글몽글 놀이방"><meta name="twitter:description" content="광고 없이 무료로 즐기는 4~6세 터치 놀이 10가지"><meta name="twitter:image" content="https://girinssam.github.io/mongle-playroom/images/brand/og.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="몽글몽글 놀이방"><meta name="twitter:description" content="4~6세 눈높이에 맞춘 광고 없는 무료 터치 놀이"><meta name="twitter:image" content="https://girinssam.github.io/mongle-playroom/images/brand/og.png">
 <link rel="icon" type="image/png" href="images/brand/favicon.png">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="images/brand/apple-touch-icon.png">
@@ -1810,7 +1810,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.10.29-6';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.10.29-7';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
