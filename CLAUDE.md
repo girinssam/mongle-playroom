@@ -19,6 +19,7 @@
 - sw.js: 인터넷 없이 열기용 서비스 워커 (아래 '서비스 워커')
 - fonts/: Jua·Gowun Dodum 서브셋 woff2(사이트에서 쓰는 글자만)와 글꼴 라이선스(OFL-*.txt). 구글 글꼴 연결은 쓰지 않음 (아래 '글꼴')
 - tools/font-subset.cjs: 글꼴 서브셋을 다시 만드는 스크립트 (사이트에서는 안 씀)
+- tools/pre-commit: 커밋 전 확인 훅의 원본 (아래 '커밋 전 확인 훅'). 사이트에서는 안 씀
 - GitHub Pages로 main 브랜치 루트에서 바로 배포
 
 ## 놀이 (3묶음 12개)
@@ -93,6 +94,21 @@
 - 두 값이 다르게 push되면 새로 고친 뒤에도 계속 예전 버전으로 판단하므로, 반드시 같은 값으로 맞춘다.
 - sw.js는 고치지 않아도 된다. index.html이 sw.js?v=APP_VERSION으로 등록하므로 APP_VERSION이 바뀌면 새 서비스 워커가 설치되고, 화면 저장본(mongle-shell-버전)만 새로 만들어지고 예전 것은 지워진다. 그림·목소리·글꼴 저장본(mongle-assets)은 버전이 바뀌어도 그대로 둔다 (바뀐 파일만 뒤에서 새로 받음).
 - 화면에 보이는 글자를 바꿨으면(새 문장·낱말) tools/font-subset.cjs의 확인(--check)을 돌리고, 빠진 글자가 있으면 서브셋을 다시 만든다 (아래 '글꼴').
+- 위 두 가지(버전 값 같음, 빠진 글자 없음)는 커밋 전 확인 훅이 자동으로 검사한다 (아래 '커밋 전 확인 훅').
+
+## 커밋 전 확인 훅 (git pre-commit)
+- 커밋할 때마다 자동으로 확인하고, 걸리면 커밋을 막음
+  1. index.html의 APP_VERSION과 version.json의 v가 같은지 (다르면 두 값을 보여 줌)
+  2. 글꼴 서브셋에 빠진 글자가 없는지 (tools/font-subset.cjs --check, 빠진 글자를 보여 줌)
+- 작업 폴더가 아니라 커밋에 들어갈(git add 한) 내용으로 확인함. 그래서 글꼴을 다시 만들었으면 fonts/의 woff2도 git add 해야 통과
+- 훅 파일(.git/hooks/pre-commit)은 git이 저장소에 올리지 않아서 컴퓨터마다 따로 설치해야 함. 원본은 tools/pre-commit
+- 새 컴퓨터에서 설치 (Git Bash, 한 번만)
+  1. 글꼴 확인 도구: mkdir -p ~/.mongle-tools && cd ~/.mongle-tools && echo '{"name":"mongle-tools","private":true}' > package.json && npm i subset-font fontkit
+  2. 훅 복사: 저장소 폴더에서 cp tools/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+  - 도구 폴더를 다른 곳에 두려면 환경 변수 MONGLE_TOOLS에 그 폴더를 지정
+  - 도구가 없으면 훅이 커밋을 막고 설치 명령을 보여 줌
+- tools/pre-commit을 고치면 위 2번(복사)을 다시 해야 이 컴퓨터의 훅에 반영됨
+- 정말 급할 때만 git commit --no-verify로 확인 없이 커밋 (그 뒤 꼭 수동으로 확인)
 
 ## 서비스 워커 (sw.js, 인터넷 없이 열기)
 - 저장본 두 개
@@ -122,13 +138,13 @@
 ## 글꼴
 - fonts/jua.woff2·fonts/gowun-dodum.woff2는 index.html·voice-list.csv에 쓰인 글자와 영문·숫자·기호만 남긴 서브셋. 여기에 없는 글자는 기기 기본 글꼴로 보임
 - fonts/not-in-font.json: 원본 글꼴에도 없는 글자 목록(이모지, 주아체의 ‘’·… 등). 서브셋을 만들 때 스크립트가 자동으로 씀. 직접 고치지 않음
-- 준비(한 번): 저장소 밖 임시 폴더에서 npm i subset-font fontkit
-- 빠진 글자 확인: 같은 임시 폴더에서 node <저장소>/tools/font-subset.cjs <저장소> --check
+- 준비(한 번): 저장소 밖 도구 폴더 ~/.mongle-tools에 npm i subset-font fontkit (설치 명령은 위 '커밋 전 확인 훅'. 훅도 이 폴더를 씀)
+- 빠진 글자 확인: ~/.mongle-tools 폴더에서 node <저장소>/tools/font-subset.cjs <저장소> --check (커밋할 때 훅이 자동으로 돌림)
   - '빠진 글자 없음'이면 그대로 두면 됨. '빠진 글자 N개 → 서브셋을 다시 만들어 주세요'가 나오면 아래처럼 다시 만들기
   - '(참고) 원본 글꼴에도 없어…'는 원래 글꼴에 없는 글자라 다시 만들어도 같음 (기기 글꼴로 보임)
 - 서브셋 다시 만들기:
   1. 원본 글꼴 받기 (저장소에 넣지 않음): https://github.com/google/fonts/raw/main/ofl/jua/Jua-Regular.ttf , https://github.com/google/fonts/raw/main/ofl/gowundodum/GowunDodum-Regular.ttf
-  2. 같은 임시 폴더에서 node <저장소>/tools/font-subset.cjs <저장소> <Jua-Regular.ttf> <GowunDodum-Regular.ttf> → fonts/의 두 woff2와 not-in-font.json이 새로 만들어지고, 끝에 확인도 자동으로 함
+  2. ~/.mongle-tools 폴더에서 node <저장소>/tools/font-subset.cjs <저장소> <Jua-Regular.ttf> <GowunDodum-Regular.ttf> → fonts/의 두 woff2와 not-in-font.json이 새로 만들어지고, 끝에 확인도 자동으로 함
   - 파이썬이 있으면 pyftsubset으로 만들어도 됨: pyftsubset Jua-Regular.ttf --text-file=글자목록.txt --flavor=woff2 --output-file=fonts/jua.woff2 (글자목록은 index.html·voice-list.csv 내용). 이때는 not-in-font.json이 안 바뀌니 확인 결과의 '빠진 글자'에 원본에 없는 글자가 섞일 수 있음
 - 글꼴 라이선스는 SIL OFL 1.1 (fonts/OFL-*.txt). 글꼴 파일을 넣을 때 라이선스 파일도 같이 둔다
 
