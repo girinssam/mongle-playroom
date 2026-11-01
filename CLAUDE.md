@@ -61,7 +61,8 @@
 - const COMING_SOON=['dress','phone']; → 준비 중인 놀이. 첫 화면에 일부러 보이지 않게 함 (아이가 열리지 않는 버튼을 보고 기다리기 어렵기 때문). 이 동작은 바꾸지 말 것. 다 고치면 목록에서 빼기
 - 주소 뒤 ?fit=1 → 준비 중인 놀이도 첫 화면에 보이고 열림, 옷 위치 맞추기 모드. 개발용이라 localhost(127.0.0.1)에서 열 때만 동작 (배포 주소에서는 무시)
 - const FEEDBACK_URL → 의견 보내기 구글 설문지 주소
-- const STATS_CODE → GoatCounter 방문자 수 세기 코드 (쿠키·개인정보 없음)
+- const STATS_CODE → GoatCounter 방문자 수 세기 코드 (쿠키·개인정보 없음, 방문 수와 놀이별 시작 수)
+- const UMAMI_ID → Umami 방문 수 세기 (쿠키 없음. STATS_CODE가 켜져 있을 때만 함께 불러옴, 비우면 Umami만 꺼짐)
 - 소리 버튼: 끄기는 한 번 누르기, 켜기는 1초 꾹 누르기
 - 목소리 버튼(#voice-btn)과 소리 버튼(#sound)은 홈 화면에서만 보임. 놀이 화면에서는 .app:has(>#main[data-hue]) .header-actions로 숨김 (하단 버튼과 같은 조건)
 - 앱 안 브라우저(인스타그램·카카오톡·페이스북·네이버)는 userAgent로 알아내 홈 위에 보호자용 안내 띠(.inapp-note)를 보여 줌. 카카오톡은 처음 한 번 kakaotalk://web/openExternal?url= 로 바깥 브라우저에서 열기
@@ -69,7 +70,7 @@
 - 보호자 안내는 꾹 누르기(holdify) 1초. 이 하단 버튼과 안내 문장, 저작권 한 줄(.credit-note)은 홈 화면에서만 보임 (놀이 화면에서는 #main[data-hue]~footer로 숨김)
 - 의견 보내기는 보호자 안내 '소개' 탭 안의 한 번 누르는 링크 버튼(FEEDBACK_URL, 새 창). 홈 하단에 두지 않음 (링크를 꾹 누르면 브라우저 링크 메뉴가 떠서 꾹 누르기가 끊기고, 코드로 새 창을 열면 팝업 차단될 수 있음)
 - holdify는 누르는 동안 setPointerCapture로 포인터를 붙잡고(24px 넘게 벗어나면 취소), 길게 누르기 메뉴(contextmenu)를 막음
-- 보호자 안내 '소개' 탭에 개인정보 안내(.news-privacy)가 있음. 모으는 정보가 바뀌면 이 문장도 고치기
+- 보호자 안내 '소개' 탭에 개인정보 안내(.news-privacy)가 있음. 네 줄 목록(ul: 회원가입 없음·개인정보 안 모음 / 방문 수와 놀이별 시작 수만 쿠키 없이 셈 / 그림은 이 기기에만 저장 / 의견 보내기는 구글 설문) + 그 아래 작은 흐린 글씨 한 줄(.privacy-note, '방문 통계: GoatCounter, Umami'). 문장 안에 괄호로 서비스 이름을 넣지 않음. 모으는 정보나 통계 서비스가 바뀌면 목록과 작은 글씨도 고치기
 - 보호자 안내 '소개' 탭 순서: 노란 상자(.news-intro, 소개 문장 + 의견 보내기 버튼. 줄바꿈 <br> 없이 이어 씀, '몽글몽글 놀이방'만 주아체 .news-brand) → '인터넷 없이 쓰기' 상자 → 개인정보 상자
 - SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×630). 사이트 설명 문장은 meta description·og:description·twitter:description 세 곳을 같은 문장으로 맞추기
 - 보호자 안내 창의 업데이트 소식은 siteNews 배열에 ['날짜',['소식']] 형식으로 추가
