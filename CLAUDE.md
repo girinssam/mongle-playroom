@@ -73,7 +73,7 @@
 - holdify는 누르는 동안 setPointerCapture로 포인터를 붙잡고(24px 넘게 벗어나면 취소), 길게 누르기 메뉴(contextmenu)를 막음
 - 보호자 안내 '소개' 탭에 개인정보 안내(.news-privacy)가 있음. 네 줄 목록(ul: 회원가입 없음·개인정보 안 모음 / 방문 수와 놀이별 시작 수만 쿠키 없이 셈 / 그림은 이 기기에만 저장 / 의견 보내기는 구글 설문) + 그 아래 작은 흐린 글씨 한 줄(.privacy-note, '방문 통계: GoatCounter, Umami'). 문장 안에 괄호로 서비스 이름을 넣지 않음. 모으는 정보나 통계 서비스가 바뀌면 목록과 작은 글씨도 고치기
 - 보호자 안내 '소개' 탭 순서: 노란 상자(.news-intro, 소개 문장 + 의견 보내기 버튼. 줄바꿈 <br> 없이 이어 씀, '몽글몽글 놀이방'만 주아체 .news-brand) → '인터넷 없이 쓰기' 상자 → 개인정보 상자
-- SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×630). 사이트 설명 문장은 meta description·og:description·twitter:description 세 곳을 같은 문장으로 맞추기
+- SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×600, 2:1. 로고·제목·동물 그림은 가운데 600px 폭 안에, 배경은 무늬 없는 연두 #DCEBD3. 그림을 바꾸면 og:image·twitter:image 주소 끝 ?v=숫자를 올리기). 사이트 설명 문장은 meta description·og:description·twitter:description 세 곳을 같은 문장으로 맞추기
 - 보호자 안내 창의 업데이트 소식은 siteNews 배열에 ['날짜',['소식']] 형식으로 추가
 
 ## 작업 규칙
