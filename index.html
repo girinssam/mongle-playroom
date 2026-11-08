@@ -1085,9 +1085,107 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .news-panels .parent-tips{margin-bottom:0}
 .news-dialog .news-intro{font-size:16px}
 @media(max-width:480px){.news-dialog{padding:20px 16px}.news-tab{flex-direction:column;gap:3px;font-size:13px}.news-dialog .news-intro{padding:14px 12px;font-size:15px}}
+/* 인쇄하기 (보호자용 A4 활동지) */
+.print-dialog{max-width:640px}
+.print-dialog .news-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pr-sec{margin:0 0 16px}
+.pr-sec h3{font-family:var(--play);font-size:19px;margin:0 0 8px}
+.pr-chips{display:flex;flex-wrap:wrap;gap:8px}
+.pr-chip{min-height:44px;padding:8px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font-size:16px;box-shadow:0 2px 0 var(--line)}
+.pr-chip[aria-pressed=true]{background:var(--sage);border-color:var(--sage-d);box-shadow:0 2px 0 var(--sage-d)}
+.pr-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.pr-tools .soft-btn{min-height:40px;padding:6px 14px;font-size:15px}
+.pr-thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pr-thumb{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px 7px;background:#fff;border:2px solid var(--line);border-radius:16px;font-size:13px;line-height:1.25}
+.pr-thumb img{display:block;width:100%;aspect-ratio:1;object-fit:contain;border-radius:10px;background:#fff}
+.pr-thumb[aria-pressed=true]{background:var(--sage);border-color:var(--sage-d)}
+.pr-thumb[aria-pressed=true]::after{content:'✓';position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:50%;background:var(--sage-deep);color:#fff;font-size:13px;line-height:22px;text-align:center}
+.pr-note{font-size:14px;line-height:1.6;color:var(--muted);margin:4px 0 14px}
+.print-dialog .pr-actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.print-dialog .pr-actions .primary{margin:0;min-width:200px}
+.print-dialog .primary:disabled{opacity:.45;box-shadow:none}
+@media(max-width:480px){.pr-thumbs{grid-template-columns:repeat(3,minmax(0,1fr))}.print-dialog .news-tab{font-size:14px}}
+
+/* 인쇄되는 활동지: 화면에서는 숨기고 인쇄할 때만 보임 */
+#print-area{display:none}
+@page{size:A4 portrait;margin:0}
+@media print{
+ html,body{background:#fff!important;margin:0!important;padding:0!important;min-height:0!important}
+ body:has(#print-area>.ws-page)>:not(#print-area){display:none!important}
+ body:has(#print-area>.ws-page) #print-area{display:block}
+}
+.ws-page{position:relative;width:210mm;height:296.5mm;box-sizing:border-box;padding:12mm 14mm 14mm;overflow:hidden;break-after:page;page-break-after:always;background:#fff;color:var(--ink);font-family:var(--play);display:flex;flex-direction:column;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.ws-page:last-child{break-after:auto;page-break-after:auto}
+.ws-page,.ws-sheet{--wsh:var(--sky);--wsd:var(--sky-d)}
+[data-ws=blush]{--wsh:var(--blush);--wsd:var(--blush-d)}
+[data-ws=lilac]{--wsh:var(--lilac);--wsd:var(--lilac-d)}
+[data-ws=sage]{--wsh:var(--sage);--wsd:var(--sage-d)}
+.ws-page img,.ws-sheet img{display:block;max-width:none}
+.ws-head{display:flex;align-items:center;gap:3mm;height:20mm;padding:0 6mm 0 4mm;border-radius:6mm;background:var(--wsh);flex-shrink:0}
+.ws-ico{display:grid;place-items:center;width:13mm;height:13mm;flex-shrink:0}
+.ws-ico img{width:12mm;height:12mm;object-fit:contain}
+.ws-ico svg{width:10mm;height:10mm;fill:#fff;stroke:var(--ink);stroke-width:1.8;stroke-linecap:round}
+.ws-title{font-size:21pt;font-weight:400;white-space:nowrap}
+.ws-sub{font-size:14pt;color:var(--muted);white-space:nowrap}
+.ws-name{margin-left:auto;display:flex;align-items:flex-end;gap:2mm;font-family:var(--ui);font-size:11pt;white-space:nowrap}
+.ws-name i{display:block;width:42mm;height:5mm;border-bottom:.3mm solid var(--ink)}
+.ws-foot{position:absolute;left:0;right:0;bottom:6mm;text-align:center;font-family:var(--ui);font-size:7.5pt;color:var(--muted)}
+.ws-body{flex:1;min-height:0;display:flex;flex-direction:column}
+.ws-ask{font-size:13.5pt;margin:4.5mm 0 3mm 1mm;flex-shrink:0}
+.ws-ask.big{font-size:19pt;margin:5mm 0 3.5mm 1mm}
+.ws-ring{position:absolute;border:.7mm solid #E8574A;border-radius:50%;box-sizing:border-box;pointer-events:none}
+/* 숨은 그림 */
+.ws-scene{position:relative;width:182mm;height:182mm;margin-top:5mm;border:.4mm solid var(--line);border-radius:5mm;overflow:hidden;flex-shrink:0}
+.ws-scene>img{width:100%;height:100%}
+.ws-finds{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:3.5mm}
+.ws-find{position:relative;height:37mm;box-sizing:border-box;border:.4mm solid var(--wsd);border-radius:4mm;display:flex;flex-direction:column;align-items:center;padding-top:3mm}
+.ws-find img{width:21mm;height:21mm;object-fit:contain}
+.ws-find b{font-weight:400;font-size:12.5pt;margin-top:1mm}
+.ws-dot{display:block;width:4.4mm;height:4.4mm;border:.3mm solid var(--wsd);border-radius:50%;box-sizing:border-box;margin-top:1mm;flex-shrink:0}
+/* 색칠하기 */
+.ws-color{flex:1;display:grid;place-items:center}
+.ws-color img{width:182mm;height:182mm;object-fit:contain}
+/* 그림자 맞추기 */
+.ws-match{--rh:calc(230mm / var(--n));position:relative;height:230mm;flex-shrink:0}
+.ws-mrow{display:grid;grid-template-columns:1fr 6mm 1fr 6mm 1fr;align-items:center;height:var(--rh);box-sizing:border-box;padding:2mm 0}
+.ws-mcard{grid-row:1;height:calc(var(--rh) - 4mm);box-sizing:border-box;border:.4mm solid var(--wsd);border-radius:5mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1mm;padding:2mm;min-height:0}
+.ws-mcard img{width:100%;height:calc(var(--rh) - 18mm);object-fit:contain}
+.ws-mcard b{font-weight:400;font-size:17pt;line-height:1.1;flex-shrink:0}
+.ws-mrow .ws-dot{width:5mm;height:5mm;margin:0;background:#fff;border:1mm solid var(--wsd);justify-self:center}
+.ws-mrow .ws-mcard:first-child{grid-column:1}.ws-mrow .ws-dot.l{grid-column:2}.ws-mrow .ws-dot.r{grid-column:4}.ws-mrow .ws-mcard.sh{grid-column:5}
+.ws-lines{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ws-lines line,.ws-lines polyline{stroke:#E8574A;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+/* 풍선 */
+.ws-target{display:flex;align-items:center;justify-content:center;gap:5mm;margin-top:5mm;flex-shrink:0;font-size:18pt}
+.ws-target b{font-weight:400;font-size:40pt;line-height:1;min-width:22mm;padding:2mm 5mm;border:.8mm solid var(--wsd);border-radius:5mm;text-align:center}
+.ws-balloons{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:repeat(4,minmax(0,1fr));margin-top:2mm}
+.ws-bal{position:relative;display:grid;place-items:center;min-height:0}
+.ws-bal>span{position:relative;height:86%;aspect-ratio:180/305}
+.ws-bal>span>img{position:absolute;inset:0;width:100%;height:100%}
+.ws-bal b{position:absolute;left:0;right:0;top:20%;text-align:center;font-weight:400;font-size:25pt;line-height:1}
+.ws-bal:nth-child(odd)>span{transform:translateY(-2.5mm)}
+.ws-bal:nth-child(3n)>span{transform:translateY(2.5mm) rotate(4deg)}
+.ws-bal:nth-child(4n)>span{transform:rotate(-4deg)}
+.ws-bal .ws-ring{inset:-4% -22% 22%}
+.ws-count{display:flex;align-items:flex-end;justify-content:center;gap:3mm;font-size:21pt;margin:3mm 0 1mm;flex-shrink:0}
+.ws-count i{display:block;width:22mm;height:11mm;border-bottom:.5mm solid var(--ink);font-style:normal;text-align:center;color:#E8574A;font-size:24pt;line-height:11mm}
+/* 주문 받기 */
+.ws-orders{flex:1;min-height:0;display:grid;grid-template-rows:repeat(var(--k),minmax(0,1fr));gap:3mm}
+.ws-order{display:grid;grid-template-columns:26mm 1fr;gap:3mm;align-items:center;border:.4mm solid var(--wsd);border-radius:5mm;padding:2mm 4mm 2mm 2mm;min-height:0}
+.ws-animal img{width:24mm;height:24mm;object-fit:contain}
+.ws-omain{display:flex;flex-direction:column;gap:2mm;min-width:0}
+.ws-bubble{align-self:flex-start;display:flex;align-items:center;gap:2.5mm;padding:1.2mm 6mm 1.2mm 2.5mm;border-radius:6mm;background:var(--wsh);font-size:19pt}
+.ws-bubble img{width:11mm;height:11mm;object-fit:contain}
+.ws-bubble strong{font-weight:400;color:#C0503F}
+.ws-fruits{display:grid;grid-template-columns:repeat(var(--c),minmax(0,1fr));gap:1mm 1.5mm;justify-items:center}
+.ws-fruits img{width:var(--fs);height:var(--fs);object-fit:contain}
+/* 정답: 활동지를 줄여서 한 쪽에 4장 */
+.ws-minis{flex:1;display:grid;grid-template-columns:repeat(2,85.05mm);grid-template-rows:repeat(2,120.08mm);gap:4mm 8mm;justify-content:center;align-content:start;margin-top:4mm}
+.ws-mini{position:relative;overflow:hidden;border:.3mm solid var(--line);border-radius:2.5mm}
+.ws-sheet{position:absolute;left:0;top:0;width:210mm;height:296.5mm;box-sizing:border-box;padding:12mm 14mm 14mm;display:flex;flex-direction:column;transform:scale(.405);transform-origin:0 0;font-family:var(--play);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
 </style>
 </head>
-<body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button></div><p class="parent-note"><span class="parent-note-line">보호자 안내와 소리 켜기는 1초 꾹</span><span class="parent-note-separator"> · </span><span class="parent-note-line">소리 끄기는 한 번 톡</span></p><p class="credit-note"><span><span class="credit-part">© 2026 언어재활사 꿈부자기린쌤</span><span class="credit-sep"> · </span><span class="credit-part">그림과 글의 무단 복제·재배포를 금지합니다</span></span></p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
+<body><div class="app"><header><button class="brand" id="brand" aria-label="몽글몽글 놀이방 홈"><span class="brand-icon" id="brand-icon"></span><span>몽글몽글 놀이방</span></button><div class="header-actions"><button class="soft-btn" id="sound" aria-pressed="true"></button></div></header><main id="main"></main><footer><div class="foot-actions"><button class="soft-btn news-link" id="news-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5l2.3 5 5.2.6-3.9 3.6 1.1 5.2L12 15.3l-4.7 2.6 1.1-5.2-3.9-3.6 5.2-.6z"/></svg>보호자 안내</button><button class="soft-btn news-link" id="print-btn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4.5h10V9M7 17H5.5A1.5 1.5 0 0 1 4 15.5v-5A1.5 1.5 0 0 1 5.5 9h13a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H17"/><path d="M7 14h10v6H7z"/></svg>인쇄하기</button></div><p class="parent-note"><span class="parent-note-line">보호자 안내·인쇄하기와 소리 켜기는 1초 꾹</span><span class="parent-note-separator"> · </span><span class="parent-note-line">소리 끄기는 한 번 톡</span></p><p class="credit-note"><span><span class="credit-part">© 2026 언어재활사 꿈부자기린쌤</span><span class="credit-sep"> · </span><span class="credit-part">그림과 글의 무단 복제·재배포를 금지합니다</span></span></p></footer></div><div id="overlays"></div><div id="announce" class="sr-only" role="status" aria-live="polite"></div>
 <script>
 'use strict';
 const rasterIcons={"dog": "images/icons/dog.webp", "toothbrush": "images/icons/toothbrush.webp", "spoon": "images/icons/spoon.webp", "cat": "images/icons/cat.webp", "rabbit": "images/icons/rabbit.webp", "bear": "images/icons/bear.webp", "pig": "images/icons/pig.webp", "apple": "images/icons/apple.webp", "banana": "images/icons/banana.webp", "grapes": "images/icons/grapes.webp", "car": "images/icons/car.webp", "bus": "images/icons/bus.webp", "train": "images/icons/train.webp", "cow": "images/icons/cow.webp", "frog": "images/icons/frog.webp", "chick": "images/icons/chick.webp", "panda": "images/icons/panda.webp", "mole": "images/icons/mole.webp", "strawberry": "images/icons/strawberry.webp", "watermelon": "images/icons/watermelon.webp", "orange": "images/icons/orange.webp", "peach": "images/icons/peach.webp", "pear": "images/icons/pear.webp", "plane": "images/icons/plane.webp", "boat": "images/icons/boat.webp", "bike": "images/icons/bike.webp", "ambulance": "images/icons/ambulance.webp", "ball": "images/icons/ball.webp", "shoe": "images/icons/shoe.webp", "hat": "images/icons/hat.webp", "umbrella": "images/icons/umbrella.webp", "book": "images/icons/book.webp", "basket": "images/icons/basket.webp", "balloon": "images/icons/balloon.webp", "fire": "images/icons/fire.webp", "pencils": "images/icons/pencils.webp", "phone": "images/icons/phone.webp", "police": "images/icons/police.webp"};
@@ -1791,6 +1889,7 @@ function voicePicker(){const old=$('.voice-backdrop');if(old)old.remove();const 
  let voiceChecking=false;
  $$('[data-voice]',wrap).forEach(b=>b.onclick=async()=>{if(voiceChecking)return;const k=b.dataset.voice;if(k!==voiceKey){voiceChecking=true;const ok=await voiceUsable(k);voiceChecking=false;if(!ok){voiceOfflineNotice();return}}voiceKey=k;try{localStorage.setItem('mongle-voice',voiceKey)}catch{}swWarmVoice();$$('[data-voice]',wrap).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));voiceLabel();speak('안녕! 이 목소리로 이야기해 줄게.')});
  const close=()=>{wrap.remove();$('#voice-btn').focus()};$('#voice-done',wrap).onclick=close;wrap.onclick=e=>{if(e.target===wrap)close()};wrap.onkeydown=e=>{if(e.key==='Escape')close()};$('#voice-done',wrap).focus()}if(VOICE_ON){const vb=document.createElement('button');vb.className='soft-btn';vb.id='voice-btn';$('.header-actions').prepend(vb);voiceLabel();vb.onclick=()=>{tone();voicePicker()}}const siteNews=[
+ ['2026.11.08',['홈 화면 아래에 ‘인쇄하기’ 버튼이 생겼어요. 1초 꾹 누르면 숨은 그림 찾기·색칠하기·그림자 맞추기·풍선 찾기·주문 받기를 A4 활동지로 골라 인쇄할 수 있어요.']],
  ['2026.11.06',['같은 그림 찾기에 ‘도전’ 단계가 생겼어요. 그림 16장(8쌍)을 뒤집으며 짝을 찾아봐요.','숨은 그림 찾기에 새 그림 8장이 생겼어요. 숨은 물건 6개를 다 찾으면 그 그림을 색칠할 수도 있어요.','색칠하기에 소방차 도안이 생겼어요.']],
  ['2026.10.29',['의견 보내기 버튼이 보호자 안내의 ‘소개’ 탭으로 옮겨졌어요.','인터넷이 없는 곳에서도 놀 수 있어요. 와이파이에서 보호자 안내 ‘소개’ 탭의 ‘인터넷 없이 쓰기 준비’를 눌러 두면 모든 놀이의 그림이 이 기기에 저장돼요.']],
  ['2026.10.28',['소리는 화면 상단의 소리 버튼을 한 번 눌러 끌 수 있어요. 다시 켜려면 1초 꾹 눌러 주세요.','풍선 터뜨리기의 ‘시간 없이 놀기’가 ‘풍선 15개 찾기’로 바뀌었어요. 시간 제한 없이 15개를 찾으면 놀이가 끝나요. 30초 도전도 그대로 즐길 수 있어요.','동물들의 주문 받기에서 과일 버튼과 그림을 더 크고 누르기 편하게 바꿨어요. 바구니 크기도 화면에 맞게 조정했어요.']],
@@ -1816,7 +1915,7 @@ function showNews(){
  <div class="news-privacy news-offline"><h3>인터넷 없이 쓰기</h3><p>차 안이나 여행지처럼 인터넷이 없는 곳에서도 놀 수 있게 그림${VOICE_ON?'과 목소리':''}을 이 기기에 미리 받아 둬요. 와이파이에서 눌러 주세요.</p><p class="offline-action"><button class="soft-btn offline-btn" id="offline-btn">${ui.save}<span>인터넷 없이 쓰기 준비 (약 ${OFFLINE_MB}MB)</span></button></p><p class="offline-status" id="offline-status" aria-live="polite"></p></div>
  <div class="news-privacy"><h3>개인정보</h3><ul><li>회원가입이 없고, 아이의 이름·사진 같은 개인정보를 모으지 않아요.</li><li>방문 수와 놀이별 시작 수만 쿠키 없이 세요.</li><li>그리던 그림은 이 기기에만 저장돼요.</li><li>의견 보내기는 구글 설문으로 연결돼요.</li></ul><p class="privacy-note">방문 통계: GoatCounter, Umami</p></div>
  <p class="news-maker">언어재활사 <b>꿈부자기린쌤</b>이 만들었어요 · Instagram <a href="https://www.instagram.com/slp_girin/" target="_blank" rel="noopener">@slp_girin</a></p></div>
- <div id="news-panel-help" role="tabpanel" aria-labelledby="news-tab-help" tabindex="0" hidden><div class="parent-tips"><h3>보호자 도움말</h3><ul><li>홈 화면에 추가하면 주소창 없이 앱처럼 열려요. 아이패드·아이폰은 사파리 공유 버튼에서 ‘홈 화면에 추가’를 눌러요. 갤럭시탭 등 안드로이드는 크롬 메뉴(⋮)에서 ‘홈 화면에 추가’를 누른 뒤 ‘앱으로 설치’를 골라요. 다른 옵션(바로가기)을 고르면 주소창이 보여요.</li><li>아이 혼자 쓸 때는 화면 고정을 켜 두세요. 아이패드·아이폰은 설정 › 손쉬운 사용 › 사용법 유도 접근, 안드로이드는 설정에서 ‘앱 고정’을 찾아 켜요.</li><li>소리가 안 나면 기기의 무음 모드와 음량을 확인해 주세요.</li><li>소리 끄기는 한 번만 누르면 돼요. 소리 켜기는 1초 꾹 누르면 돼요. 보호자 안내는 1초 꾹 누르면 열려요. 의견 보내기는 보호자 안내의 ‘소개’ 탭에 있어요.</li><li>퍼즐은 조각을 끌어다 놓거나, 조각을 누른 다음 맞는 자리를 눌러도 돼요. 풍선 놀이는 시간 제한 없이 15개 찾기와 30초 도전 중에서 고를 수 있어요.</li></ul></div></div>
+ <div id="news-panel-help" role="tabpanel" aria-labelledby="news-tab-help" tabindex="0" hidden><div class="parent-tips"><h3>보호자 도움말</h3><ul><li>홈 화면에 추가하면 주소창 없이 앱처럼 열려요. 아이패드·아이폰은 사파리 공유 버튼에서 ‘홈 화면에 추가’를 눌러요. 갤럭시탭 등 안드로이드는 크롬 메뉴(⋮)에서 ‘홈 화면에 추가’를 누른 뒤 ‘앱으로 설치’를 골라요. 다른 옵션(바로가기)을 고르면 주소창이 보여요.</li><li>아이 혼자 쓸 때는 화면 고정을 켜 두세요. 아이패드·아이폰은 설정 › 손쉬운 사용 › 사용법 유도 접근, 안드로이드는 설정에서 ‘앱 고정’을 찾아 켜요.</li><li>소리가 안 나면 기기의 무음 모드와 음량을 확인해 주세요.</li><li>소리 끄기는 한 번만 누르면 돼요. 소리 켜기는 1초 꾹 누르면 돼요. 보호자 안내와 인쇄하기는 1초 꾹 누르면 열려요. 의견 보내기는 보호자 안내의 ‘소개’ 탭에 있어요.</li><li>퍼즐은 조각을 끌어다 놓거나, 조각을 누른 다음 맞는 자리를 눌러도 돼요. 풍선 놀이는 시간 제한 없이 15개 찾기와 30초 도전 중에서 고를 수 있어요.</li></ul></div></div>
  <div id="news-panel-save" role="tabpanel" aria-labelledby="news-tab-save" tabindex="0" hidden><div class="parent-tips">${saveHelpHTML}</div></div>
  <div id="news-panel-updates" role="tabpanel" aria-labelledby="news-tab-updates" tabindex="0" hidden>${siteNews.length?`<h3 class="news-heading">업데이트 소식</h3><div class="news-list">${siteNews.map(([d,items])=>`<article><h4>${d}</h4><ul>${items.map(t=>`<li>${t}</li>`).join('')}</ul></article>`).join('')}</div>`:''}</div>
  </div><button class="primary" id="news-close">${ui.check}확인했어요</button></section>`);
@@ -1845,7 +1944,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.11.06-2';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.11.08-1';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
@@ -1917,4 +2016,80 @@ if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
   navigator.serviceWorker.addEventListener('controllerchange',swStart)}
  else navigator.serviceWorker.getRegistrations().then(rs=>Promise.all(rs.map(r=>r.unregister()))).then(()=>caches.keys()).then(ks=>Promise.all(ks.filter(k=>k.startsWith('mongle-')).map(k=>caches.delete(k)))).catch(()=>{});
 }
+// ===== 인쇄하기: 보호자가 고른 놀이를 A4 활동지로 인쇄 (홈 하단 버튼, 1초 꾹) =====
+// 활동지는 #print-area에 만들어 두고 window.print()로 인쇄. 화면에서는 보이지 않고 인쇄할 때만 보임 (CSS @media print)
+// 무작위로 만드는 활동지(그림자·풍선·주문)는 인쇄할 때마다 새로 섞임
+const printIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V4.5h10V9M7 17H5.5A1.5 1.5 0 0 1 4 15.5v-5A1.5 1.5 0 0 1 5.5 9h13a1.5 1.5 0 0 1 1.5 1.5v5a1.5 1.5 0 0 1-1.5 1.5H17"/><path d="M7 14h10v6H7z"/></svg>';
+const printKinds=[['hidden','숨은 그림'],['coloring','색칠하기'],['shadow','그림자'],['balloon','풍선'],['order','주문 받기']];
+const printModes={numbers:'숫자(1~10)',consonants:'자음(ㄱ~ㅎ)',vowels:'모음(ㅏ~ㅣ)',syllables:'글자(가~하)',alphabet:'알파벳(A~Z)'};
+const printSel={kind:'hidden',hidden:new Set(),coloring:new Set(),answers:true,shadow:{set:'animals',level:1,count:2},balloon:{mode:'syllables',count:2},order:{level:1,count:2}};
+const wsFoot='<div class="ws-foot">몽글몽글 놀이방 · © 2026 언어재활사 꿈부자기린쌤 · 무단 복제·재배포 금지</div>';
+const wsMagnifier='<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5l5 5"/></svg>';
+function wsHead(title,sub,{name=true,icon=''}={}){return `<div class="ws-head"><span class="ws-ico">${icon}</span><b class="ws-title">${title}</b>${sub?`<span class="ws-sub">${sub}</span>`:''}${name?'<span class="ws-name">이름<i></i></span>':''}</div>`}
+const wsImg=src=>`<img src="${src}" alt="" draggable="false">`;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+// 숨은 그림: 지금 사이트의 그림·좌표를 그대로 씀 (정답 동그라미 = 놀이에서 찾았을 때 표시와 같은 자리)
+function wsHidden(i,answer){const [,name,src,items]=hiddenScenes[i];
+ return wsHead('숨은 그림 찾기',name,{name:!answer,icon:wsMagnifier})+`<div class="ws-scene">${wsImg(src)}${answer?items.map(([,x,y,w,h])=>`<i class="ws-ring" style="left:${x-1}%;top:${y-1}%;width:${w+2}%;height:${h+2}%"></i>`).join(''):''}</div><p class="ws-ask">이 물건 6개를 그림 속에서 찾아 동그라미 해요</p><div class="ws-finds">${items.map(([n])=>`<div class="ws-find">${wsImg(hiddenIcons[n])}<b>${n}</b><i class="ws-dot"></i></div>`).join('')}</div>`}
+function wsColoring(i){const [,name,src]=coloringPages[i];return wsHead('색칠하기',name,{icon:wsImg(rasterIcons.pencils)})+`<div class="ws-body ws-color">${wsImg(src)}</div>`}
+// 그림자 맞추기: 왼쪽 그림과 오른쪽 그림자(순서 섞음)를 선으로 잇기
+function wsShadow({set,level},no){const [setName,,list]=shadowSets[set];const n=level+3,left=shuffle(list).slice(0,n);let right;do{right=shuffle(left)}while(n>1&&right.every((v,i)=>v===left[i]));
+ const ans=`<svg class="ws-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${left.map((v,i)=>{const j=right.indexOf(v);return `<line x1="32.8" y1="${(i+.5)*100/n}" x2="67.2" y2="${(j+.5)*100/n}"/>`}).join('')}</svg>`;
+ const body=`<div class="ws-match" style="--n:${n}">${left.map(([k,nm],i)=>`<div class="ws-mrow"><div class="ws-mcard">${wsImg(rasterIcons[k])}<b>${nm}</b></div><i class="ws-dot l"></i><i class="ws-dot r"></i><div class="ws-mcard sh"><img class="shadow-img" src="${rasterIcons[right[i][0]]}" alt="" draggable="false"></div></div>`).join('')}@@ANS@@</div>`;
+ const sheet=a=>wsHead('그림자 맞추기',`${setName} · ${no}번`,{name:!a,icon:wsImg(rasterIcons.rabbit)})+`<p class="ws-ask big">그림과 그림자를 선으로 이어요</p>`+body.replace('@@ANS@@',a?ans:'');
+ return {ws:'blush',html:sheet(false),ans:sheet(true)}}
+// 풍선: 위의 글자와 같은 풍선을 모두 찾아 동그라미, 몇 개인지 쓰기
+function wsBalloon({mode},target,no){const pool=sequences[mode],total=20,hit=4+Math.floor(Math.random()*4),colors=['pink','yellow','mint','lilac','sky','red'];
+ const vals=shuffle([...Array(hit).fill(target),...Array.from({length:total-hit},()=>pick(pool.filter(x=>x!==target)))]);
+ const sheet=a=>wsHead('풍선 찾기',`${printModes[mode].replace(/\(.*\)/,'')} · ${no}번`,{name:!a,icon:wsImg(balloonImgs.pink)})+`<div class="ws-target"><span>찾아봐요</span><b>${target}</b></div><p class="ws-ask big">같은 글자가 쓰인 풍선을 모두 찾아 동그라미 해요</p><div class="ws-balloons">${vals.map((v,i)=>`<div class="ws-bal"><span>${wsImg(balloonImgs[colors[i%colors.length]])}<b>${v}</b>${a&&v===target?'<i class="ws-ring"></i>':''}</span></div>`).join('')}</div><div class="ws-count">찾은 풍선은 모두<i>${a?hit:''}</i>개</div>`;
+ return {ws:'sky',html:sheet(false),ans:sheet(true)}}
+// 주문 받기: 주문한 과일을 주문한 개수만큼 동그라미 (그 과일은 주문보다 1~2개 더 있어서 세어 봐야 함)
+function wsOrder({level},no){const foods=banks.fruits.slice(0,4).map(([e,n])=>[{'🍎':'apple','🍌':'banana','🍇':'grapes','🍓':'strawberry'}[e],n]);const max=[3,5,10][level],slots=[6,8,12][level],k=level===2?4:5,fsz=[20,16,13][level],animals=['rabbit','bear','cat','panda','dog'];let prev=null;
+ const orders=Array.from({length:k},(_,i)=>{const f=pick(foods.filter(x=>x!==prev));prev=f;const count=1+Math.floor(Math.random()*max),extra=Math.min(slots-count,1+Math.floor(Math.random()*2)),rest=Array.from({length:slots-count-extra},()=>pick(foods.filter(x=>x!==f)));
+  const row=shuffle([...Array(count+extra).fill(f),...rest]);
+  return `<div class="ws-order"><div class="ws-animal">${wsImg(rasterIcons[animals[i]])}</div><div class="ws-omain"><div class="ws-bubble">${wsImg(rasterIcons[f[0]])}<span>${f[1]} <strong>${count}개</strong> 주세요!</span></div><div class="ws-fruits" style="--c:${Math.min(slots,level===2?6:slots)};--fs:${fsz}mm">${row.map(([kk])=>wsImg(rasterIcons[kk])).join('')}</div></div></div>`}).join('');
+ return {ws:'blush',html:wsHead('동물들의 주문 받기',`${['1~3개','1~5개','1~10개'][level]} · ${no}번`,{icon:wsImg(rasterIcons.basket)})+`<p class="ws-ask">친구가 주문한 과일을 주문한 개수만큼 동그라미 해요</p><div class="ws-orders" style="--k:${k}">${orders}</div>`}}
+// 고른 내용으로 활동지 목록 만들기 → [{ws, html, ans?}]
+function printSheets(){const s=printSel,k=s.kind;
+ if(k==='hidden')return [...s.hidden].sort((a,b)=>a-b).map(i=>({ws:'sky',html:wsHidden(i,false),ans:wsHidden(i,true)}));
+ if(k==='coloring')return [...s.coloring].sort((a,b)=>a-b).map(i=>({ws:'blush',html:wsColoring(i)}));
+ const n=s[k].count,out=[];
+ if(k==='shadow')for(let i=1;i<=n;i++)out.push(wsShadow(s.shadow,i));
+ if(k==='balloon'){const ts=shuffle(sequences[s.balloon.mode]);for(let i=1;i<=n;i++)out.push(wsBalloon(s.balloon,ts[(i-1)%ts.length],i))}
+ if(k==='order')for(let i=1;i<=n;i++)out.push(wsOrder(s.order,i));
+ return out}
+function printPageCount(){const s=printSel,k=s.kind,n=k==='hidden'?s.hidden.size:k==='coloring'?s.coloring.size:s[k].count;const ans=['hidden','shadow','balloon'].includes(k)&&s.answers?Math.ceil(n/4):0;return n+ans}
+function printPages(){const sheets=printSheets(),title={hidden:'숨은 그림 찾기',shadow:'그림자 맞추기',balloon:'풍선 찾기'}[printSel.kind];
+ const pages=sheets.map(x=>`<section class="ws-page" data-ws="${x.ws}">${x.html}${wsFoot}</section>`);
+ if(printSel.answers&&title){const a=sheets.filter(x=>x.ans);for(let i=0;i<a.length;i+=4)pages.push(`<section class="ws-page" data-ws="sage">${wsHead(title+' 정답','',{name:false})}<div class="ws-minis">${a.slice(i,i+4).map(x=>`<div class="ws-mini"><div class="ws-sheet" data-ws="${x.ws}">${x.ans}</div></div>`).join('')}</div>${wsFoot}</section>`)}
+ return pages}
+async function runPrint(btn){const pages=printPages();if(!pages.length)return;let area=$('#print-area');if(!area){area=document.createElement('div');area.id='print-area';area.setAttribute('aria-hidden','true');document.body.append(area)}
+ area.innerHTML=pages.join('');btn.disabled=true;const label=btn.innerHTML;btn.innerHTML='준비하고 있어요…';
+ const imgs=$$('img',area);await Promise.race([Promise.all(imgs.map(im=>im.complete?null:new Promise(r=>{im.onload=im.onerror=r}))),new Promise(r=>setTimeout(r,10000))]);
+ try{if(document.fonts)await document.fonts.ready}catch(e){}
+ btn.disabled=false;btn.innerHTML=label;window.print()}
+function showPrint(){const old=$('.print-backdrop');if(old)old.remove();
+ const wrap=document.createElement('div');wrap.className='modal-backdrop news-backdrop print-backdrop';
+ const chips=(key,list,cur)=>`<div class="pr-chips" role="group">${list.map(([v,t])=>`<button class="pr-chip" data-${key}="${v}" aria-pressed="${String(v)===String(cur)}">${t}</button>`).join('')}</div>`;
+ const counts=(kind,max=5)=>`<div class="pr-sec"><h3>몇 장 만들까요?</h3>${chips('count',Array.from({length:max},(_,i)=>[i+1,(i+1)+'장']),printSel[kind].count)}</div>`;
+ const answers=`<div class="pr-sec"><h3>정답지</h3>${chips('answers',[['1','함께 인쇄'],['0','빼기']],printSel.answers?'1':'0')}</div>`;
+ const thumbs=(kind,list)=>`<div class="pr-sec"><h3>${kind==='hidden'?'그림':'도안'} 고르기</h3><div class="pr-tools"><button class="soft-btn" data-all="1">모두 고르기</button><button class="soft-btn" data-all="0">모두 빼기</button></div><div class="pr-thumbs">${list.map(([,n,src],i)=>`<button class="pr-thumb" data-pick="${i}" aria-pressed="${printSel[kind].has(i)}">${wsImg(src)}<span>${n}</span></button>`).join('')}</div></div>`;
+ const panels={
+  hidden:()=>`<p class="pr-note">인쇄할 그림을 골라요. 정답지는 맨 뒤에 한 쪽에 4장씩 모여요.</p>${answers}${thumbs('hidden',hiddenScenes)}`,
+  coloring:()=>`<p class="pr-note">인쇄할 도안을 골라요. 한 쪽에 하나씩 크게 나와요.</p>${thumbs('coloring',coloringPages)}`,
+  shadow:()=>`<p class="pr-note">그림과 그림자를 선으로 잇는 활동지예요. 인쇄할 때마다 그림이 새로 섞여요.</p><div class="pr-sec"><h3>그림 종류</h3>${chips('set',Object.entries(shadowSets).map(([k,[n]])=>[k,n]),printSel.shadow.set)}</div><div class="pr-sec"><h3>난이도</h3>${chips('level',[[0,'쉬움 · 3쌍'],[1,'보통 · 4쌍'],[2,'어려움 · 5쌍']],printSel.shadow.level)}</div>${counts('shadow')}${answers}`,
+  balloon:()=>`<p class="pr-note">위의 글자와 같은 풍선을 찾아 동그라미하고, 몇 개인지 세어 써요. 장마다 찾을 글자가 달라요.</p><div class="pr-sec"><h3>풍선 종류</h3>${chips('mode',Object.entries(printModes),printSel.balloon.mode)}</div>${counts('balloon')}${answers}`,
+  order:()=>`<p class="pr-note">친구가 주문한 과일을 주문한 개수만큼 동그라미하는 활동지예요. 주문한 과일이 1~2개 더 있어서 세어 보며 골라야 해요.</p><div class="pr-sec"><h3>난이도</h3>${chips('level',[[0,'1~3개'],[1,'1~5개'],[2,'1~10개']],printSel.order.level)}</div>${counts('order')}`};
+ wrap.innerHTML=`<section class="modal news-modal news-dialog print-dialog" role="dialog" aria-modal="true" aria-labelledby="print-title"><h2 id="print-title">활동지 인쇄하기</h2><div class="news-tabs" role="tablist" aria-label="인쇄할 놀이">${printKinds.map(([k,t])=>`<button class="news-tab" role="tab" data-kind="${k}" aria-selected="${k===printSel.kind}" tabindex="${k===printSel.kind?0:-1}"><span>${t}</span></button>`).join('')}</div><div class="news-panels" role="tabpanel" id="print-panel"></div><p class="pr-note">A4 세로로 인쇄돼요. 인쇄 창에서 배율은 100%(기본)로 두세요. ‘PDF로 저장’을 고르면 파일로도 받을 수 있어요.</p><div class="pr-actions"><button class="soft-btn" id="print-close">${ui.check}닫기</button><button class="primary" id="print-go"></button></div></section>`;
+ overlays.append(wrap);const panel=$('#print-panel',wrap),go=$('#print-go',wrap);
+ const refresh=()=>{const n=printPageCount();go.disabled=!n;go.innerHTML=n?`${printIcon}인쇄하기 · ${n}쪽`:'인쇄할 것을 골라 주세요'};
+ const render=()=>{const k=printSel.kind;panel.innerHTML=panels[k]();panel.scrollTop=0;
+  $$('.pr-chip',panel).forEach(b=>b.onclick=()=>{tone();const d=b.dataset;if(d.answers)printSel.answers=d.answers==='1';else{const key=Object.keys(d)[0];printSel[k][key]=key==='set'||key==='mode'?d[key]:+d[key]}$$('.pr-chip',b.parentNode).forEach(x=>x.setAttribute('aria-pressed',String(x===b)));refresh()});
+  $$('[data-pick]',panel).forEach(b=>b.onclick=()=>{tone();const set=printSel[k],i=+b.dataset.pick;set.has(i)?set.delete(i):set.add(i);b.setAttribute('aria-pressed',String(set.has(i)));refresh()});
+  $$('[data-all]',panel).forEach(b=>b.onclick=()=>{tone();const set=printSel[k],list=k==='hidden'?hiddenScenes:coloringPages;set.clear();if(b.dataset.all==='1')list.forEach((_,i)=>set.add(i));$$('[data-pick]',panel).forEach(x=>x.setAttribute('aria-pressed',String(set.has(+x.dataset.pick))));refresh()});
+  refresh()};
+ const tabs=$$('[role=tab]',wrap);tabs.forEach((t,i)=>{t.onclick=()=>{tone();printSel.kind=t.dataset.kind;tabs.forEach(x=>{x.setAttribute('aria-selected',String(x===t));x.tabIndex=x===t?0:-1});render()};t.onkeydown=e=>{let n;if(e.key==='ArrowRight')n=(i+1)%tabs.length;else if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;else return;e.preventDefault();tabs[n].click();tabs[n].focus()}});
+ const close=()=>{wrap.remove();$('#print-btn').focus()};$('#print-close',wrap).onclick=close;wrap.onclick=e=>{if(e.target===wrap)close()};wrap.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}};
+ go.onclick=()=>{tone();runPrint(go)};render();tabs.find(t=>t.getAttribute('aria-selected')==='true').focus()}
+holdify($('#print-btn'),1000,showPrint);$('#print-btn').title='1초 꾹 누르면 활동지 인쇄하기가 열려요';
 </script></body></html>
