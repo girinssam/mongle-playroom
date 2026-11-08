@@ -471,6 +471,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 @media(max-width:480px){header .btn-label{display:none}header .soft-btn{padding:8px 12px;min-width:46px}.book-pic{width:36px;height:36px}.book-pic .drawn-art{width:32px;height:32px}}
 
 /* 색칠하기 도안 */
+.setup-screen h3+.page-grid{margin-top:0}
 .page-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:20px}
 .page-pick{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 6px 10px;background:#fff;border:2px solid var(--line);border-radius:20px;box-shadow:0 4px 0 var(--line)}
 .page-pick:not(:disabled):active{transform:translateY(4px);box-shadow:0 0 0 transparent}
@@ -1095,6 +1096,7 @@ footer{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top
 .pr-chip[aria-pressed=true]{background:var(--sage);border-color:var(--sage-d);box-shadow:0 2px 0 var(--sage-d)}
 .pr-tools{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .pr-tools .soft-btn{min-height:40px;padding:6px 14px;font-size:15px}
+.pr-group{font-size:15px;color:var(--muted);margin:14px 2px 6px}.pr-tools+.pr-group{margin-top:4px}
 .pr-thumbs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .pr-thumb{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px 7px;background:#fff;border:2px solid var(--line);border-radius:16px;font-size:13px;line-height:1.25}
 .pr-thumb img{display:block;width:100%;aspect-ratio:1;object-fit:contain;border-radius:10px;background:#fff}
@@ -1603,8 +1605,10 @@ function hiddenPlay(idx,lv){shell('hidden','',hiddenPick);setupSaved.hidden=idx;
  $('#h-hint').onclick=()=>{if(state.done)return;const left=targets.filter(([n])=>!state.found.has(n));if(!left.length)return;const [n,x,y,w,h]=left[Math.floor(Math.random()*left.length)];tone();const d=ring('h-help',x-5,y-5,w+10,h+10);setTimeout(()=>d.remove(),1600);{const k=n.charCodeAt(n.length-1)-0xAC00;hint(`${n}${k>=0&&k<11172&&k%28?'이':'가'} 이 근처에 있어요`)}};
  guideReady('hidden')
 }
+// 색칠 도안 고르기는 두 묶음: 원래 색칠 도안, 숨은 그림에서 온 도안(키가 hidden-로 시작). [제목, [[도안, 번호]…]]
+function coloringGroups(){const all=coloringPages.map((p,i)=>[p,i]);return [['색칠 도안',all.filter(([[k]])=>!k.startsWith('hidden-'))],['숨은 그림 찾기 도안',all.filter(([[k]])=>k.startsWith('hidden-'))]].filter(([,l])=>l.length)}
 function coloringPick(){shell('coloring');currentRestart=coloringPick;
- $('#stage').innerHTML=`<div class="setup-screen"><h2>어떤 그림을 색칠할까요?</h2><p class="setup-subtitle">마음에 드는 그림을 톡 눌러요!</p><div class="page-grid">${coloringPages.map(([k,n,src],i)=>`<button class="page-pick" data-page="${i}"><span class="page-thumb"><img src="${src}" alt="" draggable="false"></span><strong>${n}</strong></button>`).join('')}</div></div>`;
+ $('#stage').innerHTML=`<div class="setup-screen"><h2>어떤 그림을 색칠할까요?</h2><p class="setup-subtitle">마음에 드는 그림을 톡 눌러요!</p>${coloringGroups().map(([t,list])=>`<h3>${t}</h3><div class="page-grid">${list.map(([[k,n,src],i])=>`<button class="page-pick" data-page="${i}"><span class="page-thumb"><img src="${src}" alt="" draggable="false"></span><strong>${n}</strong></button>`).join('')}</div>`).join('')}</div>`;
  $$('[data-page]').forEach(b=>b.onclick=()=>{tone();coloringBook(+b.dataset.page)})}
 function coloringBook(idx){shell('coloring','',coloringPick);currentRestart=()=>coloringBook(idx);const [pageKey,name,src]=coloringPages[idx],dk='coloring-'+pageKey;state={color:paintColors[0][0],fills:{},history:[]};{const d=draftLoad(dk);if(d&&d.fills&&typeof d.fills==='object')state.fills=d.fills}draftFlush=()=>draftStore(dk,Object.keys(state.fills).length?{fills:state.fills}:null);resumeMark({g:'coloring',idx});
  $('#stage').innerHTML=`${palette()}<div class="studio-tools"><button class="soft-btn" id="page-back">${ui.grid}다른 그림</button><button class="soft-btn" id="art-undo">${ui.undo}되돌리기</button><button class="soft-btn" id="art-clear">${ui.trash}모두 지우기</button><button class="soft-btn" id="art-save">${ui.save}그림 저장</button><button class="soft-btn" data-save-help>${ui.info||ui.save}저장 위치 도움말</button></div><canvas id="art-canvas" class="color-canvas" width="900" height="900" aria-label="${name} 색칠 그림"></canvas><div class="done-row"><button class="primary" id="art-done">${ui.check}다 칠했어요</button></div><p class="hint" id="hint">색을 고르고 칠하고 싶은 곳을 톡 눌러요</p>`;
@@ -1944,7 +1948,7 @@ if(STATS_CODE&&location.protocol.startsWith('http')&&!dressFitMode){const sc=doc
 function countPlay(g){try{if(window.goatcounter&&typeof goatcounter.count==='function')goatcounter.count({path:'play-'+g,title:(titles[g]||[g])[0],event:true})}catch(e){}}
 // 새 버전 확인: 앱으로 설치해 새로고침 버튼이 없어도, 열 때와 다시 돌아올 때 version.json을 보고 홈 화면에서 새로 고쳐요
 // 사이트를 바꿔 push할 때마다 version.json의 v와 이 값을 같은 새 값으로 올려요 (예: 2026.10.23-2)
-const APP_VERSION='2026.11.08-1';let newVersion=null,versionChecking=false;
+const APP_VERSION='2026.11.08-2';let newVersion=null,versionChecking=false;
 function versionReload(){if(!newVersion||screen!=='home')return;try{if(sessionStorage.getItem('mongle-reloaded')===newVersion)return;sessionStorage.setItem('mongle-reloaded',newVersion)}catch{return}location.replace('./?v='+encodeURIComponent(newVersion))}
 async function versionCheck(){if(versionChecking)return;versionChecking=true;try{const r=await fetch('version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.json()).v;if(typeof v==='string'&&v&&v!==APP_VERSION){newVersion=v;versionReload()}}catch{}finally{versionChecking=false}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')versionCheck()});
@@ -2073,7 +2077,7 @@ function showPrint(){const old=$('.print-backdrop');if(old)old.remove();
  const chips=(key,list,cur)=>`<div class="pr-chips" role="group">${list.map(([v,t])=>`<button class="pr-chip" data-${key}="${v}" aria-pressed="${String(v)===String(cur)}">${t}</button>`).join('')}</div>`;
  const counts=(kind,max=5)=>`<div class="pr-sec"><h3>몇 장 만들까요?</h3>${chips('count',Array.from({length:max},(_,i)=>[i+1,(i+1)+'장']),printSel[kind].count)}</div>`;
  const answers=`<div class="pr-sec"><h3>정답지</h3>${chips('answers',[['1','함께 인쇄'],['0','빼기']],printSel.answers?'1':'0')}</div>`;
- const thumbs=(kind,list)=>`<div class="pr-sec"><h3>${kind==='hidden'?'그림':'도안'} 고르기</h3><div class="pr-tools"><button class="soft-btn" data-all="1">모두 고르기</button><button class="soft-btn" data-all="0">모두 빼기</button></div><div class="pr-thumbs">${list.map(([,n,src],i)=>`<button class="pr-thumb" data-pick="${i}" aria-pressed="${printSel[kind].has(i)}">${wsImg(src)}<span>${n}</span></button>`).join('')}</div></div>`;
+ const thumbs=(kind,list)=>`<div class="pr-sec"><h3>${kind==='hidden'?'그림':'도안'} 고르기</h3><div class="pr-tools"><button class="soft-btn" data-all="1">모두 고르기</button><button class="soft-btn" data-all="0">모두 빼기</button></div>${(kind==='coloring'?coloringGroups():[['',list.map((p,i)=>[p,i])]]).map(([t,items])=>`${t?`<h4 class="pr-group">${t}</h4>`:''}<div class="pr-thumbs">${items.map(([[,n,src],i])=>`<button class="pr-thumb" data-pick="${i}" aria-pressed="${printSel[kind].has(i)}">${wsImg(src)}<span>${n}</span></button>`).join('')}</div>`).join('')}</div>`;
  const panels={
   hidden:()=>`<p class="pr-note">인쇄할 그림을 골라요. 정답지는 맨 뒤에 한 쪽에 4장씩 모여요.</p>${answers}${thumbs('hidden',hiddenScenes)}`,
   coloring:()=>`<p class="pr-note">인쇄할 도안을 골라요. 한 쪽에 하나씩 크게 나와요.</p>${thumbs('coloring',coloringPages)}`,
