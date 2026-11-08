@@ -86,6 +86,7 @@
 - 보호자 안내 '소개' 탭 순서: 노란 상자(.news-intro, 소개 문장 + 의견 보내기 버튼. 줄바꿈 <br> 없이 이어 씀, '몽글몽글 놀이방'만 주아체 .news-brand) → '인터넷 없이 쓰기' 상자 → 개인정보 상자
 - SNS 링크 미리보기: head의 og:·twitter: 태그, 그림은 images/brand/og.png(1200×600, 2:1. 로고·제목·동물 그림은 가운데 600px 폭 안에, 배경은 무늬 없는 연두 #DCEBD3. 그림을 바꾸면 og:image·twitter:image 주소 끝 ?v=숫자를 올리기). 사이트 설명 문장은 meta description·og:description·twitter:description 세 곳을 같은 문장으로 맞추기
 - 보호자 안내 창의 업데이트 소식은 siteNews 배열에 ['날짜',['소식']] 형식으로 추가
+- 새 소식 꼬리표: siteNews 맨 앞 항목이 바뀌면 '보호자 안내' 버튼 옆에 '새 소식'(.news-new, 연두색)이 보이고, 보호자 안내를 열면 '업데이트' 탭부터 열린 뒤 이 기기에서 사라짐(localStorage 'mongle-news-seen'에 맨 앞 항목의 해시 저장). 그래서 새 소식은 꼭 배열 맨 앞에 넣기. 처음 온 기기(mongle- 저장값이 없음)에는 보이지 않음. 작은 수정은 siteNews에 넣지 않으면 꼬리표 없이 조용히 바뀜. 아이가 누르고 싶어지지 않게 빨간 점은 쓰지 않음
 
 ## 작업 규칙
 - 작업 전에 항상 git pull
